@@ -6,5 +6,5 @@
 	<feature url="features/org.eclipse.koneki.ldt.source_0.9.0.qualifier.jar" id="org.eclipse.koneki.ldt.source" version="0.9.0.qualifier">
 		<category name="ldt"/>
 	</feature>
-	<category-def name="ldt" label="Lua Development Tools - Koneki (Incubation)"/>
+	<category-def name="ldt" label="Lua Development Tools - Koneki"/>
 </site>
