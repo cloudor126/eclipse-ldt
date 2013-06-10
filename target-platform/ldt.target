@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde version="3.6"?>
 
-<target name="Lua Development Tools" sequenceNumber="25">
+<target name="Lua Development Tools" sequenceNumber="28">
 <locations>
 <location includeAllPlatforms="false" includeMode="planner" includeSource="false" type="InstallableUnit">
 <unit id="org.apache.commons.io" version="1.4.0.v20081110-1000"/>
@@ -11,18 +11,23 @@
 <repository location="http://download.eclipse.org/tools/orbit/downloads/drops/repository"/>
 </location>
 <location includeAllPlatforms="false" includeMode="planner" includeSource="false" type="InstallableUnit">
-<unit id="org.eclipse.dltk.core.sdk.feature.group" version="4.0.0.201206120848"/>
-<unit id="org.eclipse.dltk.itcl.sdk.feature.group" version="4.0.0.201206120848"/>
-<unit id="org.eclipse.dltk.javascript.sdk.feature.group" version="4.0.0.201206120848"/>
-<unit id="org.eclipse.dltk.mylyn.sdk.feature.group" version="4.0.0.201206120848"/>
-<unit id="org.eclipse.dltk.python.sdk.feature.group" version="4.0.0.201206120848"/>
-<unit id="org.eclipse.dltk.tcl.sdk.feature.group" version="4.0.0.201206120848"/>
-<repository location="http://download.eclipse.org/technology/dltk/updates-dev/4.0-stable/"/>
+<unit id="org.eclipse.platform.sdk" version="4.3.0.I20130530-1430"/>
+<repository location="http://download.eclipse.org/releases/kepler"/>
 </location>
 <location includeAllPlatforms="false" includeMode="planner" includeSource="false" type="InstallableUnit">
-<unit id="org.eclipse.rse.sdk.feature.group" version="3.4.1.201302122026"/>
-<unit id="org.eclipse.rse.scp.feature.group" version="0.2.0.201209191030-13-773573L5L5393"/>
-<repository location="http://download.eclipse.org/tm/updates/3.4/"/>
+<unit id="org.eclipse.rse.sdk.feature.group" version="3.5.0.201305311734"/>
+<unit id="org.eclipse.rse.scp.feature.group" version="0.2.100.201305201712"/>
+<repository location="http://download.eclipse.org/tm/updates/3.5milestones"/>
+</location>
+<location includeAllPlatforms="false" includeMode="planner" includeSource="false" type="InstallableUnit">
+<unit id="org.eclipse.dltk.core.sdk.feature.group" version="5.0.0.201306060709"/>
+<unit id="org.eclipse.dltk.core.index.sdk.feature.group" version="5.0.0.201306060709"/>
+<unit id="org.eclipse.dltk.itcl.sdk.feature.group" version="5.0.0.201306060709"/>
+<unit id="org.eclipse.dltk.rse.sdk.feature.group" version="5.0.0.201306060709"/>
+<unit id="org.eclipse.dltk.ruby.sdk.feature.group" version="5.0.0.201306060709"/>
+<unit id="org.eclipse.dltk.tcl.sdk.feature.group" version="5.0.0.201306060709"/>
+<unit id="org.eclipse.dltk.xotcl.sdk.feature.group" version="5.0.0.201306060709"/>
+<repository location="http://download.eclipse.org/technology/dltk/updates-dev/5.0"/>
 </location>
 <location includeAllPlatforms="false" includeMode="planner" includeSource="false" type="InstallableUnit">
 <unit id="org.eclipse.platform.sdk" version="4.3.0.I20130530-1430"/>

@@ -100,6 +100,11 @@
 			<url>${eclipse-site}</url>
 		</repository>
 		<repository>
+			<id>dltk</id>
+			<layout>p2</layout>
+			<url>http://download.eclipse.org/technology/dltk/updates-dev/5.0</url>
+		</repository>
+		<repository>
 			<id>wikitext</id>
 			<layout>p2</layout>
 			<url>http://download.eclipse.org/tools/mylyn/update/weekly</url>

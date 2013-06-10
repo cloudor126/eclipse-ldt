@@ -7,7 +7,6 @@
 
 package org.eclipse.koneki.ldt.ui.internal.editor.text;
 
-import org.eclipse.dltk.internal.ui.text.IInformationControlExtension4;
 import org.eclipse.dltk.ui.DLTKUIPlugin;
 import org.eclipse.dltk.ui.PreferenceConstants;
 import org.eclipse.jface.internal.text.html.BrowserInformationControl;
@@ -15,6 +14,7 @@ import org.eclipse.jface.text.AbstractReusableInformationControlCreator;
 import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
+import org.eclipse.jface.text.IInformationControlExtension4;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.EditorsUI;

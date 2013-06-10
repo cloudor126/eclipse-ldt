@@ -12,6 +12,8 @@ package org.eclipse.koneki.ldt.ui.internal.editor.text;
 
 import java.io.IOException;
 
+import org.eclipse.core.runtime.PlatformObject;
+import org.eclipse.dltk.annotations.Internal;
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.internal.ui.text.HTMLPrinter;
 import org.eclipse.dltk.internal.ui.text.hover.DocumentationHover;
@@ -33,9 +35,12 @@ public class LuaDocumentationHover extends DocumentationHover {
 			| ScriptElementLabels.T_TYPE_PARAMETERS | ScriptElementLabels.USE_RESOLVED;
 	private static final long LOCAL_VARIABLE_FLAGS = LABEL_FLAGS & ~ScriptElementLabels.F_FULLY_QUALIFIED | ScriptElementLabels.F_POST_QUALIFIED;
 
-	private static final IScriptDocumentationTitleAdapter TITLE_ADAPTER = new IScriptDocumentationTitleAdapter() {
+	private static final ScriptDocumentationTitleAdapter titleAdapter = new ScriptDocumentationTitleAdapter();
 
-		private ScriptElementImageProvider fImageProvider = new ScriptElementImageProvider();
+	@Internal
+	static class ScriptDocumentationTitleAdapter extends PlatformObject implements IScriptDocumentationTitleAdapter {
+
+		private ScriptElementImageProvider fImageProvider;
 
 		public String getTitle(Object element) {
 			if (element instanceof IModelElement) {
@@ -59,7 +64,7 @@ public class LuaDocumentationHover extends DocumentationHover {
 			}
 			return null;
 		}
-	};
+	}
 
 	private IInformationControlCreator fHoverControlCreator;
 
@@ -77,7 +82,7 @@ public class LuaDocumentationHover extends DocumentationHover {
 			Object element = result[0];
 
 			// try to get documentation
-			IDocumentationResponse response = ScriptDocumentationAccess.getDocumentation(nature, element, TITLE_ADAPTER);
+			IDocumentationResponse response = ScriptDocumentationAccess.getDocumentation(nature, element, titleAdapter);
 			if (response != null) {
 				try {
 					htmlContent = HTMLPrinter.read(response.getReader());

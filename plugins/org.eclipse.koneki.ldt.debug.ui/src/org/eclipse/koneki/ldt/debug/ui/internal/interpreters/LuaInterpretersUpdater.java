@@ -153,7 +153,7 @@ public class LuaInterpretersUpdater extends InterpretersUpdater {
 					monitor.beginTask(InterpretersMessages.InterpretersUpdater_0, 100);
 					final String xml = container.getAsXML();
 					monitor.worked(40);
-					ScriptRuntime.getPreferences().setValue(ScriptRuntime.PREF_INTERPRETER_XML, xml);
+					ScriptRuntime.getPreferences().put(ScriptRuntime.PREF_INTERPRETER_XML, xml);
 					monitor.worked(30);
 					ScriptRuntime.savePreferences();
 					monitor.worked(30);
