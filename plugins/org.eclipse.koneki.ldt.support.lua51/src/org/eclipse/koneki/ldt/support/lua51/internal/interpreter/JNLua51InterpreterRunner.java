@@ -11,10 +11,9 @@
 package org.eclipse.koneki.ldt.support.lua51.internal.interpreter;
 
 import org.eclipse.dltk.launching.IInterpreterInstall;
+import org.eclipse.dltk.launching.InterpreterConfig;
 import org.eclipse.koneki.ldt.debug.core.internal.interpreter.jnlua.JNLuaInterpreterCommandLineRenderer;
 import org.eclipse.koneki.ldt.debug.core.internal.interpreter.jnlua.JNLuaInterpreterRunner;
-import org.eclipse.dltk.launching.InterpreterConfig;
-import org.eclipse.koneki.ldt.debug.core.internal.interpreter.generic.LuaGenericInterpreterRunner;
 
 public class JNLua51InterpreterRunner extends JNLuaInterpreterRunner {
 

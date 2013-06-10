@@ -69,7 +69,7 @@ public class FakeField extends SourceField implements ISourceRange, IFakeElement
 
 	@Override
 	public String getType() throws ModelException {
-		return null; //$NON-NLS-1$
+		return null;
 	}
 
 	/**
