@@ -115,7 +115,7 @@ public final class LuaDocumentationHelper {
 
 	public static String generatePage(String cssStyle, String htmlContent) {
 		StringBuffer buffer = new StringBuffer();
-		buffer.append("<html><head><style CHARSET=\"ISO-8859-1\" TYPE=\"text/css\">"); //$NON-NLS-1$
+		buffer.append("<!DOCTYPE html><html><head><style CHARSET=\"ISO-8859-1\" TYPE=\"text/css\">"); //$NON-NLS-1$
 		buffer.append(cssStyle);
 		buffer.append("</style></head><body>"); //$NON-NLS-1$
 		buffer.append(htmlContent);
