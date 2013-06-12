@@ -20,7 +20,12 @@ if debugpath then
 	luadocumentordirpath = string.match(debugpath,"^@(.*)luadocumentor.lua$")
 	if luadocumentordirpath then
 		if luadocumentordirpath == "" then luadocumentordirpath = "./" end
-		package.path = luadocumentordirpath.."?.lua;"..luadocumentordirpath.."?.luac;"..package.path
+		-- change lua path and mpath to not load system version of metalua
+		package.path = luadocumentordirpath.."?.lua;"..luadocumentordirpath.."?.luac;"
+		require "metalua.package"
+		package.mpath = luadocumentordirpath.."?.mlua;"
+		-- do not change cpath to have access to lfs.
+		-- (it must be already installed)
 	end
 end
 

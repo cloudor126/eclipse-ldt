@@ -52,14 +52,14 @@
 		</fileSet>
 		<fileSet>
 			<outputDirectory>./</outputDirectory>
-			<directory>../metalua/src</directory>
+			<directory>../metalua</directory>
 			<includes>
 				<include>**/*.mlua</include>
 			</includes>
 		</fileSet>
 		<fileSet>
 			<outputDirectory>./</outputDirectory>
-			<directory>../metalua/src</directory>
+			<directory>../metalua</directory>
 			<includes>
 				<include>**/*.lua</include>
 			</includes>
