@@ -70,10 +70,11 @@ public final class ModelFactory {
 				LuaSourceRoot sourceRoot = l.checkJavaObject(1, LuaSourceRoot.class);
 				int line = l.checkInteger(2);
 				int column = l.checkInteger(3);
-				int offset = l.checkInteger(4);
-				String message = l.checkString(5);
+				int soffset = l.checkInteger(4);
+				int eoffset = l.checkInteger(5);
+				String message = l.checkString(6);
 
-				sourceRoot.setProblem(line, column, offset, message);
+				sourceRoot.setProblem(line, column, soffset, eoffset, message);
 
 				return 0;
 			}

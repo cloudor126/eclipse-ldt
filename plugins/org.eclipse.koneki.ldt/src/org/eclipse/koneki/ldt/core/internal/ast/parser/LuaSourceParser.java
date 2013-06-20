@@ -43,7 +43,7 @@ public class LuaSourceParser extends AbstractSourceParser {
 
 	// BEGIN CACHE MANAGEMENT
 	// TODO DLTK has already a cache system but it can be used to keep the last valid AST.
-	// so we have to cache system.
+	// so we have to duplicate the cache system.
 	// Ideally, the parser should manage file with syntax errors..
 	private static Map<IModelElement, IModuleDeclaration> cache = new Hashtable<IModelElement, IModuleDeclaration>();
 	private static IElementChangedListener changedListener = new IElementChangedListener() {
@@ -135,7 +135,7 @@ public class LuaSourceParser extends AbstractSourceParser {
 				// the module is probably on error.
 				if (module == null)
 					module = new LuaSourceRoot(input.getSourceContents().length());
-				module.setProblem(1, 1, 0, "This file probably contains a syntax error."); //$NON-NLS-1$
+				module.setProblem(1, 1, 0, 0, "This file probably contains a syntax error."); //$NON-NLS-1$
 			}
 
 			// Deal with errors on Lua side

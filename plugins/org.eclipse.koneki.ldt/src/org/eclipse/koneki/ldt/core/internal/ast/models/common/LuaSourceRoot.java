@@ -55,9 +55,9 @@ public class LuaSourceRoot extends ModuleDeclaration {
 		return luaFile.getInternalContent();
 	}
 
-	public void setProblem(final int line, final int column, final int offset, final String message) {
-		final IProblemIdentifier id = DefaultProblemIdentifier.decode(offset);
-		problem = new DefaultProblem("", message, id, new String[0], ProblemSeverity.ERROR, -1, offset, line, column); //$NON-NLS-1$
+	public void setProblem(final int line, final int column, final int startoffset, final int endoffset, final String message) {
+		final IProblemIdentifier id = DefaultProblemIdentifier.decode(line);
+		problem = new DefaultProblem("", message, id, new String[0], ProblemSeverity.ERROR, startoffset, endoffset, line, column); //$NON-NLS-1$
 		setError(true);
 	}
 

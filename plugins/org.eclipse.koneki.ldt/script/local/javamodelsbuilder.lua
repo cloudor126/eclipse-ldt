@@ -27,29 +27,37 @@ local M = {}
 -- @param	source Code to parse
 -- @return	LuaSourceRoot, DLTK node, root of DLTK AST
 function M.build(source)
-
-	-- Build AST
-	local ast = mlc:src_to_ast( source )
+	-- create root object
 	local root = javamodelfactory.newsourceroot(#source)
-
-	-- Check if an error occurred
-	local status, astvalid, errormsg, positions = pcall(compiler.check_ast, ast)
-
-
-	-- Report problem
-	if not astvalid then
-		local msg = errormsg or 'Unable to determine error'
-		if positions then
-			local line = positions.line and positions.line - 1 or 0
-			local column = positions.column and positions.column - 1 or 0
-			local offset = positions.offset and positions.offset - 1 or 0
-			javamodelfactory.setproblem(root, line, column, offset, msg)
-		else
-			javamodelfactory.setproblem(root, 0, 0, 0, msg)
-		end
+	
+	-- check for errors
+	local f, err = loadstring(source,'source_to_check')
+	if not f then
+		local line, err = string.match(err,"%[string \"source_to_check\"%]:(%d+):(.*)")
+		err = err or 'Unable to determine error'
+		line = line and tonumber(line)-1 or 0
+		
+		-- TODO ECLIPSE 411238
+		-- we must calculate offset because DLTK does not support 'line' positionning
+		local _, endoffset = string.find(source,string.rep("[^\n]*\n",line))
+		
+		-- calculate the start of some errors
+		-- NOT USED FOR NOW
+--		 local linestart = string.match(err,"%(to close .* at line (%d+)%)") 
+--		 if linestart then
+--			local _, startoffset = string.find(source,string.rep("[^\n]*\n",linestart-1))
+--			javamodelfactory.setproblem(root, line , -1, startoffset, endoffset, err)
+--		else
+--			javamodelfactory.setproblem(root, line , -1, -1, endoffset, err)
+--		end
+		javamodelfactory.setproblem(root, line , -1, -1, endoffset, err)
 		return root
 	end
-
+	
+	
+	-- if no errors, check AST
+	local ast = mlc:src_to_ast( source )
+	
 	-- Create api model
 	local apimodelbuilder = require 'models.apimodelbuilder'
 	local _file, comment2apiobj = apimodelbuilder.createmoduleapi(ast)
