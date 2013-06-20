@@ -11,13 +11,12 @@
 package org.eclipse.koneki.ldt.core.tests;
 
 import org.eclipse.koneki.ldt.core.tests.internal.ast.AllASTTests;
-import org.eclipse.koneki.ldt.core.tests.internal.ast.error.AllASTErrorTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ AllASTTests.class, AllASTErrorTestSuite.class })
+@SuiteClasses({ AllASTTests.class })
 public class AllCoreTests {
 
 }
