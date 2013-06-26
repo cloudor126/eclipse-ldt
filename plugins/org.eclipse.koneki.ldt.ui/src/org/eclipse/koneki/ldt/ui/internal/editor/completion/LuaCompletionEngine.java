@@ -27,12 +27,13 @@ import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.IType;
 import org.eclipse.dltk.core.ModelException;
-import org.eclipse.koneki.ldt.core.LuaConstants;
 import org.eclipse.koneki.ldt.core.internal.ast.models.LuaASTModelUtils;
 import org.eclipse.koneki.ldt.core.internal.ast.models.LuaASTUtils;
 import org.eclipse.koneki.ldt.core.internal.ast.models.LuaASTUtils.Definition;
 import org.eclipse.koneki.ldt.core.internal.ast.models.LuaASTUtils.TypeResolution;
+import org.eclipse.koneki.ldt.core.internal.ast.models.api.FunctionTypeDef;
 import org.eclipse.koneki.ldt.core.internal.ast.models.api.Item;
+import org.eclipse.koneki.ldt.core.internal.ast.models.api.Parameter;
 import org.eclipse.koneki.ldt.core.internal.ast.models.api.RecordTypeDef;
 import org.eclipse.koneki.ldt.core.internal.ast.models.common.LuaSourceRoot;
 import org.eclipse.koneki.ldt.ui.internal.Activator;
@@ -139,6 +140,7 @@ public class LuaCompletionEngine extends ScriptCompletionEngine {
 
 		// found type of the last bigger complete index
 		// (e.g. for identifier.field1.field2.f, get the type of identifier.field1.field2)
+		TypeResolution currentTypeResolution = typeResolution;
 		RecordTypeDef currentRecordTypeDef = (RecordTypeDef) typeResolution.getTypeDef();
 		ISourceModule currentSourceModule = typeResolution.getModule();
 		for (int i = 1; i < ids.size() - 1; i++) {
@@ -151,13 +153,13 @@ public class LuaCompletionEngine extends ScriptCompletionEngine {
 				return;
 
 			// resolve the type
-			typeResolution = LuaASTUtils.resolveType(currentSourceModule, item.getType());
+			currentTypeResolution = LuaASTUtils.resolveType(currentSourceModule, item.getType());
 			// we are interested only by record type
-			if (typeResolution == null || !(typeResolution.getTypeDef() instanceof RecordTypeDef))
+			if (currentTypeResolution == null || !(currentTypeResolution.getTypeDef() instanceof RecordTypeDef))
 				return;
 
-			currentRecordTypeDef = (RecordTypeDef) typeResolution.getTypeDef();
-			currentSourceModule = typeResolution.getModule();
+			currentRecordTypeDef = (RecordTypeDef) currentTypeResolution.getTypeDef();
+			currentSourceModule = currentTypeResolution.getModule();
 		}
 
 		// get all the field of the complete index
@@ -166,13 +168,54 @@ public class LuaCompletionEngine extends ScriptCompletionEngine {
 			IModelElement[] moduleFields = iType.getChildren();
 			// get field name
 			final String fieldName = ids.get(ids.size() - 1);
+
 			// search field
 			for (final IModelElement field : moduleFields) {
 				if ((field instanceof IField && lastOperator == '.') || field instanceof IMethod) {
 					final boolean goodStart = field.getElementName().toLowerCase().startsWith(fieldName.toLowerCase());
 					final boolean nostart = fieldName.isEmpty();
 					if (goodStart || nostart) {
-						createMemberProposal((IMember) field, position - fieldName.length(), position, lastOperator);
+
+						// for invocation we should filter some field.
+						if (':' == lastOperator) {
+							// invocation is only for function
+							if (field.getElementType() != IModelElement.METHOD)
+								break;
+
+							// invocation works only if there are at least one parameter
+							String[] parameterNames = ((IMethod) field).getParameterNames();
+							if (parameterNames.length == 0)
+								break;
+
+							// if the first param is self : it's ok !
+							if ("self".equals(parameterNames[0])) //$NON-NLS-1$
+								createMemberProposal((IMember) field, position - fieldName.length(), position, true);
+							else {
+								// if the first parameter is of the same type as the type on which it is invoked : it's ok !
+								final Item item = currentRecordTypeDef.getFields().get(field.getElementName());
+								final TypeResolution fieldTypeResolution = LuaASTUtils.resolveType(currentSourceModule, item.getType());
+
+								// invocation works only on method (already tested in the other model ... the joy to have 2 models...)
+								if (!(fieldTypeResolution.getTypeDef() instanceof FunctionTypeDef))
+									break;
+
+								// invocation works only if there are at least one parameter (already tested in the other model ...the joy to have
+								// 2 models...)
+								final List<Parameter> parameters = ((FunctionTypeDef) fieldTypeResolution.getTypeDef()).getParameters();
+								if (parameters.size() == 0)
+									break;
+
+								// resolve first parameter type
+								Parameter firstParamter = parameters.get(0);
+								final TypeResolution parameterTypeResolution = LuaASTUtils.resolveType(currentSourceModule, firstParamter.getType());
+
+								// create proposition only if the parameter type is ok.
+								if (currentTypeResolution.equals(parameterTypeResolution))
+									createMemberProposal((IMember) field, position - fieldName.length(), position, true);
+							}
+						} else {
+							createMemberProposal((IMember) field, position - fieldName.length(), position, false);
+						}
 					}
 				}
 			}
@@ -265,10 +308,10 @@ public class LuaCompletionEngine extends ScriptCompletionEngine {
 	}
 
 	private void createMemberProposal(IMember member, int startIndex, int endIndex) {
-		createMemberProposal(member, startIndex, endIndex, '\0');
+		createMemberProposal(member, startIndex, endIndex, false);
 	}
 
-	private void createMemberProposal(IMember member, int startIndex, int endIndex, char operator) {
+	private void createMemberProposal(IMember member, int startIndex, int endIndex, boolean invocation) {
 		try {
 			CompletionProposal proposal = null;
 			switch (member.getElementType()) {
@@ -277,14 +320,11 @@ public class LuaCompletionEngine extends ScriptCompletionEngine {
 				proposal = CompletionProposal.create(CompletionProposal.METHOD_REF, 0);
 				IMethod method = (IMethod) member;
 
-				if (operator == ':') {
+				if (invocation) {
 					// manage the invoke case
 					String[] parameterNames = method.getParameterNames();
 
 					if (parameterNames.length == 0)
-						return;
-
-					if (!parameterNames[0].equals(LuaConstants.SELF_PARAMETER))
 						return;
 
 					String[] parameterNamesWithoutFirstOne = Arrays.copyOfRange(parameterNames, 1, parameterNames.length);

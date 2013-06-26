@@ -256,6 +256,46 @@ public final class LuaASTUtils {
 			return typeDef;
 		}
 
+		@Override
+		public boolean equals(Object obj) {
+			if (obj == null)
+				return false;
+
+			if (obj == this)
+				return true;
+
+			if (this.getClass() != obj.getClass())
+				return false;
+
+			// check content
+			TypeResolution typeResolution = (TypeResolution) obj;
+
+			boolean moduleEquality;
+			if (this.module == null && typeResolution.module == null)
+				moduleEquality = true;
+			else if (this.module != null && this.module.equals(typeResolution.module))
+				moduleEquality = true;
+			else
+				return false;
+
+			boolean typeDefEquality;
+			if (this.typeDef == null && typeResolution.typeDef == null)
+				typeDefEquality = true;
+			else if (this.typeDef != null && this.typeDef.equals(typeResolution.typeDef))
+				typeDefEquality = true;
+			else
+				return false;
+
+			return typeDefEquality && moduleEquality;
+		}
+
+		@Override
+		public int hashCode() {
+			int hash = 1;
+			hash = 17 * hash + (null == module ? 0 : module.hashCode());
+			hash = 31 * hash + (null == typeDef ? 0 : typeDef.hashCode());
+			return hash;
+		}
 	}
 
 	public static Collection<Item> getLocalVars(LuaSourceRoot luaSourceRoot, final int offset, final String start) {
