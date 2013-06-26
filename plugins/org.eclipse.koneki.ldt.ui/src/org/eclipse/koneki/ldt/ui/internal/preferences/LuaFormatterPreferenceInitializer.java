@@ -23,9 +23,9 @@ public class LuaFormatterPreferenceInitializer extends AbstractPreferenceInitial
 	public void initializeDefaultPreferences() {
 		final IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 		store.setDefault(LuaFormatterPreferenceConstants.FORMATTER_ID, Util.EMPTY_STRING);
-		store.setDefault(LuaFormatterPreferenceConstants.FORMATTER_INDENTATION_SIZE, 4);
-		store.setDefault(LuaFormatterPreferenceConstants.FORMATTER_TAB_SIZE, 4);
-		store.setDefault(LuaFormatterPreferenceConstants.FORMATTER_TAB_CHAR, CodeFormatterConstants.TAB);
+		store.setDefault(LuaFormatterPreferenceConstants.FORMATTER_INDENTATION_SIZE, 2);
+		store.setDefault(LuaFormatterPreferenceConstants.FORMATTER_TAB_SIZE, 2);
+		store.setDefault(LuaFormatterPreferenceConstants.FORMATTER_TAB_CHAR, CodeFormatterConstants.SPACE);
 		store.setDefault(LuaFormatterPreferenceConstants.FORMATTER_INDENT_TABLE_VALUES, true);
 	}
 
