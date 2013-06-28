@@ -111,8 +111,9 @@ public final class LuaASTUtils {
 	}
 
 	public static TypeResolution resolveType(ISourceModule sourceModule, TypeRef typeRef) {
-		if (typeRef instanceof PrimitiveTypeRef)
-			return null;
+		if (typeRef instanceof PrimitiveTypeRef) {
+			return resolveType(sourceModule, (PrimitiveTypeRef) typeRef);
+		}
 
 		if (typeRef instanceof InternalTypeRef) {
 			return resolveType(sourceModule, (InternalTypeRef) typeRef);
@@ -131,6 +132,21 @@ public final class LuaASTUtils {
 		}
 
 		return null;
+	}
+
+	public static TypeResolution resolveType(ISourceModule sourceModule, PrimitiveTypeRef primitiveTypeRef) {
+		// matching the primitive type #string to string#string if any
+		if (primitiveTypeRef.getTypeName().equals("string")) { //$NON-NLS-1$
+			ISourceModule stringSourceModule = LuaUtils.getSourceModule("string", sourceModule.getScriptProject()); //$NON-NLS-1$
+			if (stringSourceModule == null)
+				return null;
+
+			LuaSourceRoot luaSourceRoot = LuaASTModelUtils.getLuaSourceRoot(stringSourceModule);
+			TypeDef typeDef = luaSourceRoot.getFileapi().getTypes().get("string"); //$NON-NLS-1$
+			return new TypeResolution(stringSourceModule, typeDef);
+		}
+		return null;
+
 	}
 
 	public static TypeResolution resolveType(ISourceModule sourceModule, InternalTypeRef internalTypeRef) {

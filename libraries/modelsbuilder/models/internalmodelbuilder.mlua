@@ -272,6 +272,9 @@ local function createtype(node,position)
 				local typeref = apimodel._internaltyperef(_functiontypedef.name)
 				typeref.internal = _functiontypedef
 				return typeref
+		| `String {value} ->
+				local typeref = apimodel._primitivetyperef("string")
+				return typeref
 		| _ ->
 	end
 	-- if node is an expression supported
