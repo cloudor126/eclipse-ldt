@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 Sierra Wireless and others.
+ * Copyright (c) 2011, 2013 Sierra Wireless and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.BadPositionCategoryException;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.koneki.ldt.core.internal.Activator;
 import org.eclipse.swt.events.VerifyEvent;
@@ -55,51 +56,89 @@ public class LuaBracketInserter extends BracketInserter {
 		// Early pruning to slow down normal typing as little as possible
 		if (!event.doit || this.editor.getInsertMode() != ScriptEditor.SMART_INSERT)
 			return;
+
 		// Do not process if character is not handled or if auto insert has been disabled from preference
 		switch (event.character) {
 		case '(':
-			if (!isClosingBrackets()) {
-				return;
-			}
-			break;
 		case '[':
-			if (!isClosingBrackets()) {
+			if (!isClosingBrackets())
 				return;
-			}
 			break;
 		case '{':
-			if (!isClosingBraces()) {
+			if (!isClosingBraces())
 				return;
-			}
 			break;
 		case '\'':
-			if (!isClosingStrings()) {
-				return;
-			}
-			break;
 		case '\"':
-			if (!isClosingStrings()) {
+			if (!isClosingStrings())
 				return;
-			}
 			break;
 		default:
 			return;
 		}
 
-		if (!this.editor.validateEditorInputState())
-			return;
-		/**
-		 * Retrieve insertion information
-		 */
+		// Use Heuristic to activate auto-closing only if it's necessary
 		final ISourceViewer sourceViewer = this.editor.getScriptSourceViewer();
-		final IDocument document = sourceViewer.getDocument();
+		IDocument document = sourceViewer.getDocument();
+
 		final Point selection = sourceViewer.getSelectedRange();
 		final int offset = selection.x;
 		final int length = selection.y;
+
 		try {
+
+			// there are no problem with the editor input
+			if (!this.editor.validateEditorInputState())
+				return;
+
+			// validate we are editing lua code (Lua_partitioning)
 			if (!validatePartitioning(document, offset, ILuaPartitions.LUA_PARTITIONING)) {
 				return;
 			}
+
+			// check if we need autoclose depends of code before or after cursor position.
+			IRegion startLine = document.getLineInformationOfOffset(offset);
+			IRegion endLine = document.getLineInformationOfOffset(offset + length);
+
+			LuaHeuristicScanner scanner = new LuaHeuristicScanner(document);
+			int nextToken = scanner.nextToken(offset + length, endLine.getOffset() + endLine.getLength());
+
+			switch (event.character) {
+			case '(':
+				if (nextToken == LuaSymbols.TOKEN_LPAREN) {
+					return;
+				}
+			case '{':
+			case '[':
+				switch (nextToken) {
+				case LuaSymbols.TOKEN_LBRACE:
+				case LuaSymbols.TOKEN_MINUS:
+				case LuaSymbols.TOKEN_SHARP:
+				case LuaSymbols.TOKEN_NOT:
+				case LuaSymbols.TOKEN_FUNCTION:
+				case LuaSymbols.TOKEN_TRUE:
+				case LuaSymbols.TOKEN_FALSE:
+				case LuaSymbols.TOKEN_NIL:
+				case LuaSymbols.TOKEN_IDENT:
+				case LuaSymbols.TOKEN_STRING:
+					return;
+				default:
+					break;
+				}
+				break;
+			case '\'':
+			case '"':
+				if (nextToken == LuaSymbols.TOKEN_IDENT)
+					return;
+				int prevToken = scanner.previousToken(offset - 1, startLine.getOffset());
+				if (prevToken == LuaSymbols.TOKEN_IDENT)
+					return;
+				break;
+			default:
+				return;
+			}
+
+			// insert automatically peer character.
 			insertBrackets(document, offset, length, event.character, getPeerCharacter(event.character));
 		} catch (BadLocationException e) {
 			Activator.logWarning(MessageFormat.format("Problem when trying to do autoclose for char {0}", event.character), e); //$NON-NLS-1$
