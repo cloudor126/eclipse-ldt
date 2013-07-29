@@ -16,6 +16,7 @@ import java.util.List;
 import org.eclipse.koneki.ldt.core.internal.ast.models.api.ExprTypeRef;
 import org.eclipse.koneki.ldt.core.internal.ast.models.api.ExternalTypeRef;
 import org.eclipse.koneki.ldt.core.internal.ast.models.api.FunctionTypeDef;
+import org.eclipse.koneki.ldt.core.internal.ast.models.api.InlineTypeRef;
 import org.eclipse.koneki.ldt.core.internal.ast.models.api.InternalTypeRef;
 import org.eclipse.koneki.ldt.core.internal.ast.models.api.Item;
 import org.eclipse.koneki.ldt.core.internal.ast.models.api.LuaFileAPI;
@@ -57,6 +58,7 @@ public final class APIModelFactory {
 		javaFunctions.add(newModuleTypeRef());
 		javaFunctions.add(newExprTypeRef());
 		javaFunctions.add(newPrimitiveTypeRef());
+		javaFunctions.add(newInlineTypeRef());
 		javaFunctions.add(itemSetExpression());
 		javaFunctions.add(newRecordTypeDef());
 		javaFunctions.add(recordTypeDefAddField());
@@ -215,6 +217,25 @@ public final class APIModelFactory {
 			@Override
 			public String getName() {
 				return "newprimitivetyperef"; //$NON-NLS-1$
+			}
+		};
+	}
+
+	private static NamedJavaFunction newInlineTypeRef() {
+		return new NamedJavaFunction() {
+			@Override
+			public int invoke(LuaState l) {
+				TypeDef typedef = l.checkJavaObject(1, TypeDef.class);
+
+				InlineTypeRef typeref = new InlineTypeRef(typedef);
+				l.pushJavaObject(typeref);
+
+				return 1;
+			}
+
+			@Override
+			public String getName() {
+				return "newinlinetyperef"; //$NON-NLS-1$
 			}
 		};
 	}

@@ -27,6 +27,7 @@ import org.eclipse.dltk.core.ElementChangedEvent;
 import org.eclipse.dltk.core.IElementChangedListener;
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.IModelElementDelta;
+import org.eclipse.koneki.ldt.core.LuaUtils;
 import org.eclipse.koneki.ldt.core.internal.Activator;
 import org.eclipse.koneki.ldt.core.internal.ast.models.LuaDLTKModelUtils;
 import org.eclipse.koneki.ldt.core.internal.ast.models.common.LuaSourceRoot;
@@ -104,10 +105,11 @@ public class LuaSourceParser extends AbstractSourceParser {
 
 		synchronized (LuaSourceParser.class) {
 			try {
+				String moduleName = LuaUtils.getModuleFullName(input);
 
 				// Build AST
 				final String source = input.getSourceContents();
-				module = astBuilder.buildAST(source);
+				module = astBuilder.buildAST(source, moduleName);
 
 				/*
 				 * Handle encoding shifts

@@ -245,15 +245,16 @@ local function createtreestructure(ast)
 end
 
 
+local extracttype
+
 ------------------------------------------------------------
 -- create the type from the node and position
-local function createtype(node,position)
+local function createtype(node,position,comment2apiobj,file)
 	-- create module type ref
 	match node with
 		| `Call{ `Id "require", `String {modulename}} ->
 				return apimodel._moduletyperef(modulename,position)
 		| `Function {params, body} ->
-				-- TODO factorize this code : create internal function type def
 				-- create the functiontypedef
 				local _functiontypedef = apimodel._functiontypedef()
 				for _, p in ipairs(params) do
@@ -266,15 +267,44 @@ local function createtype(node,position)
 					local _param = apimodel._parameter(paramname)
 					table.insert(_functiontypedef.params,_param)
 				end
-				_functiontypedef.name = apimodelbuilder.generatefunctiontypename(_functiontypedef)
+				_functiontypedef.name = "___"
 				
 				-- reference the type
-				local typeref = apimodel._internaltyperef(_functiontypedef.name)
-				typeref.internal = _functiontypedef
+				local typeref = apimodel._inlinetyperef()
+				typeref.def = _functiontypedef
+				
 				return typeref
 		| `String {value} ->
 				local typeref = apimodel._primitivetyperef("string")
 				return typeref
+		| `Number {value} ->
+			local typeref = apimodel._primitivetyperef("number")
+			return typeref
+		| `Number {value} ->
+			local typeref = apimodel._primitivetyperef("boolean")
+			return typeref
+		| `Table {...} ->
+				-- TODO comment this function
+				local recordtypedef = apimodel._recordtypedef("___")
+				for i=1,select("#", ...) do
+        			local pair = select(i, ...)
+					if pair.tag == "Pair" then
+						local string, _type, desc = extracttype(pair,nil, comment2apiobj,file)
+						if string then
+							local item = apimodel._item(string[1])
+							
+							item.sourcerange.min = string.lineinfo.first.offset 
+							item.sourcerange.max = string.lineinfo.last.offset
+							
+							if _type then item.type = _type end
+							if desc then item.description = desc end
+							
+							recordtypedef:addfield(item)
+						end
+					end
+				end
+				
+				return apimodel._inlinetyperef(recordtypedef)
 		| _ ->
 	end
 	-- if node is an expression supported
@@ -287,10 +317,49 @@ local function createtype(node,position)
 end
 
 ------------------------------------------------------------
--- extract the type and the id with the name itemname 
+-- extract the type and the metalua ast node with the name itemname 
 -- which could be considered as definition from the binder
-local function extracttype(binder, itemname, comment2apiobj,file)
+function extracttype(binder, itemname, comment2apiobj,file)
 	match binder with
+	| `Pair  {string, init}
+	| `Set   { {`Index { right , string}}, {init,...}} if string and string.tag =="String" ->
+			-- TODO this code si duplicate from SET and LOCAL pattern
+			-- if the itemname is given this mean we search for a local or a global 
+			-- --> this code is not really readable
+			if not itemname then
+				local itemname = string[1]
+			
+				-- check for "local" typing
+				local type,desc = apimodelbuilder.extractlocaltype(getlinkedcommentafter(binder),file)
+				
+				if type then
+					return string, type, desc
+				end
+				
+				-- check for luadoc typing
+				local commentbefore = getlinkedcommentbefore(binder);
+				local obj = comment2apiobj[commentbefore]
+				if obj then
+					if obj.tag=="item" then
+						if obj.name and obj.name == itemname then  
+							return string, obj.type
+						end
+					elseif obj.tag=="file" then
+						local typeref = obj:moduletyperef()
+						if typeref and typeref.tag == "internaltyperef" then 
+							return string, apimodel._internaltyperef(typeref.typename) 
+						end
+					elseif obj.tag=="recordtypedef" then
+						return string, apimodel._internaltyperef(obj.name)
+					end
+					
+					-- if the documentation before is not link to the given item, do not attached the comment
+					commentbefore = nil
+				end
+				
+				-- else we use code to extract the type
+				return 	string, createtype(init,1,comment2apiobj,file), desc or (commentbefore and commentbefore[1])
+			end
 	| `Set {ids, inits} 
 	| `Local {ids, inits} ->
 			-- if this is a single local var declaration
@@ -328,7 +397,7 @@ local function extracttype(binder, itemname, comment2apiobj,file)
 				end
 				
 				-- else we use code to extract the type
-				return 	currentid, createtype(inits[1],1), desc or (commentbefore and commentbefore[1])
+				return 	currentid, createtype(inits[1],1,comment2apiobj,file), desc or (commentbefore and commentbefore[1])
 			end
 			-- else we use code to extract the type			
 			local init,returnposition = nil,1
@@ -350,7 +419,7 @@ local function extracttype(binder, itemname, comment2apiobj,file)
 				-- if this is the good id
 				if itemname == idname then
 					-- create type from init node and return position
-					local type = createtype(init,returnposition)
+					local type = createtype(init,returnposition,comment2apiobj,file)
 					-- return data
 					return id, type 
 				end
@@ -413,12 +482,45 @@ local function extracttype(binder, itemname, comment2apiobj,file)
 					end
 					
 					-- else extract type from code					
-					local type = createtype(func,1)
+					local type = createtype(func,1,comment2apiobj,file)
 					return id, type, comment and comment[1]
 			end						
 	| _ ->
 	end
 end
+
+
+local function trytoaddfield(node,_currentitem,comment2apiobj,file)
+	-- TODO comment this function
+	if _currentitem 
+		and _currentitem.type 
+		and _currentitem.type.tag == "inlinetyperef"
+		and _currentitem.type.def.tag == "recordtypedef" then
+			if node and node.tag == "Index" then
+				local rightpart = node[2]
+				local _newcurrentitem = _currentitem.type.def.fields[rightpart[1]]
+				if _newcurrentitem then 
+					trytoaddfield (node.parent,_newcurrentitem,comment2apiobj,file)
+				else
+					if node.parent and node.parent.tag =="Set" then
+						local set = node.parent
+						local string, _type, desc = extracttype(set,nil, comment2apiobj,file)
+						if string then
+							local newfield = apimodel._item(string[1])
+							
+							newfield.sourcerange.min = string.lineinfo.first.offset 
+							newfield.sourcerange.max = string.lineinfo.last.offset
+							
+							if _type then newfield.type = _type end
+							if desc then newfield.description = desc end
+							
+							_currentitem.type.def:addfield(newfield)
+						end										
+					end
+				end				
+			end	
+	end
+end 
 
 ------------------------------------------------------------
 -- create local vars, global vars and linked it with theirs occurences
@@ -431,19 +533,12 @@ local function createvardefinitions(_internalcontent,ast,file,comment2apiobj)
 		for name, occurrences in pairs(namesAndOccurrences) do
 			-- create item
 			local _item = apimodel._item(name)
-			-- get type and id 
+			-- get type, id and description 
 			local id, _type, desc = extracttype(binder, name,comment2apiobj,file)
 			if id then
-				if _type then 
-					_item.type = _type
-					-- TODO manage internal type ref function
-					if _item.type.internal then
-						file:addtype(_item.type.internal)
-						_item.type.internal = nil
-					end
-				end
+				-- set type and description
+				if _type then _item.type = _type end
 				if desc then _item.description = desc end
-				
 				
 				-- add definition as occurence
 				-- we consider the identifier in the binder as an occurence
@@ -455,6 +550,7 @@ local function createvardefinitions(_internalcontent,ast,file,comment2apiobj)
 					
 				-- add occurences
 				for _,occurrence in ipairs(occurrences) do
+					trytoaddfield(occurrence.parent, _item,comment2apiobj,file)
 					local _identifier = idto_identifier[occurrence]
 					if _identifier then
 						table.insert(_item.occurrences, _identifier)
@@ -486,24 +582,17 @@ local function createvardefinitions(_internalcontent,ast,file,comment2apiobj)
 			
 			-- get type and id
 			local id,_type, desc
-			-- global declaration is only if the Id is in a 'Set'
+			-- global declaration is only if the first occurence in left part of a 'Set'
 			if occurrences[1].parent and occurrences[1].parent.tag == "Set" then
 			 	id,_type,desc = extracttype(occurrences[1].parent, name,comment2apiobj,file)
 			end
 			
 			-- if we find the id, this is a global declaration 
 			if id then
-				if _type then 
-					_item.type = _type-- TODO manage internal type ref function
-					if _item.type.internal then
-						file:addtype(_item.type.internal)
-						_item.type.internal = nil
-					end
-				end
+				-- set type and description
+				if _type then _item.type = _type end
 				if desc then _item.description = desc end
-				
 				file:addglobalvar(_item)
-							
 			else
 				table.insert(_internalcontent.unknownglobalvars,_item)
 			end
@@ -512,6 +601,7 @@ local function createvardefinitions(_internalcontent,ast,file,comment2apiobj)
 		-- add occurences
 		for _,occurence in ipairs(occurrences) do
 			local _identifier = idto_identifier[occurence]
+			trytoaddfield(occurence.parent, _item,comment2apiobj,file)
 			if _identifier then
 				table.insert(_item.occurrences, _identifier)
 				_identifier.definition = _item 
@@ -543,9 +633,48 @@ local function addparents(ast)
 end
 
 
+
+local function searchmodule(internalcontent,ast,file,comment2apiobj,modulename)
+	-- if the last statement is a return
+	if ast then
+		local laststatement = ast[#ast]
+		if laststatement and laststatement.tag == "Return" then
+			-- and if the first expression returned is an identifier.
+			local firstexpr = laststatement[1]
+			if firstexpr and firstexpr.tag == "Id" then
+				-- get identifier in internal model
+				local _identifier = idto_identifier [firstexpr]
+				-- the definition should be an inline type
+				if      _identifier 
+				    and _identifier.definition 
+					and _identifier.definition.type 
+					and _identifier.definition.type.tag == "inlinetyperef"
+					and _identifier.definition.type.def.tag == "recordtypedef" then
+					
+					-- get inline type
+					local recordtypedef = _identifier.definition.type.def
+					
+					-- set the name and add it to file api
+					recordtypedef.name = modulename
+					recordtypedef.sourcerange.min = _identifier.definition.sourcerange.min
+					recordtypedef.sourcerange.max = _identifier.definition.sourcerange.min-1
+					file:addtype(recordtypedef)
+					
+					-- set type return
+					file.returns[1] = apimodel._return()
+					file.returns[1].types = { apimodel._internaltyperef(recordtypedef.name) }				
+					
+					-- change the type of the identifier
+					_identifier.definition.type = apimodel._internaltyperef(recordtypedef.name)
+				end
+			end	
+		end
+	end
+end
+
 ------------------------------------------------------------
 -- create the internalcontent from an ast metalua 
-function M.createinternalcontent (ast,file,comment2apiobj)
+function M.createinternalcontent (ast,file,comment2apiobj,modulename)
 	-- init cache
 	idto_block = {}	
 	idto_identifier = {} 
@@ -561,6 +690,11 @@ function M.createinternalcontent (ast,file,comment2apiobj)
 	
 	-- create Local vars, global vars and linked occurences (Items)
 	createvardefinitions(internalcontent,ast,file,comment2apiobj)
+	
+	-- try to dectect a module declaration
+	if modulename then
+		searchmodule(internalcontent,ast,file,comment2apiobj,modulename)
+	end
 	
 	-- clean cache
 	idto_block = {}	

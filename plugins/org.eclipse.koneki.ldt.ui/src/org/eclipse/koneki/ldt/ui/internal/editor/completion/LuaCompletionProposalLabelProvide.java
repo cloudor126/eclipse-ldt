@@ -100,26 +100,33 @@ public class LuaCompletionProposalLabelProvide extends CompletionProposalLabelPr
 	}
 
 	/**
-	 * @see org.eclipse.dltk.ui.text.completion.CompletionProposalLabelProvider#createImageDescriptor(org.eclipse.dltk.core.CompletionProposal)
+	 * @see org.eclipse.dltk.ui.text.completion.CompletionProposalLabelProvider#createFieldImageDescriptor(org.eclipse.dltk.core.CompletionProposal)
 	 */
-	// TODO factorize some code with LuaLabelProvider..
 	@Override
-	public ImageDescriptor createImageDescriptor(CompletionProposal proposal) {
+	protected ImageDescriptor createFieldImageDescriptor(CompletionProposal proposal) {
 		if (proposal.getModelElement() instanceof IMember) {
 			IMember member = (IMember) proposal.getModelElement();
 			try {
-				// Special icon for private type
+				// Special icon for field type
 				if (member.exists()) {
-					if (member instanceof IType) {
-						if (LuaDLTKModelUtils.isModule(member)) {
-							return Activator.getDefault().getImageRegistry().getDescriptor(ImageConstants.MODULE_OBJ16);
-						} else if (LuaDLTKModelUtils.isGlobalTable(member)) {
-							return Activator.getDefault().getImageRegistry().getDescriptor(ImageConstants.GLOBAL_TABLE_OBJ16);
-						} else if (LuaDLTKModelUtils.isLocalTable(member)) {
-							return Activator.getDefault().getImageRegistry().getDescriptor(ImageConstants.LOCAL_TABLE_OBJ16);
-						}
-					} else if (LuaDLTKModelUtils.isModuleFunction(member)) {
+					if (LuaDLTKModelUtils.isModuleFunction(member)) {
 						return Activator.getDefault().getImageRegistry().getDescriptor(ImageConstants.MODULE_FUNCTION_OBJ16);
+					} else if (LuaDLTKModelUtils.isModuleField(member)) {
+						return Activator.getDefault().getImageRegistry().getDescriptor(ImageConstants.MODULE_FIELD_OBJ16);
+					} else if (LuaDLTKModelUtils.isModuleTable(member)) {
+						return Activator.getDefault().getImageRegistry().getDescriptor(ImageConstants.MODULE_TABLE_OBJ16);
+					} else if (LuaDLTKModelUtils.isPrivateFunction(member)) {
+						return Activator.getDefault().getImageRegistry().getDescriptor(ImageConstants.PRIVATE_FUNCTION_OBJ16);
+					} else if (LuaDLTKModelUtils.isPrivateField(member)) {
+						return Activator.getDefault().getImageRegistry().getDescriptor(ImageConstants.PRIVATE_FIELD_OBJ16);
+					} else if (LuaDLTKModelUtils.isPrivateTable(member)) {
+						return Activator.getDefault().getImageRegistry().getDescriptor(ImageConstants.PRIVATE_TABLE_OBJ16);
+					} else if (LuaDLTKModelUtils.isPublicFunction(member)) {
+						return Activator.getDefault().getImageRegistry().getDescriptor(ImageConstants.PUBLIC_FUNCTION_OBJ16);
+					} else if (LuaDLTKModelUtils.isPublicField(member)) {
+						return Activator.getDefault().getImageRegistry().getDescriptor(ImageConstants.PUBLIC_FIELD_OBJ16);
+					} else if (LuaDLTKModelUtils.isPublicTable(member)) {
+						return Activator.getDefault().getImageRegistry().getDescriptor(ImageConstants.PUBLIC_TABLE_OBJ16);
 					}
 				}
 			} catch (ModelException e) {
@@ -128,7 +135,6 @@ public class LuaCompletionProposalLabelProvide extends CompletionProposalLabelPr
 			}
 		}
 		return super.createImageDescriptor(proposal);
-
 	}
 
 	/**
@@ -141,16 +147,10 @@ public class LuaCompletionProposalLabelProvide extends CompletionProposalLabelPr
 			try {
 				// Special icon for private type
 				if (member.exists()) {
-					if (member instanceof IType) {
-						if (LuaDLTKModelUtils.isModule(member)) {
-							return Activator.getDefault().getImageRegistry().getDescriptor(ImageConstants.MODULE_OBJ16);
-						} else if (LuaDLTKModelUtils.isGlobalTable(member)) {
-							return Activator.getDefault().getImageRegistry().getDescriptor(ImageConstants.GLOBAL_TABLE_OBJ16);
-						} else if (LuaDLTKModelUtils.isLocalTable(member)) {
-							return Activator.getDefault().getImageRegistry().getDescriptor(ImageConstants.LOCAL_TABLE_OBJ16);
-						}
-					} else if (LuaDLTKModelUtils.isModuleFunction(member)) {
-						return Activator.getDefault().getImageRegistry().getDescriptor(ImageConstants.MODULE_FUNCTION_OBJ16);
+					if (LuaDLTKModelUtils.isModule(member)) {
+						return Activator.getDefault().getImageRegistry().getDescriptor(ImageConstants.MODULE_OBJ16);
+					} else if (LuaDLTKModelUtils.isType(member)) {
+						return Activator.getDefault().getImageRegistry().getDescriptor(ImageConstants.TYPE_OBJ16);
 					}
 				}
 			} catch (ModelException e) {

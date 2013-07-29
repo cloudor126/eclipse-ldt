@@ -24,6 +24,7 @@ public class FakeField extends SourceField implements ISourceRange, IFakeElement
 	private final int flags;
 	private final boolean hasFlags;
 	private final LuaASTNode luaASTNode;
+	private final String type;
 
 	public FakeField(ISourceModule parent, String name, int offset, int length, LuaASTNode luaASTNode) {
 		super((ModelElement) parent, name);
@@ -32,14 +33,16 @@ public class FakeField extends SourceField implements ISourceRange, IFakeElement
 		this.flags = 0;
 		this.hasFlags = false;
 		this.luaASTNode = luaASTNode;
+		this.type = null;
 	}
 
-	public FakeField(ISourceModule parent, String name, int offset, int length, int flags, LuaASTNode luaASTNode) {
+	public FakeField(ISourceModule parent, String name, String type, int offset, int length, int flags, LuaASTNode luaASTNode) {
 		super((ModelElement) parent, name);
 		this.offset = offset;
 		this.length = length;
 		this.flags = flags;
 		this.hasFlags = true;
+		this.type = type;
 		this.luaASTNode = luaASTNode;
 	}
 
@@ -69,7 +72,7 @@ public class FakeField extends SourceField implements ISourceRange, IFakeElement
 
 	@Override
 	public String getType() throws ModelException {
-		return null;
+		return type;
 	}
 
 	/**

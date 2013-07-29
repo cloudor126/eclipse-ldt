@@ -24,6 +24,7 @@ import org.eclipse.koneki.ldt.core.internal.Activator;
 import org.eclipse.koneki.ldt.core.internal.ast.models.api.ExprTypeRef;
 import org.eclipse.koneki.ldt.core.internal.ast.models.api.ExternalTypeRef;
 import org.eclipse.koneki.ldt.core.internal.ast.models.api.FunctionTypeDef;
+import org.eclipse.koneki.ldt.core.internal.ast.models.api.InlineTypeRef;
 import org.eclipse.koneki.ldt.core.internal.ast.models.api.InternalTypeRef;
 import org.eclipse.koneki.ldt.core.internal.ast.models.api.Item;
 import org.eclipse.koneki.ldt.core.internal.ast.models.api.LuaFileAPI;
@@ -129,6 +130,10 @@ public final class LuaASTUtils {
 
 		if (typeRef instanceof ExprTypeRef) {
 			return resolveType(sourceModule, (ExprTypeRef) typeRef);
+		}
+
+		if (typeRef instanceof InlineTypeRef) {
+			return resolveType(sourceModule, (InlineTypeRef) typeRef);
 		}
 
 		return null;
@@ -252,6 +257,11 @@ public final class LuaASTUtils {
 			}
 		}
 		return null;
+	}
+
+	public static TypeResolution resolveType(ISourceModule sourceModule, InlineTypeRef inlineTypeRef) {
+		TypeDef typeDef = inlineTypeRef.getDefinition();
+		return new TypeResolution(sourceModule, typeDef);
 	}
 
 	public static class TypeResolution {
@@ -524,12 +534,34 @@ public final class LuaASTUtils {
 		return null;
 	}
 
-	public static boolean isLocal(Item item) {
+	public static boolean isModule(LuaFileAPI luaFileAPI, RecordTypeDef recordTypeDef) {
+		TypeRef moduleReturnTypeRef = getModuleReturnType(luaFileAPI);
+
+		if (!(moduleReturnTypeRef instanceof InternalTypeRef))
+			return false;
+		String typename = ((InternalTypeRef) moduleReturnTypeRef).getTypeName();
+
+		return luaFileAPI.getTypes().get(typename) == recordTypeDef;
+	}
+
+	public static boolean isInlineTypeDef(TypeDef typedef) {
+		return typedef != null && typedef.getParent() instanceof Item;
+	}
+
+	public static boolean isInlineTypeField(Item item) {
+		return item.getParent() instanceof RecordTypeDef && isInlineTypeDef((TypeDef) item.getParent());
+	}
+
+	public static boolean isLocalVariable(Item item) {
 		return item.getParent() instanceof Block;
 	}
 
-	public static boolean isGlobal(Item item) {
+	public static boolean isGlobalVariable(Item item) {
 		return item.getParent() instanceof LuaFileAPI;
+	}
+
+	public static boolean isUnresolvedGlobal(Item item) {
+		return item.getParent() instanceof LuaInternalContent;
 	}
 
 	public static boolean isTypeField(Item item) {
@@ -544,39 +576,97 @@ public final class LuaASTUtils {
 		return false;
 	}
 
-	public static boolean isUnresolvedGlobal(Item item) {
-		return item.getParent() instanceof LuaInternalContent;
+	// return true is the element is part of a module declaration
+	// a module declaration is considered as public too
+	public static boolean isModule(LuaFileAPI luaFileAPI, LuaASTNode node) {
+		if (node instanceof Item) {
+			Item item = (Item) node;
+			if (isInlineTypeField(item)) {
+				// should be always true as item is from inline Type
+				if (item.getParent() instanceof RecordTypeDef) {
+					LuaASTNode parent = ((RecordTypeDef) item.getParent()).getParent();
+					return isModule(luaFileAPI, parent);
+				}
+			}
+			return isModuleTypeField(luaFileAPI, item);
+		} else if (node instanceof TypeDef) {
+			TypeDef typedef = (TypeDef) node;
+			if (isInlineTypeDef(typedef)) {
+				return isModule(luaFileAPI, ((TypeDef) node).getParent());
+			}
+		}
+		return false;
 	}
 
-	public static TypeDef resolveTypeLocaly(ISourceModule sourceModuile, Item item) {
-		LuaSourceRoot luaSourceRoot = LuaASTModelUtils.getLuaSourceRoot(sourceModuile);
+	// return true if the element is part of a public declaration (global var or type declaration)
+	// a module declaration is considered as public too
+	public static boolean isPublic(LuaASTNode node) {
+		if (node instanceof Item) {
+			Item item = (Item) node;
+			if (isInlineTypeField(item)) {
+				// should be always true as item is from inline Type
+				if (item.getParent() instanceof RecordTypeDef) {
+					LuaASTNode parent = ((RecordTypeDef) item.getParent()).getParent();
+					return isPublic(parent);
+				}
+			}
+			return isGlobalVariable(item) || isTypeField(item);
+		} else if (node instanceof TypeDef) {
+			TypeDef typedef = (TypeDef) node;
+			if (isInlineTypeDef(typedef)) {
+				return isPublic(((TypeDef) node).getParent());
+			}
+		}
+		return false;
+	}
+
+	// return true if the element is part of a private declaration (local variable)
+	public static boolean isPrivate(LuaASTNode node) {
+		if (node instanceof Item) {
+			Item item = (Item) node;
+			if (isInlineTypeField(item)) {
+				// should be always true as item is from inline Type
+				if (item.getParent() instanceof RecordTypeDef) {
+					LuaASTNode parent = ((RecordTypeDef) item.getParent()).getParent();
+					return isPrivate(parent);
+				}
+			}
+			return isLocalVariable(item);
+		} else if (node instanceof TypeDef) {
+			TypeDef typedef = (TypeDef) node;
+			if (isInlineTypeDef(typedef)) {
+				return isPrivate(((TypeDef) node).getParent());
+			}
+		}
+		return false;
+	}
+
+	public static TypeDef resolveTypeLocaly(ISourceModule sourceModule, Item item) {
+		LuaSourceRoot luaSourceRoot = LuaASTModelUtils.getLuaSourceRoot(sourceModule);
 		if (luaSourceRoot != null)
 			return resolveTypeLocaly(luaSourceRoot.getFileapi(), item);
 		return null;
 	}
 
 	public static TypeDef resolveTypeLocaly(LuaFileAPI luaFileAPI, Item item) {
-		if (luaFileAPI == null)
+		if (item == null)
 			return null;
 
 		TypeRef typeref = item.getType();
-		if (!(typeref instanceof InternalTypeRef))
-			return null;
+		if (typeref instanceof InternalTypeRef) {
+			if (luaFileAPI == null)
+				return null;
 
-		InternalTypeRef internaltyperef = (InternalTypeRef) typeref;
-		TypeDef typeDef = luaFileAPI.getTypes().get(internaltyperef.getTypeName());
+			InternalTypeRef internaltyperef = (InternalTypeRef) typeref;
+			TypeDef typeDef = luaFileAPI.getTypes().get(internaltyperef.getTypeName());
+			return typeDef;
+		} else if (typeref instanceof InlineTypeRef) {
+			InlineTypeRef inlinetyperef = (InlineTypeRef) typeref;
+			TypeDef typeDef = inlinetyperef.getDefinition();
+			return typeDef;
+		}
 
-		return typeDef;
-	}
-
-	public static boolean isModule(LuaFileAPI luaFileAPI, RecordTypeDef recordTypeDef) {
-		TypeRef moduleReturnTypeRef = getModuleReturnType(luaFileAPI);
-
-		if (!(moduleReturnTypeRef instanceof InternalTypeRef))
-			return false;
-		String typename = ((InternalTypeRef) moduleReturnTypeRef).getTypeName();
-
-		return luaFileAPI.getTypes().get(typename) == recordTypeDef;
+		return null;
 	}
 
 	public static TypeRef getModuleReturnType(LuaFileAPI luaFileAPI) {

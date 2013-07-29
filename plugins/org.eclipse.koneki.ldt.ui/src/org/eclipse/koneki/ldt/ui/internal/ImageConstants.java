@@ -15,9 +15,20 @@ public interface ImageConstants {
 	String LUA_FILE_WIZARD_BAN = "icons/wizban/lua_newfile_wiz.png"; //$NON-NLS-1$
 
 	String MODULE_OBJ16 = "icons/obj16/module.gif"; //$NON-NLS-1$
+	String TYPE_OBJ16 = "icons/obj16/type.gif"; //$NON-NLS-1$
+
 	String MODULE_FUNCTION_OBJ16 = "icons/obj16/module_function.gif"; //$NON-NLS-1$
-	String GLOBAL_TABLE_OBJ16 = "icons/obj16/global_table.gif"; //$NON-NLS-1$
-	String LOCAL_TABLE_OBJ16 = "icons/obj16/local_table.gif"; //$NON-NLS-1$
+	String MODULE_FIELD_OBJ16 = "icons/obj16/module_field.gif"; //$NON-NLS-1$
+	String MODULE_TABLE_OBJ16 = "icons/obj16/module_table.gif"; //$NON-NLS-1$
+
+	String PUBLIC_FUNCTION_OBJ16 = "icons/obj16/public_function.gif"; //$NON-NLS-1$
+	String PUBLIC_FIELD_OBJ16 = "icons/obj16/public_field.gif"; //$NON-NLS-1$
+	String PUBLIC_TABLE_OBJ16 = "icons/obj16/public_table.png"; //$NON-NLS-1$
+
+	String PRIVATE_FUNCTION_OBJ16 = "icons/obj16/private_function.gif"; //$NON-NLS-1$
+	String PRIVATE_FIELD_OBJ16 = "icons/obj16/private_field.gif"; //$NON-NLS-1$
+	String PRIVATE_TABLE_OBJ16 = "icons/obj16/private_table2.png"; //$NON-NLS-1$
+
 	String TEMPLATE_LUADOC = "icons/obj16/template_luadoc.png"; //$NON-NLS-1$
 	String NEW_FILE = "icons/obj16/lua_file_plus.png"; //$NON-NLS-1$
 }

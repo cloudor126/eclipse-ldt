@@ -29,10 +29,6 @@ public class Item extends LuaASTNode implements IDocumentationHolder {
 	private List<Identifier> occurrences = new ArrayList<Identifier>();
 	private LuaASTNode parent;
 
-	/**
-	 * @param parent
-	 *            the parent to set
-	 */
 	public void setParent(LuaASTNode parent) {
 		this.parent = parent;
 	}
@@ -60,6 +56,9 @@ public class Item extends LuaASTNode implements IDocumentationHolder {
 
 	public void setType(TypeRef type) {
 		this.type = type;
+		if (type instanceof InlineTypeRef) {
+			((InlineTypeRef) type).getDefinition().setParent(this);
+		}
 	}
 
 	public void addOccurrence(Identifier identifier) {
@@ -81,6 +80,8 @@ public class Item extends LuaASTNode implements IDocumentationHolder {
 	@Override
 	public void traverse(ASTVisitor visitor) throws Exception {
 		if (visitor.visit(this)) {
+			if (type instanceof InlineTypeRef)
+				((InlineTypeRef) type).getDefinition().traverse(visitor);
 			visitor.endvisit(this);
 		}
 	}

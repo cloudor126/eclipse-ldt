@@ -67,7 +67,7 @@ for functionname, body in pairs( templateengineenv ) do
 end
 
 -- create typeref
-function M._typeref (_type)
+function M._typeref (_type,handledexpr)
 	if not _type then return nil end
 	if _type.tag == "externaltyperef" then
 		return javaapimodelfactory.newexternaltyperef(_type.modulename, _type.typename)
@@ -79,6 +79,8 @@ function M._typeref (_type)
 		return javaapimodelfactory.newexprtyperef(_type.returnposition)
 	elseif _type.tag == "primitivetyperef" then
 		return javaapimodelfactory.newprimitivetyperef(_type.typename)
+	elseif _type.tag == "inlinetyperef" then
+		return javaapimodelfactory.newinlinetyperef(M._typedef(_type.def,true,handledexpr))
 	end
 end
 
@@ -95,27 +97,38 @@ function M._item(_item,notemplate,handledexpr)
 		description,
 		_item.sourcerange.min - 1,
 		_item.sourcerange.max,
-		M._typeref(_item.type)
+		M._typeref(_item.type,handledexpr)
 	)
+	if _item.type and _item.type.tag == "exprtyperef" then
+		javaapimodelfactory.setexpression(jitem,handledexpr[_item.type.expression])
+	end
 	handledexpr[_item] = jitem
 	return jitem
 end
 
 -- create typedef
-function M._typedef(_typedef,handledexpr)
+function M._typedef(_typedef,notemplate, handledexpr)
 	local jtypedef
 	-- Dealing with records
 	if _typedef.tag == "recordtypedef" then
 
+		-- manage description
+		local description = ""
+		if notemplate then
+			description = _typedef.description
+		else
+			description = templateengine.applytemplate(_typedef, 3)
+		end
+	
 		jtypedef = javaapimodelfactory.newrecordtypedef(_typedef.name,
-		    templateengine.applytemplate(_typedef, 3),
+		    description,
 			_typedef.sourcerange.min - 1,
 			_typedef.sourcerange.max
 		)
 
 		-- Appending fields
 		for _, _item in pairs(_typedef.fields) do
-			local jitem =  M._item(_item,false,handledexpr)
+			local jitem =  M._item(_item,notemplate,handledexpr)
 			javaapimodelfactory.addfield(jtypedef, jitem)
 		end
 
@@ -172,7 +185,7 @@ function M._file(_file)
 
 	-- Adding types defined in files
 	for _, _typedef in pairs(_file.types) do
-		javaapimodelfactory.addtypedef(jfile,_typedef.name,M._typedef(_typedef,handledexpr))
+		javaapimodelfactory.addtypedef(jfile,_typedef.name,M._typedef(_typedef,false,handledexpr))
 	end
 
 	return jfile, handledexpr

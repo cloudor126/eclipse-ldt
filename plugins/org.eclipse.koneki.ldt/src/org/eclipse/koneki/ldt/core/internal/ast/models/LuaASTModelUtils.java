@@ -25,9 +25,13 @@ import org.eclipse.dltk.core.IType;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.core.SourceParserUtil;
 import org.eclipse.koneki.ldt.core.internal.Activator;
+import org.eclipse.koneki.ldt.core.internal.ast.models.LuaASTUtils.TypeResolution;
+import org.eclipse.koneki.ldt.core.internal.ast.models.api.ExternalTypeRef;
 import org.eclipse.koneki.ldt.core.internal.ast.models.api.FunctionTypeDef;
+import org.eclipse.koneki.ldt.core.internal.ast.models.api.InternalTypeRef;
 import org.eclipse.koneki.ldt.core.internal.ast.models.api.Item;
 import org.eclipse.koneki.ldt.core.internal.ast.models.api.LuaFileAPI;
+import org.eclipse.koneki.ldt.core.internal.ast.models.api.PrimitiveTypeRef;
 import org.eclipse.koneki.ldt.core.internal.ast.models.api.RecordTypeDef;
 import org.eclipse.koneki.ldt.core.internal.ast.models.api.TypeDef;
 import org.eclipse.koneki.ldt.core.internal.ast.models.common.LuaASTNode;
@@ -110,6 +114,10 @@ public final class LuaASTModelUtils {
 				Activator.logError("unable to get item from field " + field, e); //$NON-NLS-1$
 				return null;
 			}
+		} else if (parent instanceof IField) {
+			// we does not manage inline type.
+			Activator.logWarning("inline type is not managed by LuaASTModelUtils.getItem(IField) : unable to find item for " + field, null); //$NON-NLS-1$
+			return null;
 		}
 		return null;
 	}
@@ -141,6 +149,10 @@ public final class LuaASTModelUtils {
 				Activator.logError("unable to get item from method " + method, e); //$NON-NLS-1$
 				return null;
 			}
+		} else if (parent instanceof IField) {
+			// we does not manage inline type.
+			Activator.logWarning("inline type is not managed by LuaASTModelUtils.getItem(IMethod) : unable to find item for " + method, null); //$NON-NLS-1$
+			return null;
 		}
 		return null;
 	}
@@ -151,8 +163,14 @@ public final class LuaASTModelUtils {
 	 * AST => DLTK Model
 	 */
 	public static IType getIType(ISourceModule module, RecordTypeDef recordtypeDef) {
-		IType type = module.getType(recordtypeDef.getName());
-		return type;
+		if (LuaASTUtils.isInlineTypeDef(recordtypeDef)) {
+			// we does not manage inline type.
+			Activator.logWarning("inline type is not managed by LuaASTModelUtils.getIType() : unable to find IType for " + recordtypeDef, null); //$NON-NLS-1$
+			return null;
+		} else {
+			IType type = module.getType(recordtypeDef.getName());
+			return type;
+		}
 	}
 
 	/**
@@ -162,7 +180,8 @@ public final class LuaASTModelUtils {
 	 */
 	public static IMember getIMember(ISourceModule sourceModule, Item item) {
 		LuaASTNode parent = item.getParent();
-		if (LuaASTUtils.isTypeField(item)) {
+		// we don't no manage inline type we create fake model element for now ... :/
+		if (LuaASTUtils.isTypeField(item) && !LuaASTUtils.isInlineTypeField(item)) {
 			// support record field
 			IType iType = getIType(sourceModule, (RecordTypeDef) parent);
 			if (iType != null) {
@@ -175,25 +194,46 @@ public final class LuaASTModelUtils {
 					Activator.logWarning("unable to get IMember corresponding to the given item " + item, e); //$NON-NLS-1$
 				}
 			}
-		} else if (LuaASTUtils.isLocal(item)) {
+		} else if (LuaASTUtils.isLocalVariable(item) || LuaASTUtils.isInlineTypeField(item)) {
 			// TODO retrieve local var which are in the model (so the local var in the first block)
 			// support local variable
 			// ------------------------------------------------------------------------------------
 
+			// get modifier
+			LuaSourceRoot luaSourceRoot = LuaASTModelUtils.getLuaSourceRoot(sourceModule);
+			int modifier = 0;
+			if (LuaASTUtils.isModule(luaSourceRoot.getFileapi(), item))
+				modifier |= Flags.AccModule;
+			else if (LuaASTUtils.isPublic(item))
+				modifier |= Flags.AccPublic;
+			else if (LuaASTUtils.isPrivate(item))
+				modifier |= Flags.AccPrivate;
+
 			// manage method
-			TypeDef resolvedtype = LuaASTUtils.resolveTypeLocaly(sourceModule, item);
-			if (resolvedtype != null && resolvedtype instanceof FunctionTypeDef) {
-				FunctionTypeDef functionResolvedType = (FunctionTypeDef) resolvedtype;
+			// TODO should we resolved this localy ?
+			// TypeDef resolvedtype = LuaASTUtils.resolveTypeLocaly(sourceModule, item);
+			TypeResolution resolvedtype = LuaASTUtils.resolveType(sourceModule, item.getType());
+			if (resolvedtype != null && resolvedtype.getTypeDef() instanceof FunctionTypeDef) {
+				FunctionTypeDef functionResolvedType = (FunctionTypeDef) resolvedtype.getTypeDef();
 				String[] parametersName = new String[functionResolvedType.getParameters().size()];
 				for (int i = 0; i < parametersName.length; i++) {
 					parametersName[i] = functionResolvedType.getParameters().get(i).getName();
 				}
-				return new FakeMethod(sourceModule, item.getName(), item.sourceStart(), item.getName().length(), parametersName,
-						Declaration.AccPrivate, item);
+				return new FakeMethod(sourceModule, item.getName(), item.sourceStart(), item.getName().length(), parametersName, modifier, item);
 			}
-			// manage field
-			return new FakeField(sourceModule, item.getName(), item.sourceStart(), item.getName().length(), Declaration.AccPrivate, item);
-		} else if (LuaASTUtils.isGlobal(item)) {
+
+			// get type
+			String type = null;
+			if (item.getType() instanceof PrimitiveTypeRef || item.getType() instanceof InternalTypeRef || item.getType() instanceof ExternalTypeRef)
+				type = item.getType().toReadableString();
+
+			TypeDef resolvedType = LuaASTUtils.resolveTypeLocaly(sourceModule, item);
+			if (resolvedType instanceof RecordTypeDef) {
+				modifier |= Flags.AccInterface;
+				return new FakeField(sourceModule, item.getName(), type, item.sourceStart(), item.getName().length(), modifier, item);
+			} else
+				return new FakeField(sourceModule, item.getName(), type, item.sourceStart(), item.getName().length(), modifier, item);
+		} else if (LuaASTUtils.isGlobalVariable(item)) {
 			// support global var
 			try {
 				for (IModelElement child : sourceModule.getChildren()) {
@@ -204,7 +244,7 @@ public final class LuaASTModelUtils {
 				Activator.logWarning("unable to get IMember corresponding to the given item " + item, e); //$NON-NLS-1$
 			}
 		} else if (LuaASTUtils.isUnresolvedGlobal(item)) {
-			return new FakeField(sourceModule, item.getName(), item.sourceStart(), item.getName().length(), Declaration.AccGlobal, item);
+			return new FakeField(sourceModule, item.getName(), null, item.sourceStart(), item.getName().length(), Declaration.AccGlobal, item);
 		}
 		return null;
 	}

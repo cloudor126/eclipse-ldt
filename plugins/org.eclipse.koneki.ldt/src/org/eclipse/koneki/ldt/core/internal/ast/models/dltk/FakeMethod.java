@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.koneki.ldt.core.internal.ast.models.dltk;
 
+import org.eclipse.dltk.core.IParameter;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ISourceRange;
 import org.eclipse.dltk.core.ModelException;
@@ -44,6 +45,14 @@ public class FakeMethod extends SourceMethod implements ISourceRange, IFakeEleme
 		this.hasFlags = true;
 		this.parameterNames = parameterNames;
 		this.luaASTNode = luaASTnode;
+	}
+
+	public IParameter[] getParameters() throws ModelException {
+		IParameter[] params = new IParameter[getParameterNames().length];
+		for (int i = 0; i < params.length; i++) {
+			params[i] = new FakeParameter(getParameterNames()[i], null, null);
+		}
+		return params;
 	}
 
 	public String[] getParameterNames() throws ModelException {

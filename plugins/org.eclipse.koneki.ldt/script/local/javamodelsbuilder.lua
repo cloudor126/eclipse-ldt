@@ -26,7 +26,7 @@ local M = {}
 --
 -- @param	source Code to parse
 -- @return	LuaSourceRoot, DLTK node, root of DLTK AST
-function M.build(source)
+function M.build(source, modulename)
 	-- create root object
 	local root = javamodelfactory.newsourceroot(#source)
 	
@@ -64,7 +64,7 @@ function M.build(source)
 
 	-- create internal model
 	local internalmodelbuilder = require "models.internalmodelbuilder"
-	local _internalcontent = internalmodelbuilder.createinternalcontent(ast,_file,comment2apiobj)
+	local _internalcontent = internalmodelbuilder.createinternalcontent(ast,_file,comment2apiobj,modulename)
 
 	-- Converting api model to java
 	local javaapimodelbuilder = require 'javaapimodelbuilder'

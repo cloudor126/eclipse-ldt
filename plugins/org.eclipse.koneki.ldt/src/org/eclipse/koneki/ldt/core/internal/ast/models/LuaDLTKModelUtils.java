@@ -11,6 +11,7 @@
 package org.eclipse.koneki.ldt.core.internal.ast.models;
 
 import org.eclipse.dltk.core.Flags;
+import org.eclipse.dltk.core.IField;
 import org.eclipse.dltk.core.IMember;
 import org.eclipse.dltk.core.IMethod;
 import org.eclipse.dltk.core.IModelElement;
@@ -30,20 +31,59 @@ public final class LuaDLTKModelUtils {
 		return (flags & Flags.AccModule) != 0;
 	}
 
+	private static boolean isPublic(int flags) {
+		return (flags & Flags.AccPublic) != 0;
+	}
+
+	private static boolean isPrivate(int flags) {
+		return (flags & Flags.AccPrivate) != 0;
+	}
+
+	private static boolean isTable(int flags) {
+		return (flags & Flags.AccInterface) != 0;
+	}
+
 	public static boolean isModule(IMember member) throws ModelException {
 		return member instanceof IType && isModule(member.getFlags());
+	}
+
+	public static boolean isType(IMember member) throws ModelException {
+		return member instanceof IType && isPublic(member.getFlags());
 	}
 
 	public static boolean isModuleFunction(IMember member) throws ModelException {
 		return member instanceof IMethod && isModule(member.getFlags());
 	}
 
-	public static boolean isGlobalTable(IMember member) throws ModelException {
-		return member instanceof IType && Flags.isPublic(member.getFlags());
+	public static boolean isModuleField(IMember member) throws ModelException {
+		return member instanceof IField && !isTable(member.getFlags()) && isModule(member.getFlags());
 	}
 
-	public static boolean isLocalTable(IMember member) throws ModelException {
-		return member instanceof IType && Flags.isPrivate(member.getFlags());
+	public static boolean isModuleTable(IMember member) throws ModelException {
+		return member instanceof IField && isTable(member.getFlags()) && isModule(member.getFlags());
 	}
 
+	public static boolean isPrivateFunction(IMember member) throws ModelException {
+		return member instanceof IMethod && isPrivate(member.getFlags());
+	}
+
+	public static boolean isPrivateField(IMember member) throws ModelException {
+		return member instanceof IField && !isTable(member.getFlags()) && isPrivate(member.getFlags());
+	}
+
+	public static boolean isPrivateTable(IMember member) throws ModelException {
+		return member instanceof IField && isTable(member.getFlags()) && isPrivate(member.getFlags());
+	}
+
+	public static boolean isPublicFunction(IMember member) throws ModelException {
+		return member instanceof IMethod && isPublic(member.getFlags());
+	}
+
+	public static boolean isPublicField(IMember member) throws ModelException {
+		return member instanceof IField && !isTable(member.getFlags()) && isPublic(member.getFlags());
+	}
+
+	public static boolean isPublicTable(IMember member) throws ModelException {
+		return member instanceof IField && isTable(member.getFlags()) && isPublic(member.getFlags());
+	}
 }

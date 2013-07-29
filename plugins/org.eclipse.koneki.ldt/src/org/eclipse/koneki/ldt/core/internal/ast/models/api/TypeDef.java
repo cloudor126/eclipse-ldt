@@ -21,4 +21,13 @@ import org.eclipse.koneki.ldt.core.internal.ast.models.common.LuaASTNode;
 public abstract class TypeDef extends LuaASTNode implements IDocumentationHolder {
 	// CHECKSTYLE:ON
 
+	private LuaASTNode parent;
+
+	public LuaASTNode getParent() {
+		return parent;
+	}
+
+	public void setParent(LuaASTNode parent) {
+		this.parent = parent;
+	}
 }

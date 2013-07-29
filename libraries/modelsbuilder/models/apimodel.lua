@@ -20,8 +20,8 @@ function M._file()
 		-- FIELDS
 		tag              = "file",
 		name             = nil,    -- string
-		shortdescription = nil,    -- string
-		description      = nil,    -- string
+		shortdescription = "",    -- string
+		description      = "",    -- string
 		types            = {},     -- map from typename to type
 		globalvars       = {},     -- map from varname to item
 		returns          = {},     -- list of return
@@ -52,8 +52,8 @@ function M._recordtypedef(name)
 		-- FIELDS
 		tag              = "recordtypedef",
 		name             = name,            -- string (mandatory)
-		shortdescription = nil,             -- string
-		description      = nil,             -- string
+		shortdescription = "",             -- string
+		description      = "",             -- string
 		fields           = {},              -- map from fieldname to field
 		sourcerange      = {min=0,max=0},
 
@@ -70,8 +70,8 @@ function M._functiontypedef(name)
 	return {
 		tag              = "functiontypedef",
 		name             = name,              -- string (mandatory)
-		shortdescription = nil,               -- string
-		description      = nil,               -- string
+		shortdescription = "",               -- string
+		description      = "",               -- string
 		params           = {},                -- list of parameter
 		returns          = {}                 -- list of return
 	}
@@ -155,6 +155,14 @@ function M._exprtyperef(expression,returnposition)
 		tag            = "exprtyperef",
 		expression     =  expression,   -- expression (see internal model)
 		returnposition = returnposition -- number
+	}
+end
+
+function M._inlinetyperef(definition)
+	return {
+		tag            = "inlinetyperef",
+		def            =  definition,   -- expression (see internal model)
+		
 	}
 end
 

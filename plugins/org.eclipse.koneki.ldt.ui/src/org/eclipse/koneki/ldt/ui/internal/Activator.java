@@ -83,12 +83,23 @@ public class Activator extends AbstractUIPlugin {
 	protected void initializeImageRegistry(ImageRegistry reg) {
 		reg.put(ImageConstants.LUA_WIZARD_BAN, AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID, ImageConstants.LUA_WIZARD_BAN));
 		reg.put(ImageConstants.LUA_FILE_WIZARD_BAN, AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID, ImageConstants.LUA_FILE_WIZARD_BAN));
-		reg.put(ImageConstants.MODULE_OBJ16, AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID, ImageConstants.MODULE_OBJ16));
-		reg.put(ImageConstants.MODULE_FUNCTION_OBJ16, AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID, ImageConstants.MODULE_FUNCTION_OBJ16));
 		reg.put(ImageConstants.NEW_FILE, AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID, ImageConstants.NEW_FILE));
-		reg.put(ImageConstants.GLOBAL_TABLE_OBJ16, AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID, ImageConstants.GLOBAL_TABLE_OBJ16));
-		reg.put(ImageConstants.LOCAL_TABLE_OBJ16, AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID, ImageConstants.LOCAL_TABLE_OBJ16));
 		reg.put(ImageConstants.TEMPLATE_LUADOC, AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID, ImageConstants.TEMPLATE_LUADOC));
+
+		reg.put(ImageConstants.MODULE_OBJ16, AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID, ImageConstants.MODULE_OBJ16));
+		reg.put(ImageConstants.TYPE_OBJ16, AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID, ImageConstants.TYPE_OBJ16));
+
+		reg.put(ImageConstants.MODULE_FUNCTION_OBJ16, AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID, ImageConstants.MODULE_FUNCTION_OBJ16));
+		reg.put(ImageConstants.MODULE_FIELD_OBJ16, AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID, ImageConstants.MODULE_FIELD_OBJ16));
+		reg.put(ImageConstants.MODULE_TABLE_OBJ16, AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID, ImageConstants.MODULE_TABLE_OBJ16));
+
+		reg.put(ImageConstants.PRIVATE_FUNCTION_OBJ16, AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID, ImageConstants.PRIVATE_FUNCTION_OBJ16));
+		reg.put(ImageConstants.PRIVATE_FIELD_OBJ16, AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID, ImageConstants.PRIVATE_FIELD_OBJ16));
+		reg.put(ImageConstants.PRIVATE_TABLE_OBJ16, AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID, ImageConstants.PRIVATE_TABLE_OBJ16));
+
+		reg.put(ImageConstants.PUBLIC_FUNCTION_OBJ16, AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID, ImageConstants.PUBLIC_FUNCTION_OBJ16));
+		reg.put(ImageConstants.PUBLIC_FIELD_OBJ16, AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID, ImageConstants.PUBLIC_FIELD_OBJ16));
+		reg.put(ImageConstants.PUBLIC_TABLE_OBJ16, AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID, ImageConstants.PUBLIC_TABLE_OBJ16));
 	}
 
 	/**

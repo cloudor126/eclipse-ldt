@@ -15,17 +15,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map.Entry;
 
 import org.eclipse.dltk.codeassist.ScriptCompletionEngine;
 import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.compiler.util.Util;
 import org.eclipse.dltk.core.CompletionProposal;
-import org.eclipse.dltk.core.IField;
 import org.eclipse.dltk.core.IMember;
 import org.eclipse.dltk.core.IMethod;
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.ISourceModule;
-import org.eclipse.dltk.core.IType;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.koneki.ldt.core.internal.ast.models.LuaASTModelUtils;
 import org.eclipse.koneki.ldt.core.internal.ast.models.LuaASTUtils;
@@ -162,65 +161,44 @@ public class LuaCompletionEngine extends ScriptCompletionEngine {
 			currentSourceModule = currentTypeResolution.getModule();
 		}
 
-		// get all the field of the complete index
-		try {
-			IType iType = LuaASTModelUtils.getIType(currentSourceModule, currentRecordTypeDef);
-			IModelElement[] moduleFields = iType.getChildren();
-			// get field name
-			final String fieldName = ids.get(ids.size() - 1);
+		// get available field for the type found.
+		final String fieldName = ids.get(ids.size() - 1);
+		for (Entry<String, Item> entry : currentRecordTypeDef.getFields().entrySet()) {
+			Item item = entry.getValue();
+			final boolean goodStart = item.getName().toLowerCase().startsWith(fieldName.toLowerCase());
+			final boolean nostart = fieldName.isEmpty();
+			if (goodStart || nostart) {
+				if (lastOperator == '.') {
+					// MANAGE INDEX :
+					createMemberProposal(LuaASTModelUtils.getIMember(currentSourceModule, item), position - fieldName.length(), position, false);
+				} else if (lastOperator == ':') {
+					// MANAGE INVOCATION :
+					// resolve field type
+					final TypeResolution fieldTypeResolution = LuaASTUtils.resolveType(currentSourceModule, item.getType());
 
-			// search field
-			for (final IModelElement field : moduleFields) {
-				if ((field instanceof IField && lastOperator == '.') || field instanceof IMethod) {
-					final boolean goodStart = field.getElementName().toLowerCase().startsWith(fieldName.toLowerCase());
-					final boolean nostart = fieldName.isEmpty();
-					if (goodStart || nostart) {
+					// invocation works only on method (already tested in the other model ... the joy to have 2 models...)
+					if (fieldTypeResolution == null || !(fieldTypeResolution.getTypeDef() instanceof FunctionTypeDef))
+						continue;
 
-						// for invocation we should filter some field.
-						if (':' == lastOperator) {
-							// invocation is only for function
-							if (field.getElementType() != IModelElement.METHOD)
-								break;
+					// invocation works only if there are at least one parameter
+					final List<Parameter> parameters = ((FunctionTypeDef) fieldTypeResolution.getTypeDef()).getParameters();
+					if (parameters.size() == 0)
+						continue;
 
-							// invocation works only if there are at least one parameter
-							String[] parameterNames = ((IMethod) field).getParameterNames();
-							if (parameterNames.length == 0)
-								break;
+					// get first parameter
+					Parameter firstParamter = parameters.get(0);
 
-							// if the first param is self : it's ok !
-							if ("self".equals(parameterNames[0])) //$NON-NLS-1$
-								createMemberProposal((IMember) field, position - fieldName.length(), position, true);
-							else {
-								// if the first parameter is of the same type as the type on which it is invoked : it's ok !
-								final Item item = currentRecordTypeDef.getFields().get(field.getElementName());
-								final TypeResolution fieldTypeResolution = LuaASTUtils.resolveType(currentSourceModule, item.getType());
-
-								// invocation works only on method (already tested in the other model ... the joy to have 2 models...)
-								if (!(fieldTypeResolution.getTypeDef() instanceof FunctionTypeDef))
-									break;
-
-								// invocation works only if there are at least one parameter (already tested in the other model ...the joy to have
-								// 2 models...)
-								final List<Parameter> parameters = ((FunctionTypeDef) fieldTypeResolution.getTypeDef()).getParameters();
-								if (parameters.size() == 0)
-									break;
-
-								// resolve first parameter type
-								Parameter firstParamter = parameters.get(0);
-								final TypeResolution parameterTypeResolution = LuaASTUtils.resolveType(currentSourceModule, firstParamter.getType());
-
-								// create proposition only if the parameter type is ok.
-								if (currentTypeResolution.equals(parameterTypeResolution))
-									createMemberProposal((IMember) field, position - fieldName.length(), position, true);
-							}
-						} else {
-							createMemberProposal((IMember) field, position - fieldName.length(), position, false);
-						}
-					}
+					// invocation is ok if :
+					// first parameter is named self
+					if ("self".equals(firstParamter.getName()) && firstParamter.getType() == null) //$NON-NLS-1$
+						createMemberProposal(LuaASTModelUtils.getIMember(currentSourceModule, item), position - fieldName.length(), position, true);
+					// or
+					// if the first parameter is of the same type as the type on which it is invoked : it's ok !
+					final TypeResolution parameterTypeResolution = LuaASTUtils.resolveType(currentSourceModule, firstParamter.getType());
+					if (currentTypeResolution.equals(parameterTypeResolution))
+						createMemberProposal(LuaASTModelUtils.getIMember(currentSourceModule, item), position - fieldName.length(), position, true);
 				}
 			}
-		} catch (ModelException e) {
-			Activator.logWarning("Unable to get model element.", e); //$NON-NLS-1$
 		}
 	}
 

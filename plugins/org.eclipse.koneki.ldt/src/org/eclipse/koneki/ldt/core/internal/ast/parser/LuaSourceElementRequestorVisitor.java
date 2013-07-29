@@ -68,6 +68,8 @@ public class LuaSourceElementRequestorVisitor extends SourceElementRequestVisito
 			return endvisit((RecordTypeDef) s);
 		else if (s instanceof LuaFileAPI)
 			return endvisit((LuaFileAPI) s);
+		else if (s instanceof Item)
+			return endvisit((Item) s);
 		return super.endvisit(s);
 	}
 
@@ -119,19 +121,17 @@ public class LuaSourceElementRequestorVisitor extends SourceElementRequestVisito
 			// calculate modifiers
 			int modifiers = 0; // define kind modifier
 			// define visibility
-			if (LuaASTUtils.isLocal(item)) {
+			if (LuaASTUtils.isPrivate(item)) {
 				modifiers |= Declaration.AccPrivate;
-			} else if (LuaASTUtils.isModuleTypeField(luafileapi, item)) {
+			} else if (LuaASTUtils.isModule(luafileapi, item)) {
 				modifiers |= Declaration.AccModule;
-			} else if (LuaASTUtils.isGlobal(item) || LuaASTUtils.isTypeField(item)) {
+			} else if (LuaASTUtils.isPublic(item)) {
 				modifiers |= Declaration.AccPublic;
 			}
 			methodInfo.modifiers = modifiers;
 
 			// store method info
 			this.fRequestor.enterMethod(methodInfo);
-			int declarationEnd = item.sourceEnd();
-			this.fRequestor.exitMethod(declarationEnd);
 			return true;
 		} else {
 			// we manage a FIELD
@@ -146,13 +146,16 @@ public class LuaSourceElementRequestorVisitor extends SourceElementRequestVisito
 			// calculate modifiers
 			int modifiers = 0; // define kind modifier
 			// define visibility
-			if (LuaASTUtils.isLocal(item)) {
+			if (LuaASTUtils.isPrivate(item)) {
 				modifiers |= Declaration.AccPrivate;
-			} else if (LuaASTUtils.isModuleTypeField(luafileapi, item)) {
+			} else if (LuaASTUtils.isModule(luafileapi, item)) {
 				modifiers |= Declaration.AccModule;
-			} else if (LuaASTUtils.isGlobal(item) || LuaASTUtils.isTypeField(item)) {
+			} else if (LuaASTUtils.isPublic(item)) {
 				modifiers |= Declaration.AccPublic;
 			}
+			if (resolvedType instanceof RecordTypeDef)
+				modifiers |= Declaration.AccInterface;
+
 			fieldinfo.modifiers = modifiers;
 
 			// calculate type
@@ -161,41 +164,47 @@ public class LuaSourceElementRequestorVisitor extends SourceElementRequestVisito
 
 			// store field info
 			this.fRequestor.enterField(fieldinfo);
-			int declarationEnd = item.sourceEnd();
-			this.fRequestor.exitField(declarationEnd);
 			return true;
 		}
 	}
 
+	public boolean endvisit(Item item) throws Exception {
+		int declarationEnd = item.sourceEnd();
+		this.fRequestor.exitField(declarationEnd);
+		return true;
+	}
+
 	public boolean visit(RecordTypeDef type) throws Exception {
-		// create type
-		RecordTypeDef recordtype = (RecordTypeDef) type;
+		if (!LuaASTUtils.isInlineTypeDef(type)) {
+			RecordTypeDef recordtype = (RecordTypeDef) type;
 
-		// set TYPE Information
-		TypeInfo typeinfo = new IElementRequestor.TypeInfo();
-		typeinfo.name = recordtype.getName();
-		typeinfo.declarationStart = type.sourceStart();
-		typeinfo.nameSourceStart = type.sourceStart();
-		typeinfo.nameSourceEnd = type.sourceEnd() - 1;
+			// set TYPE Information
+			TypeInfo typeinfo = new IElementRequestor.TypeInfo();
+			typeinfo.name = recordtype.getName();
+			typeinfo.declarationStart = type.sourceStart();
+			typeinfo.nameSourceStart = type.sourceStart();
+			typeinfo.nameSourceEnd = type.sourceEnd() - 1;
 
-		// calculate modifiers
-		int modifiers = 0; // define kind modifier
-		// define visibility
-		if (LuaASTUtils.isModule(luafileapi, recordtype)) {
-			modifiers |= Declaration.AccModule;
-		} else {
-			modifiers |= Declaration.AccPublic;
+			// calculate modifiers
+			int modifiers = 0; // define kind modifier
+			// define visibility
+			if (LuaASTUtils.isModule(luafileapi, recordtype)) {
+				modifiers |= Declaration.AccModule;
+			} else {
+				modifiers |= Declaration.AccPublic;
+			}
+			typeinfo.modifiers = modifiers;
+
+			this.fRequestor.enterType(typeinfo);
 		}
-		typeinfo.modifiers = modifiers;
-
-		this.fRequestor.enterType(typeinfo);
 		return true;
 	}
 
 	public boolean endvisit(RecordTypeDef type) throws Exception {
-		int declarationEnd = type.sourceEnd();
-		this.fRequestor.exitType(declarationEnd);
-		// this.currentRecord = null;
+		if (!LuaASTUtils.isInlineTypeDef(type)) {
+			int declarationEnd = type.sourceEnd();
+			this.fRequestor.exitType(declarationEnd);
+		}
 		return true;
 	}
 }

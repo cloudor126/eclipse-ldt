@@ -60,9 +60,9 @@ public class LuaSemanticUpdateWorker extends ASTVisitor implements ISemanticHigh
 			// TODO BUG ECLIPSE 381703 every node should have a definition
 			final Item item = ((Identifier) node).getDefinition();
 			if (item != null) {
-				if (LuaASTUtils.isLocal(item)) {
+				if (LuaASTUtils.isLocalVariable(item)) {
 					requestor.addPosition(node.sourceStart(), node.sourceEnd(), HL_LOCAL_VARIABLE);
-				} else if (LuaASTUtils.isUnresolvedGlobal(item) || LuaASTUtils.isGlobal(item)) {
+				} else if (LuaASTUtils.isUnresolvedGlobal(item) || LuaASTUtils.isGlobalVariable(item)) {
 					requestor.addPosition(node.sourceStart(), node.sourceEnd(), HL_GLOBAL_VARIABLE);
 				}
 			} else {

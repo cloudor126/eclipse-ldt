@@ -74,10 +74,7 @@ function J._block(_block,handledexpr)
 
 	for _, _localvar in pairs(_block.localvars) do
 		-- Create Java item
-		local jitem = javaapimodelbuilder._item(_localvar.item,true,handledexpr)
-		if _localvar.item.type and _localvar.item.type.tag == "exprtyperef" then
-			javaapimodelfactory.setexpression(jitem,handledexpr[_localvar.item.type.expression])
-		end
+		local jitem = javaapimodelbuilder._item(_localvar.item,true,handledexpr)	
 
 		-- add occurrence
 		for _,_occurrence in ipairs(_localvar.item.occurrences) do
