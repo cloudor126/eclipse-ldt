@@ -1,25 +1,27 @@
 do local _={
 		fileapi={
+			description="",
 			globalvars={
 
 			}
-			--[[table: 0x88f9ef8]],
+			--[[table: 0x8733338]],
+			shortdescription="",
 			returns={
 
 			}
-			--[[table: 0x88f9f20]],
+			--[[table: 0x8733360]],
 			types={
 
 			}
-			--[[table: 0x88f9ed0]],
+			--[[table: 0x8733310]],
 			tag="file"
 		}
-		--[[table: 0x88978d0]],
+		--[[table: 0x8570c00]],
 		internalcontent={
 			unknownglobalvars={
 
 			}
-			--[[table: 0x88fad78]],
+			--[[table: 0x84ccc98]],
 			content={
 				localvars={
 					[1]={
@@ -29,7 +31,7 @@ do local _={
 								modulename="modulename",
 								tag="externaltyperef"
 							}
-							--[[table: 0x88fd730]],
+							--[[table: 0x8968c30]],
 							description="description",
 							shortdescription="",
 							name="l",
@@ -37,49 +39,49 @@ do local _={
 								min=7,
 								max=7
 							}
-							--[[table: 0x88fbfa0]],
+							--[[table: 0x8519a60]],
 							occurrences={
 								[1]={
 									sourcerange={
 										min=7,
 										max=7
 									}
-									--[[table: 0x88fb640]],
+									--[[table: 0x84f2d48]],
 									definition=nil --[[ref]],
 									tag="MIdentifier"
 								}
-								--[[table: 0x88fb5a0]]
+								--[[table: 0x84f2ca8]]
 							}
-							--[[table: 0x88fbf78]],
+							--[[table: 0x8519a38]],
 							tag="item"
 						}
-						--[[table: 0x88fbd88]],
+						--[[table: 0x8519848]],
 						scope={
 							min=0,
 							max=0
 						}
-						--[[table: 0x88fd780]]
+						--[[table: 0x87c5c58]]
 					}
-					--[[table: 0x88fd758]]
+					--[[table: 0x8968e70]]
 				}
-				--[[table: 0x88fae68]],
+				--[[table: 0x84ccd88]],
 				sourcerange={
 					min=1,
 					max=10000
 				}
-				--[[table: 0x88fae90]],
+				--[[table: 0x84ccdb0]],
 				content={
 					[1]=nil --[[ref]]
 				}
-				--[[table: 0x88fae40]],
+				--[[table: 0x84ccd60]],
 				tag="MBlock"
 			}
-			--[[table: 0x88fada0]],
+			--[[table: 0x84cccc0]],
 			tag="MInternalContent"
 		}
-		--[[table: 0x88facd8]]
+		--[[table: 0x84ccbf8]]
 	}
-	--[[table: 0x88fda68]];
+	--[[table: 0x87c5d38]];
 	_.internalcontent.content.localvars[1].item.occurrences[1].definition=_.internalcontent.content.localvars[1].item;
 	_.internalcontent.content.content[1]=_.internalcontent.content.localvars[1].item.occurrences[1];
 	return _;

@@ -3,7 +3,7 @@ do local _={
 		globalvars={
 
 		}
-		--[[table: 0x9c2ae68]],
+		--[[table: 0x86fff10]],
 		shortdescription="",
 		name="modulename",
 		returns={
@@ -13,31 +13,33 @@ do local _={
 						typename="modulename",
 						tag="internaltyperef"
 					}
-					--[[table: 0x9c63020]]
+					--[[table: 0x8920d70]]
 				}
-				--[[table: 0x9c630e8]],
+				--[[table: 0x86b8e58]],
 				description="",
 				tag="return"
 			}
-			--[[table: 0x9c63048]]
+			--[[table: 0x8814b50]]
 		}
-		--[[table: 0x9c2ae90]],
+		--[[table: 0x86fff38]],
 		types={
 			typename={
 				fields={
 
 				}
-				--[[table: 0x9c67280]],
+				--[[table: 0x8730b38]],
+				shortdescription="",
 				name="typename",
 				parent=nil --[[ref]],
 				sourcerange={
 					min=25,
 					max=80
 				}
-				--[[table: 0x9c672a8]],
+				--[[table: 0x8730b60]],
+				description="",
 				tag="recordtypedef"
 			}
-			--[[table: 0x9c67170]],
+			--[[table: 0x8730b10]],
 			modulename={
 				fields={
 					fieldname={
@@ -45,7 +47,7 @@ do local _={
 							typename="typename",
 							tag="internaltyperef"
 						}
-						--[[table: 0x9c67108]],
+						--[[table: 0x87927e0]],
 						description="",
 						parent=nil --[[ref]],
 						shortdescription="",
@@ -54,31 +56,33 @@ do local _={
 							min=25,
 							max=80
 						}
-						--[[table: 0x9c670c8]],
+						--[[table: 0x87927b8]],
 						occurrences={
 
 						}
-						--[[table: 0x9c670a0]],
+						--[[table: 0x8792790]],
 						tag="item"
 					}
-					--[[table: 0x9c66d28]]
+					--[[table: 0x8792768]]
 				}
-				--[[table: 0x9c63220]],
+				--[[table: 0x8801378]],
+				shortdescription="",
 				name="modulename",
 				parent=nil --[[ref]],
 				sourcerange={
 					min=1,
 					max=23
 				}
-				--[[table: 0x9c63248]],
+				--[[table: 0x88013a0]],
+				description="",
 				tag="recordtypedef"
 			}
-			--[[table: 0x9c63110]]
+			--[[table: 0x86b8e80]]
 		}
-		--[[table: 0x9c2ae40]],
+		--[[table: 0x86ffee8]],
 		tag="file"
 	}
-	--[[table: 0x9c2ac50]];
+	--[[table: 0x86ffec0]];
 	_.types.typename.parent=_;
 	_.types.modulename.fields.fieldname.parent=_.types.modulename;
 	_.types.modulename.parent=_;

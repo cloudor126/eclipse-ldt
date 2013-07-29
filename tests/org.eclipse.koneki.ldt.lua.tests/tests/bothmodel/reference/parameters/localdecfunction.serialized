@@ -1,13 +1,15 @@
 do local _={
 		fileapi={
+			description="",
 			globalvars={
 
 			}
-			--[[table: 0x9039da0]],
+			--[[table: 0x8894db8]],
+			shortdescription="",
 			returns={
 
 			}
-			--[[table: 0x91bd5b8]],
+			--[[table: 0x883fb50]],
 			types={
 				["__=#string[a]#string[b]__1"]={
 					shortdescription="",
@@ -17,7 +19,7 @@ do local _={
 					returns={
 
 					}
-					--[[table: 0x9308e60]],
+					--[[table: 0x8aa11d0]],
 					params={
 						[1]={
 							description="description of a",
@@ -25,27 +27,27 @@ do local _={
 								typename="string",
 								tag="primitivetyperef"
 							}
-							--[[table: 0x9218bc0]],
+							--[[table: 0x886b420]],
 							name="a",
 							tag="parameter"
 						}
-						--[[table: 0x9308e88]],
+						--[[table: 0x886b380]],
 						[2]={
 							description="description of b",
 							type={
 								typename="string",
 								tag="primitivetyperef"
 							}
-							--[[table: 0x9273d60]],
+							--[[table: 0x885f6d0]],
 							name="b",
 							tag="parameter"
 						}
-						--[[table: 0x9218be8]]
+						--[[table: 0x8836ee0]]
 					}
-					--[[table: 0x9308e38]],
+					--[[table: 0x8aa11a8]],
 					tag="functiontypedef"
 				}
-				--[[table: 0x91bd428]],
+				--[[table: 0x8aa1180]],
 				typename={
 					fields={
 						f={
@@ -53,7 +55,7 @@ do local _={
 								typename="__=#string[a]#string[b]__1",
 								tag="internaltyperef"
 							}
-							--[[table: 0x9250918]],
+							--[[table: 0x8788b10]],
 							description="",
 							parent=nil --[[ref]],
 							shortdescription="",
@@ -62,36 +64,38 @@ do local _={
 								min=1,
 								max=112
 							}
-							--[[table: 0x91bd400]],
+							--[[table: 0x8aa1158]],
 							occurrences={
 
 							}
-							--[[table: 0x91bd3d8]],
+							--[[table: 0x8aa1130]],
 							tag="item"
 						}
-						--[[table: 0x9181808]]
+						--[[table: 0x88067e8]]
 					}
-					--[[table: 0x91e92d0]],
+					--[[table: 0x8788ba0]],
+					shortdescription="",
 					name="typename",
 					parent=nil --[[ref]],
 					sourcerange={
 						min=1,
 						max=112
 					}
-					--[[table: 0x91e92f8]],
+					--[[table: 0x88e5e38]],
+					description="",
 					tag="recordtypedef"
 				}
-				--[[table: 0x91e92a8]]
+				--[[table: 0x8788b78]]
 			}
-			--[[table: 0x9039d78]],
+			--[[table: 0x8894d90]],
 			tag="file"
 		}
-		--[[table: 0x9020258]],
+		--[[table: 0x8894d68]],
 		internalcontent={
 			unknownglobalvars={
 
 			}
-			--[[table: 0x909bf78]],
+			--[[table: 0x85a17b0]],
 			content={
 				localvars={
 					[1]={
@@ -104,37 +108,37 @@ do local _={
 								min=119,
 								max=119
 							}
-							--[[table: 0x9159810]],
+							--[[table: 0x8832ca0]],
 							occurrences={
 								[1]={
 									sourcerange={
 										min=119,
 										max=119
 									}
-									--[[table: 0x91587d8]],
+									--[[table: 0x8a1e110]],
 									definition=nil --[[ref]],
 									tag="MIdentifier"
 								}
-								--[[table: 0x9034c58]]
+								--[[table: 0x8aac990]]
 							}
-							--[[table: 0x91597e8]],
+							--[[table: 0x8832c78]],
 							tag="item"
 						}
-						--[[table: 0x91597c0]],
+						--[[table: 0x8832c50]],
 						scope={
 							min=0,
 							max=0
 						}
-						--[[table: 0x90700a8]]
+						--[[table: 0x8a78e50]]
 					}
-					--[[table: 0x9173978]]
+					--[[table: 0x88726e0]]
 				}
-				--[[table: 0x938b728]],
+				--[[table: 0x8897260]],
 				sourcerange={
 					min=1,
 					max=10000
 				}
-				--[[table: 0x938b750]],
+				--[[table: 0x86d96e0]],
 				content={
 					[1]={
 						localvars={
@@ -148,30 +152,30 @@ do local _={
 										min=133,
 										max=133
 									}
-									--[[table: 0x91a4948]],
+									--[[table: 0x884cb70]],
 									occurrences={
 										[1]={
 											sourcerange={
 												min=133,
 												max=133
 											}
-											--[[table: 0x9250cd8]],
+											--[[table: 0x8759920]],
 											definition=nil --[[ref]],
 											tag="MIdentifier"
 										}
-										--[[table: 0x9250cb0]]
+										--[[table: 0x8b21138]]
 									}
-									--[[table: 0x91a4920]],
+									--[[table: 0x884cb48]],
 									tag="item"
 								}
-								--[[table: 0x9358978]],
+								--[[table: 0x86c1448]],
 								scope={
 									min=0,
 									max=0
 								}
-								--[[table: 0x929e358]]
+								--[[table: 0x8784d90]]
 							}
-							--[[table: 0x91a49d0]],
+							--[[table: 0x884cbf8]],
 							[2]={
 								item={
 									type=nil --[[ref]],
@@ -182,56 +186,56 @@ do local _={
 										min=135,
 										max=135
 									}
-									--[[table: 0x9392b68]],
+									--[[table: 0x86b1360]],
 									occurrences={
 										[1]={
 											sourcerange={
 												min=135,
 												max=135
 											}
-											--[[table: 0x936d8a0]],
+											--[[table: 0x8b10f10]],
 											definition=nil --[[ref]],
 											tag="MIdentifier"
 										}
-										--[[table: 0x9186388]]
+										--[[table: 0x8869dd8]]
 									}
-									--[[table: 0x9392b40]],
+									--[[table: 0x86b1338]],
 									tag="item"
 								}
-								--[[table: 0x929e3c0]],
+								--[[table: 0x8784df8]],
 								scope={
 									min=0,
 									max=0
 								}
-								--[[table: 0x932c6b0]]
+								--[[table: 0x8671788]]
 							}
-							--[[table: 0x932c648]]
+							--[[table: 0x8671720]]
 						}
-						--[[table: 0x91602b0]],
+						--[[table: 0x8687618]],
 						sourcerange={
 							min=123,
 							max=140
 						}
-						--[[table: 0x91602d8]],
+						--[[table: 0x8687640]],
 						content={
 							[1]=nil --[[ref]],
 							[2]=nil --[[ref]]
 						}
-						--[[table: 0x9160288]],
+						--[[table: 0x8a0f180]],
 						tag="MBlock"
 					}
-					--[[table: 0x905f448]],
+					--[[table: 0x8a0f0e0]],
 					[2]=nil --[[ref]]
 				}
-				--[[table: 0x922d1a8]],
+				--[[table: 0x8897238]],
 				tag="MBlock"
 			}
-			--[[table: 0x922d108]],
+			--[[table: 0x85a17d8]],
 			tag="MInternalContent"
 		}
-		--[[table: 0x909bed8]]
+		--[[table: 0x8b21190]]
 	}
-	--[[table: 0x90e21a8]];
+	--[[table: 0x8ada690]];
 	_.fileapi.types["__=#string[a]#string[b]__1"].parent=_.fileapi;
 	_.fileapi.types.typename.fields.f.parent=_.fileapi.types.typename;
 	_.fileapi.types.typename.parent=_.fileapi;

@@ -3,7 +3,7 @@ do local _={
 		globalvars={
 
 		}
-		--[[table: 0xa048da0]],
+		--[[table: 0x90341e0]],
 		shortdescription="",
 		name="modulename",
 		returns={
@@ -13,15 +13,15 @@ do local _={
 						typename="modulename",
 						tag="internaltyperef"
 					}
-					--[[table: 0xa048c68]]
+					--[[table: 0x918be38]]
 				}
-				--[[table: 0xa048d08]],
+				--[[table: 0x91b05a8]],
 				description="",
 				tag="return"
 			}
-			--[[table: 0xa024c50]]
+			--[[table: 0x918be60]]
 		}
-		--[[table: 0xa048dc8]],
+		--[[table: 0x9034208]],
 		types={
 			["__othermodule#atype=__1"]={
 				shortdescription="Function short description.",
@@ -36,13 +36,13 @@ do local _={
 								modulename="othermodule",
 								tag="externaltyperef"
 							}
-							--[[table: 0x9fd6b28]]
+							--[[table: 0x91729a8]]
 						}
-						--[[table: 0x9fd6b00]],
+						--[[table: 0x90fb910]],
 						description="return description",
 						tag="return"
 					}
-					--[[table: 0xa055930]],
+					--[[table: 0x90fb870]],
 					[2]={
 						types={
 							[1]={
@@ -50,22 +50,22 @@ do local _={
 								modulename="othermodule",
 								tag="externaltyperef"
 							}
-							--[[table: 0x9f5b8a0]]
+							--[[table: 0x9172b20]]
 						}
-						--[[table: 0x9f5b878]],
+						--[[table: 0x9172af8]],
 						description="return second description",
 						tag="return"
 					}
-					--[[table: 0x9fea5d8]]
+					--[[table: 0x9172a58]]
 				}
-				--[[table: 0x9fea450]],
+				--[[table: 0x90fb848]],
 				params={
 
 				}
-				--[[table: 0x9fea428]],
+				--[[table: 0x90fb820]],
 				tag="functiontypedef"
 			}
-			--[[table: 0x9fea368]],
+			--[[table: 0x90fb710]],
 			modulename={
 				fields={
 					functionname={
@@ -73,7 +73,7 @@ do local _={
 							typename="__othermodule#atype=__1",
 							tag="internaltyperef"
 						}
-						--[[table: 0x9f5ba50]],
+						--[[table: 0x9172cf0]],
 						description="Function long description",
 						parent=nil --[[ref]],
 						shortdescription="Function short description.",
@@ -82,31 +82,33 @@ do local _={
 							min=25,
 							max=245
 						}
-						--[[table: 0x9fea340]],
+						--[[table: 0x90fb6e8]],
 						occurrences={
 
 						}
-						--[[table: 0x9fea318]],
+						--[[table: 0x90fb6c0]],
 						tag="item"
 					}
-					--[[table: 0x9fea208]]
+					--[[table: 0x90fb4d0]]
 				}
-				--[[table: 0x9ed4e68]],
+				--[[table: 0x91b06e0]],
+				shortdescription="",
 				name="modulename",
 				parent=nil --[[ref]],
 				sourcerange={
 					min=1,
 					max=23
 				}
-				--[[table: 0x9ed4e90]],
+				--[[table: 0x91b0708]],
+				description="",
 				tag="recordtypedef"
 			}
-			--[[table: 0xa048d30]]
+			--[[table: 0x91b05d0]]
 		}
-		--[[table: 0xa048d78]],
+		--[[table: 0x90341b8]],
 		tag="file"
 	}
-	--[[table: 0xa048c40]];
+	--[[table: 0x9033fc8]];
 	_.types["__othermodule#atype=__1"].parent=_;
 	_.types.modulename.fields.functionname.parent=_.types.modulename;
 	_.types.modulename.parent=_;

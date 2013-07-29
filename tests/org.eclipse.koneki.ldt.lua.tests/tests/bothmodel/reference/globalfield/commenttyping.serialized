@@ -1,5 +1,6 @@
 do local _={
 		fileapi={
+			description="",
 			globalvars={
 				g={
 					type={
@@ -7,7 +8,7 @@ do local _={
 						modulename="modulename",
 						tag="externaltyperef"
 					}
-					--[[table: 0x9bafe20]],
+					--[[table: 0x8545b48]],
 					description="description ",
 					parent=nil --[[ref]],
 					shortdescription="",
@@ -16,63 +17,64 @@ do local _={
 						min=1,
 						max=1
 					}
-					--[[table: 0x9bae678]],
+					--[[table: 0x8606ed8]],
 					occurrences={
 						[1]={
 							sourcerange={
 								min=1,
 								max=1
 							}
-							--[[table: 0x9bad6a0]],
+							--[[table: 0x84ab000]],
 							definition=nil --[[ref]],
 							tag="MIdentifier"
 						}
-						--[[table: 0x9bad600]]
+						--[[table: 0x88f4a00]]
 					}
-					--[[table: 0x9bae650]],
+					--[[table: 0x8606eb0]],
 					tag="item"
 				}
-				--[[table: 0x9bae460]]
+				--[[table: 0x866c928]]
 			}
-			--[[table: 0x9bab820]],
+			--[[table: 0x85a52a8]],
+			shortdescription="",
 			returns={
 
 			}
-			--[[table: 0x9bab848]],
+			--[[table: 0x85a52d0]],
 			types={
 
 			}
-			--[[table: 0x9bab7f8]],
+			--[[table: 0x85a5280]],
 			tag="file"
 		}
-		--[[table: 0x9bab608]],
+		--[[table: 0x85a5090]],
 		internalcontent={
 			unknownglobalvars={
 
 			}
-			--[[table: 0x9bace48]],
+			--[[table: 0x8594670]],
 			content={
 				localvars={
 
 				}
-				--[[table: 0x9bacf38]],
+				--[[table: 0x8594760]],
 				sourcerange={
 					min=1,
 					max=10000
 				}
-				--[[table: 0x9bacf60]],
+				--[[table: 0x8594788]],
 				content={
 					[1]=nil --[[ref]]
 				}
-				--[[table: 0x9bacf10]],
+				--[[table: 0x8594738]],
 				tag="MBlock"
 			}
-			--[[table: 0x9bace70]],
+			--[[table: 0x8594698]],
 			tag="MInternalContent"
 		}
-		--[[table: 0x9bacda8]]
+		--[[table: 0x85945d0]]
 	}
-	--[[table: 0x9bb00d8]];
+	--[[table: 0x86880e8]];
 	_.fileapi.globalvars.g.parent=_.fileapi;
 	_.fileapi.globalvars.g.occurrences[1].definition=_.fileapi.globalvars.g;
 	_.internalcontent.content.content[1]=_.fileapi.globalvars.g.occurrences[1];

@@ -1,47 +1,50 @@
 do local _={
 		fileapi={
+			description="",
 			globalvars={
 
 			}
-			--[[table: 0x9c30d38]],
+			--[[table: 0x9d0d790]],
+			shortdescription="",
 			returns={
 
 			}
-			--[[table: 0x9c30de8]],
+			--[[table: 0x9d0d7b8]],
 			types={
-				["__=__1"]={
-					name="__=__1",
-					parent=nil --[[ref]],
-					returns={
 
-					}
-					--[[table: 0x9c45508]],
-					params={
-
-					}
-					--[[table: 0x9c454e0]],
-					tag="functiontypedef"
-				}
-				--[[table: 0x9c454b8]]
 			}
-			--[[table: 0x9c30c70]],
+			--[[table: 0x9d0d768]],
 			tag="file"
 		}
-		--[[table: 0x9b29ca8]],
+		--[[table: 0x9d0d578]],
 		internalcontent={
 			unknownglobalvars={
 
 			}
-			--[[table: 0x9adfcb8]],
+			--[[table: 0x99ef7d0]],
 			content={
 				localvars={
 					[1]={
 						item={
 							type={
-								typename="__=__1",
-								tag="internaltyperef"
+								def={
+									shortdescription="",
+									description="",
+									name="___",
+									returns={
+
+									}
+									--[[table: 0x9ed2638]],
+									params={
+
+									}
+									--[[table: 0x9ed2610]],
+									tag="functiontypedef"
+								}
+								--[[table: 0x9ed2500]],
+								tag="inlinetyperef"
 							}
-							--[[table: 0x9b91ed0]],
+							--[[table: 0x9ed2660]],
 							description=" real description",
 							shortdescription="",
 							name="f",
@@ -49,67 +52,66 @@ do local _={
 								min=25,
 								max=25
 							}
-							--[[table: 0x9ba2188]],
+							--[[table: 0x9f74110]],
 							occurrences={
 								[1]={
 									sourcerange={
 										min=25,
 										max=25
 									}
-									--[[table: 0x9ba43d0]],
+									--[[table: 0x9e9a3a0]],
 									definition=nil --[[ref]],
 									tag="MIdentifier"
 								}
-								--[[table: 0x9ba43a8]]
+								--[[table: 0x9e9a258]]
 							}
-							--[[table: 0x9ba20f0]],
+							--[[table: 0x9f740e8]],
 							tag="item"
 						}
-						--[[table: 0x9b631d0]],
+						--[[table: 0x9f28328]],
 						scope={
 							min=0,
 							max=0
 						}
-						--[[table: 0x9b91fb8]]
+						--[[table: 0x9ed2730]]
 					}
-					--[[table: 0x9b91f30]]
+					--[[table: 0x9ed26c8]]
 				}
-				--[[table: 0x9cc13e8]],
+				--[[table: 0x9b06768]],
 				sourcerange={
 					min=1,
 					max=10000
 				}
-				--[[table: 0x9cc1410]],
+				--[[table: 0x9b06790]],
 				content={
 					[1]={
 						localvars={
 
 						}
-						--[[table: 0x9acfad0]],
+						--[[table: 0x9e99fc0]],
 						sourcerange={
 							min=29,
 							max=42
 						}
-						--[[table: 0x9acfaf8]],
+						--[[table: 0x9e99fe8]],
 						content={
 
 						}
-						--[[table: 0x9acfaa8]],
+						--[[table: 0x9e99f98]],
 						tag="MBlock"
 					}
-					--[[table: 0x9b23f38]],
+					--[[table: 0x9b06d60]],
 					[2]=nil --[[ref]]
 				}
-				--[[table: 0x9cc13c0]],
+				--[[table: 0x9b06740]],
 				tag="MBlock"
 			}
-			--[[table: 0x9adfce0]],
+			--[[table: 0x9b066a0]],
 			tag="MInternalContent"
 		}
-		--[[table: 0x9adfc38]]
+		--[[table: 0x9b37958]]
 	}
-	--[[table: 0x9b92098]];
-	_.fileapi.types["__=__1"].parent=_.fileapi;
+	--[[table: 0x9ed2820]];
 	_.internalcontent.content.localvars[1].item.occurrences[1].definition=_.internalcontent.content.localvars[1].item;
 	_.internalcontent.content.content[2]=_.internalcontent.content.localvars[1].item.occurrences[1];
 	return _;

@@ -3,7 +3,7 @@ do local _={
 		globalvars={
 
 		}
-		--[[table: 007A8498]],
+		--[[table: 0x827a768]],
 		shortdescription="Module short description.",
 		name="modulename",
 		returns={
@@ -13,36 +13,38 @@ do local _={
 						typename="modulename",
 						tag="internaltyperef"
 					}
-					--[[table: 007A11E8]]
+					--[[table: 0x84bb810]]
 				}
-				--[[table: 007A19B8]],
+				--[[table: 0x8466590]],
 				description="",
 				tag="return"
 			}
-			--[[table: 007A12B0]]
+			--[[table: 0x84bb838]]
 		}
-		--[[table: 007A8470]],
+		--[[table: 0x821c5f8]],
 		types={
 			modulename={
 				fields={
 
 				}
-				--[[table: 007A1198]],
+				--[[table: 0x8282a68]],
+				shortdescription="",
 				name="modulename",
 				parent=nil --[[ref]],
 				sourcerange={
 					min=1,
 					max=103
 				}
-				--[[table: 007A10F8]],
+				--[[table: 0x8282a90]],
+				description="",
 				tag="recordtypedef"
 			}
-			--[[table: 007A1BC0]]
+			--[[table: 0x821c6c0]]
 		}
-		--[[table: 007A81A0]],
+		--[[table: 0x84d95c8]],
 		tag="file"
 	}
-	--[[table: 007A8240]];
+	--[[table: 0x84cbc48]];
 	_.types.modulename.parent=_;
 	return _;
 end

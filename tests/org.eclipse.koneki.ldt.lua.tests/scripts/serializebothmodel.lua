@@ -43,7 +43,7 @@ for k = 1, #arg do
 			--
 			-- Generate internal model
 			--
-			local internalmodel = internalmodelbuilder.createinternalcontent(ast,apimodel,comment2apiobj)
+			local internalmodel = internalmodelbuilder.createinternalcontent(ast,apimodel,comment2apiobj, 'modulename')
 		
 			--
 			-- create table with the two models

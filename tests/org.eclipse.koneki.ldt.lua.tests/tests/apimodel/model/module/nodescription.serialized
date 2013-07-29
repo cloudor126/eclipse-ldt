@@ -1,48 +1,50 @@
-do local _ = {
-		description = "",
-		globalvars = {
+do local _={
+		description="",
+		globalvars={
 
 		}
-		--[[table: 0x945c220]],
-		shortdescription = "",
-		name = "modulename",
-		returns = {
-			{
-				types = {
-					{
-						typename = "modulename",
-						tag = "internaltyperef"
+		--[[table: 0x8214308]],
+		shortdescription="",
+		name="modulename",
+		returns={
+			[1]={
+				types={
+					[1]={
+						typename="modulename",
+						tag="internaltyperef"
 					}
-					--[[table: 0x93e6950]]
+					--[[table: 0x815a860]]
 				}
-				--[[table: 0x93ec528]],
-				description = "",
-				tag = "return"
+				--[[table: 0x8358c58]],
+				description="",
+				tag="return"
 			}
-			--[[table: 0x93f2610]]
+			--[[table: 0x83586a0]]
 		}
-		--[[table: 0x952a270]],
-		types = {
-			modulename = {
-				fields = {
+		--[[table: 0x831c9a8]],
+		types={
+			modulename={
+				fields={
 
 				}
-				--[[table: 0x9514418]],
-				name = "modulename",
-				parent = nil --[[ref]],
-				sourcerange = {
-					min = 1,
-					max = 23
+				--[[table: 0x8398088]],
+				shortdescription="",
+				name="modulename",
+				parent=nil --[[ref]],
+				sourcerange={
+					min=1,
+					max=23
 				}
-				--[[table: 0x93fa7a8]],
-				tag = "recordtypedef"
+				--[[table: 0x8210e60]],
+				description="",
+				tag="recordtypedef"
 			}
-			--[[table: 0x95510a0]]
+			--[[table: 0x8397b90]]
 		}
-		--[[table: 0x93d5178]],
-		tag = "file"
+		--[[table: 0x831d1b8]],
+		tag="file"
 	}
-	--[[table: 0x93ee8f0]];
-	_.types.modulename.parent = _;
+	--[[table: 0x82e5e78]];
+	_.types.modulename.parent=_;
 	return _;
 end

@@ -3,7 +3,7 @@ do local _={
 		globalvars={
 
 		}
-		--[[table: 00314B10]],
+		--[[table: 0x8fdb438]],
 		shortdescription="",
 		name="modulename",
 		returns={
@@ -13,15 +13,15 @@ do local _={
 						typename="modulename",
 						tag="internaltyperef"
 					}
-					--[[table: 0031BAC0]]
+					--[[table: 0x91e7070]]
 				}
-				--[[table: 0031BB10]],
+				--[[table: 0x91ea108]],
 				description="",
 				tag="return"
 			}
-			--[[table: 0031BAE8]]
+			--[[table: 0x91e9a40]]
 		}
-		--[[table: 00314B38]],
+		--[[table: 0x90816f8]],
 		types={
 			["__=[paramname]__1"]={
 				shortdescription="Function short description.",
@@ -31,19 +31,19 @@ do local _={
 				returns={
 
 				}
-				--[[table: 003232D0]],
+				--[[table: 0x910de68]],
 				params={
 					[1]={
 						description="long param\ndescription with more than one line ",
 						name="paramname",
 						tag="parameter"
 					}
-					--[[table: 00323280]]
+					--[[table: 0x9080360]]
 				}
-				--[[table: 003232A8]],
+				--[[table: 0x910dbf0]],
 				tag="functiontypedef"
 			}
-			--[[table: 00323258]],
+			--[[table: 0x8fe1538]],
 			modulename={
 				fields={
 					functionname={
@@ -51,7 +51,7 @@ do local _={
 							typename="__=[paramname]__1",
 							tag="internaltyperef"
 						}
-						--[[table: 0031BBD8]],
+						--[[table: 0x90bae20]],
 						description="Function long description",
 						parent=nil --[[ref]],
 						shortdescription="Function short description.",
@@ -60,31 +60,33 @@ do local _={
 							min=25,
 							max=208
 						}
-						--[[table: 00323230]],
+						--[[table: 0x8ffdd40]],
 						occurrences={
 
 						}
-						--[[table: 00323208]],
+						--[[table: 0x9079240]],
 						tag="item"
 					}
-					--[[table: 0031CF10]]
+					--[[table: 0x910aff8]]
 				}
-				--[[table: 0031BB88]],
+				--[[table: 0x91ed8e0]],
+				shortdescription="",
 				name="modulename",
 				parent=nil --[[ref]],
 				sourcerange={
 					min=1,
 					max=23
 				}
-				--[[table: 0031BBB0]],
+				--[[table: 0x91f8d08]],
+				description="",
 				tag="recordtypedef"
 			}
-			--[[table: 0031BB38]]
+			--[[table: 0x91ec578]]
 		}
-		--[[table: 00314AE8]],
+		--[[table: 0x8faca48]],
 		tag="file"
 	}
-	--[[table: 00314A98]];
+	--[[table: 0x9202b30]];
 	_.types["__=[paramname]__1"].parent=_;
 	_.types.modulename.fields.functionname.parent=_.types.modulename;
 	_.types.modulename.parent=_;

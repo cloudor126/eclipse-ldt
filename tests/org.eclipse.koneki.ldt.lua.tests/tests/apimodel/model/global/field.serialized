@@ -10,16 +10,16 @@ do local _={
 					min=25,
 					max=120
 				}
-				--[[table: 004F7C38]],
+				--[[table: 0x9d35c10]],
 				occurrences={
 
 				}
-				--[[table: 004F7C10]],
+				--[[table: 0x9d25448]],
 				tag="item"
 			}
-			--[[table: 004F7BE8]]
+			--[[table: 0x9cb8588]]
 		}
-		--[[table: 004EB2F8]],
+		--[[table: 0x9a7bff8]],
 		shortdescription="",
 		name="modulename",
 		returns={
@@ -29,36 +29,38 @@ do local _={
 						typename="modulename",
 						tag="internaltyperef"
 					}
-					--[[table: 004EBE60]]
+					--[[table: 0x98c6af8]]
 				}
-				--[[table: 004EBEB0]],
+				--[[table: 0x9b01f60]],
 				description="",
 				tag="return"
 			}
-			--[[table: 004EBE88]]
+			--[[table: 0x9a58220]]
 		}
-		--[[table: 004EB320]],
+		--[[table: 0x9a7dae0]],
 		types={
 			modulename={
 				fields={
 
 				}
-				--[[table: 004EBF00]],
+				--[[table: 0x9a73a30]],
+				shortdescription="",
 				name="modulename",
 				parent=nil --[[ref]],
 				sourcerange={
 					min=1,
 					max=23
 				}
-				--[[table: 004EBF28]],
+				--[[table: 0x98d3070]],
+				description="",
 				tag="recordtypedef"
 			}
-			--[[table: 004EBED8]]
+			--[[table: 0x9b089a8]]
 		}
-		--[[table: 004EB2D0]],
+		--[[table: 0x9cdf750]],
 		tag="file"
 	}
-	--[[table: 004EB280]];
+	--[[table: 0x9a77f38]];
 	_.globalvars.fieldname.parent=_;
 	_.types.modulename.parent=_;
 	return _;

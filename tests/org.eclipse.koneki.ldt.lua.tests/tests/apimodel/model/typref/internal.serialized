@@ -3,7 +3,7 @@ do local _={
 		globalvars={
 
 		}
-		--[[table: 0x9cebb60]],
+		--[[table: 0x95d0900]],
 		shortdescription="",
 		name="modulename",
 		returns={
@@ -13,30 +13,33 @@ do local _={
 						typename="modulename",
 						tag="internaltyperef"
 					}
-					--[[table: 0x9d62630]]
+					--[[table: 0x95d2450]]
 				}
-				--[[table: 0x9d626f8]],
+				--[[table: 0x95d2518]],
 				description="",
 				tag="return"
 			}
-			--[[table: 0x9d62658]]
+			--[[table: 0x95d2478]]
 		}
-		--[[table: 0x9cebb88]],
+		--[[table: 0x95d0928]],
 		types={
 			typename={
 				fields={
 
 				}
-				--[[table: 0x9467420]],
-				name = "typename",
-				parent = nil --[[ref]],
-				sourcerange = {
-					min = 25, max = 77
+				--[[table: 0x95c32a0]],
+				shortdescription="",
+				name="typename",
+				parent=nil --[[ref]],
+				sourcerange={
+					min=25,
+					max=77
 				}
-				--[[table: 0x9d66798]],
+				--[[table: 0x95c32c8]],
+				description="",
 				tag="recordtypedef"
 			}
-			--[[table: 0x9d66660]],
+			--[[table: 0x95c3190]],
 			modulename={
 				fields={
 					fieldname={
@@ -44,7 +47,7 @@ do local _={
 							typename="typename",
 							tag="internaltyperef"
 						}
-						--[[table: 0x9d665f8]],
+						--[[table: 0x95c3128]],
 						description="",
 						parent=nil --[[ref]],
 						shortdescription="",
@@ -53,31 +56,33 @@ do local _={
 							min=25,
 							max=77
 						}
-						--[[table: 0x9d665a0]],
+						--[[table: 0x94d8698]],
 						occurrences={
 
 						}
-						--[[table: 0x9d66578]],
+						--[[table: 0x94d8670]],
 						tag="item"
 					}
-					--[[table: 0x9d66200]]
+					--[[table: 0x94d8480]]
 				}
-				--[[table: 0x9d62830]],
+				--[[table: 0x94280b0]],
+				shortdescription="",
 				name="modulename",
 				parent=nil --[[ref]],
 				sourcerange={
 					min=1,
 					max=23
 				}
-				--[[table: 0x9d62858]],
+				--[[table: 0x94280d8]],
+				description="",
 				tag="recordtypedef"
 			}
-			--[[table: 0x9d62720]]
+			--[[table: 0x95d2560]]
 		}
-		--[[table: 0x9cebb38]],
+		--[[table: 0x95d08d8]],
 		tag="file"
 	}
-	--[[table: 0x9ceb948]];
+	--[[table: 0x9428088]];
 	_.types.typename.parent=_;
 	_.types.modulename.fields.fieldname.parent=_.types.modulename;
 	_.types.modulename.parent=_;

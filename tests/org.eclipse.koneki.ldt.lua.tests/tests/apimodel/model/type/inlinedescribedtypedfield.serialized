@@ -1,88 +1,90 @@
-do local _ = {
-		description = "",
-		globalvars = {
+do local _={
+		description="",
+		globalvars={
 
 		}
-		--[[table: 0x9f61b58]],
-		shortdescription = "",
-		name = "modulename",
-		returns = {
-			{
-				types = {
-					{
-						typename = "modulename",
-						tag = "internaltyperef"
+		--[[table: 0x8758968]],
+		shortdescription="",
+		name="modulename",
+		returns={
+			[1]={
+				types={
+					[1]={
+						typename="modulename",
+						tag="internaltyperef"
 					}
-					--[[table: 0x9f61a20]]
+					--[[table: 0x88dc750]]
 				}
-				--[[table: 0x9f61a48]],
-				description = "",
-				tag = "return"
+				--[[table: 0x88dc818]],
+				description="",
+				tag="return"
 			}
-			--[[table: 0x9f630f0]]
+			--[[table: 0x88dc778]]
 		}
-		--[[table: 0x9f61b80]],
-		types = {
-			typename = {
-				description = "Type long description",
-				fields = {
-					fieldname = {
-						type = {
-							typename = "string",
-							tag = "primitivetyperef"
+		--[[table: 0x8552370]],
+		types={
+			typename={
+				fields={
+					fieldname={
+						type={
+							typename="string",
+							tag="primitivetyperef"
 						}
-						--[[table: 0x9f59618]],
-						description = "",
-						parent = nil --[[ref]],
-						shortdescription = "field short description.",
-						name = "fieldname",
-						sourcerange = {
-							min = 25,
-							max = 152
+						--[[table: 0x873b518]],
+						description="",
+						parent=nil --[[ref]],
+						shortdescription="field short description.",
+						name="fieldname",
+						sourcerange={
+							min=25,
+							max=152
 						}
-						--[[table: 0x9f595b0]],
-						occurrences = {
+						--[[table: 0x873b4a0]],
+						occurrences={
 
 						}
-						--[[table: 0x9f59588]],
-						tag = "item"
+						--[[table: 0x87a9428]],
+						tag="item"
 					}
-					--[[table: 0x9f59478]]
+					--[[table: 0x87411c0]]
 				}
-				--[[table: 0x9f591a8]],
-				name = "typename",
-				shortdescription = "Type short description.",
-				parent = nil --[[ref]],
-				sourcerange = {
-					min = 25,
-					max = 152
+				--[[table: 0x87410d8]],
+				shortdescription="Type short description.",
+				name="typename",
+				parent=nil --[[ref]],
+				sourcerange={
+					min=25,
+					max=152
 				}
-				--[[table: 0x9f593d0]],
-				tag = "recordtypedef"
+				--[[table: 0x8741158]],
+				description="Type long description",
+				tag="recordtypedef"
 			}
-			--[[table: 0x9f59180]],
-			modulename = {
-				fields = {
+			--[[table: 0x87410b0]],
+			modulename={
+				fields={
 
 				}
-				--[[table: 0x9f3f770]],
-				name = "modulename",
-				parent = nil --[[ref]],
-				sourcerange = {
-					min = 1,
-					max = 23
+				--[[table: 0x85e4cf0]],
+				shortdescription="",
+				name="modulename",
+				parent=nil --[[ref]],
+				sourcerange={
+					min=1,
+					max=23
 				}
-				--[[table: 0x9f3f798]],
-				tag = "recordtypedef"
+				--[[table: 0x860a820]],
+				description="",
+				tag="recordtypedef"
 			}
-			--[[table: 0x9f61a90]]
+			--[[table: 0x88dc860]]
 		}
-		--[[table: 0x9f61b30]],
-		tag = "file"
+		--[[table: 0x888b6b8]],
+		tag="file"
 	}
-	--[[table: 0x9f619f8]];
-	_.types.typename.fields.fieldname.parent = _.types.typename;
-	_.types.typename.parent = _;
-	_.types.modulename.parent = _;
+	--[[table: 0x8931b50]];
+	_.types.typename.fields.fieldname.parent=_.types.typename;
+	_.types.typename.parent=_;
+	_.types.modulename.parent=_;
 	return _;
 end

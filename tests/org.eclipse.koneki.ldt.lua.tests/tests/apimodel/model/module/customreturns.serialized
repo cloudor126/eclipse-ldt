@@ -1,33 +1,33 @@
-do local _ = {
-		description = "",
-		globalvars = {
+do local _={
+		description="",
+		globalvars={
 
 		}
-		--[[table: 0x94b7ab0]],
-		shortdescription = "",
-		name = "modulename",
-		returns = {
-			{
-				types = {
-					{
-						typename = "string",
-						tag = "primitivetyperef"
+		--[[table: 0x84b8018]],
+		shortdescription="",
+		name="modulename",
+		returns={
+			[1]={
+				types={
+					[1]={
+						typename="string",
+						tag="primitivetyperef"
 					}
-					--[[table: 0x950bd88]]
+					--[[table: 0x81226c8]]
 				}
-				--[[table: 0x9439e78]],
-				description = "",
-				tag = "return"
+				--[[table: 0x81226a0]],
+				description="",
+				tag="return"
 			}
-			--[[table: 0x94d07c8]]
+			--[[table: 0x8122600]]
 		}
-		--[[table: 0x94b7ad8]],
-		types = {
+		--[[table: 0x84b8040]],
+		types={
 
 		}
-		--[[table: 0x93d0d00]],
-		tag = "file"
+		--[[table: 0x84b7ff0]],
+		tag="file"
 	}
-	--[[table: 0x94aee58]];
+	--[[table: 0x825b440]];
 	return _;
 end

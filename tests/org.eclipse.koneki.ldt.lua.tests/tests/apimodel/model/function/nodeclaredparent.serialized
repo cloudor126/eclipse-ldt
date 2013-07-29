@@ -3,7 +3,7 @@ do local _={
 		globalvars={
 
 		}
-		--[[table: 0x86b3e70]],
+		--[[table: 0x9214a00]],
 		shortdescription="",
 		name="modulename",
 		returns={
@@ -13,15 +13,15 @@ do local _={
 						typename="modulename",
 						tag="internaltyperef"
 					}
-					--[[table: 0x86ec028]]
+					--[[table: 0x9064158]]
 				}
-				--[[table: 0x86ec0f0]],
+				--[[table: 0x9064220]],
 				description="",
 				tag="return"
 			}
-			--[[table: 0x86ec050]]
+			--[[table: 0x9064180]]
 		}
-		--[[table: 0x86b3e98]],
+		--[[table: 0x912cdd0]],
 		types={
 			["__=__1"]={
 				shortdescription="",
@@ -31,14 +31,14 @@ do local _={
 				returns={
 
 				}
-				--[[table: 0x86ef6c0]],
+				--[[table: 0x927f010]],
 				params={
 
 				}
-				--[[table: 0x86ef698]],
+				--[[table: 0x927efe8]],
 				tag="functiontypedef"
 			}
-			--[[table: 0x86ef588]],
+			--[[table: 0x927eed8]],
 			typename={
 				fields={
 					functionname={
@@ -46,7 +46,7 @@ do local _={
 							typename="__=__1",
 							tag="internaltyperef"
 						}
-						--[[table: 0x86ef7a8]],
+						--[[table: 0x91eaf20]],
 						description="",
 						parent=nil --[[ref]],
 						shortdescription="",
@@ -55,46 +55,50 @@ do local _={
 							min=25,
 							max=75
 						}
-						--[[table: 0x86ef548]],
+						--[[table: 0x8f04438]],
 						occurrences={
 
 						}
-						--[[table: 0x86ef520]],
+						--[[table: 0x8f04410]],
 						tag="item"
 					}
-					--[[table: 0x86ef1a8]]
+					--[[table: 0x9060420]]
 				}
-				--[[table: 0x86ef920]],
+				--[[table: 0x91eb098]],
+				shortdescription="",
 				name="typename",
 				parent=nil --[[ref]],
 				sourcerange={
 					min=25,
 					max=75
 				}
-				--[[table: 0x86ef948]],
+				--[[table: 0x91a3d10]],
+				description="",
 				tag="recordtypedef"
 			}
-			--[[table: 0x86ef810]],
+			--[[table: 0x91eaf88]],
 			modulename={
 				fields={
 
 				}
-				--[[table: 0x86ec228]],
+				--[[table: 0x90c0c50]],
+				shortdescription="",
 				name="modulename",
 				parent=nil --[[ref]],
 				sourcerange={
 					min=1,
 					max=23
 				}
-				--[[table: 0x86ec250]],
+				--[[table: 0x90c0c78]],
+				description="",
 				tag="recordtypedef"
 			}
-			--[[table: 0x86ec118]]
+			--[[table: 0x9064248]]
 		}
-		--[[table: 0x86b3e48]],
+		--[[table: 0x92149d8]],
 		tag="file"
 	}
-	--[[table: 0x86b3c58]];
+	--[[table: 0x92149b0]];
 	_.types["__=__1"].parent=_;
 	_.types.typename.fields.functionname.parent=_.types.typename;
 	_.types.typename.parent=_;

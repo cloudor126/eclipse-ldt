@@ -1,0 +1,156 @@
+do local _={
+		fileapi={
+			description="",
+			globalvars={
+				tablename={
+					type={
+						def={
+							shortdescription="",
+							name="___",
+							fields={
+								fieldname={
+									type={
+										expression={
+											sourcerange={
+												min=39,
+												max=47
+											}
+											--[[table: 0xa199ed8]],
+											definition=nil --[[ref]],
+											tag="MIdentifier"
+										}
+										--[[table: 0xa199eb0]],
+										returnposition=1,
+										tag="exprtyperef"
+									}
+									--[[table: 0xa0a25a8]],
+									description="",
+									parent=nil --[[ref]],
+									shortdescription="",
+									name="fieldname",
+									sourcerange={
+										min=27,
+										max=35
+									}
+									--[[table: 0xa181ce8]],
+									occurrences={
+
+									}
+									--[[table: 0xa0a25f8]],
+									tag="item"
+								}
+								--[[table: 0xa0a25d0]]
+							}
+							--[[table: 0xa1a3bb8]],
+							sourcerange={
+								min=0,
+								max=0
+							}
+							--[[table: 0xa1a3be0]],
+							description="",
+							tag="recordtypedef"
+						}
+						--[[table: 0xa13bf00]],
+						tag="inlinetyperef"
+					}
+					--[[table: 0xa20aa60]],
+					description="",
+					parent=nil --[[ref]],
+					shortdescription="",
+					name="tablename",
+					sourcerange={
+						min=1,
+						max=9
+					}
+					--[[table: 0x9e0bfd0]],
+					occurrences={
+						[1]={
+							sourcerange={
+								min=1,
+								max=9
+							}
+							--[[table: 0x9e90ef8]],
+							definition=nil --[[ref]],
+							tag="MIdentifier"
+						}
+						--[[table: 0x9e90ed0]],
+						[2]={
+							sourcerange={
+								min=17,
+								max=25
+							}
+							--[[table: 0xa13bd50]],
+							definition=nil --[[ref]],
+							tag="MIdentifier"
+						}
+						--[[table: 0x9d688b8]],
+						[3]=nil --[[ref]]
+					}
+					--[[table: 0x9e0bfa8]],
+					tag="item"
+				}
+				--[[table: 0x9e0bf80]]
+			}
+			--[[table: 0x9c60178]],
+			shortdescription="",
+			returns={
+
+			}
+			--[[table: 0x9e870b0]],
+			types={
+
+			}
+			--[[table: 0x9c60150]],
+			tag="file"
+		}
+		--[[table: 0x9c60128]],
+		internalcontent={
+			unknownglobalvars={
+
+			}
+			--[[table: 0x9c61bf0]],
+			content={
+				localvars={
+
+				}
+				--[[table: 0x9cecf38]],
+				sourcerange={
+					min=1,
+					max=10000
+				}
+				--[[table: 0x9cecf60]],
+				content={
+					[1]=nil --[[ref]],
+					[2]={
+						sourcerange={
+							min=17,
+							max=35
+						}
+						--[[table: 0xa13bda0]],
+						right="fieldname",
+						left=nil --[[ref]],
+						tag="MIndex"
+					}
+					--[[table: 0xa13bd78]],
+					[3]=nil --[[ref]]
+				}
+				--[[table: 0x9cecf10]],
+				tag="MBlock"
+			}
+			--[[table: 0x9c61c18]],
+			tag="MInternalContent"
+		}
+		--[[table: 0x9c61bc8]]
+	}
+	--[[table: 0xa1c4178]];
+	_.fileapi.globalvars.tablename.type.def.fields.fieldname.type.expression.definition=_.fileapi.globalvars.tablename;
+	_.fileapi.globalvars.tablename.type.def.fields.fieldname.parent=_.fileapi.globalvars.tablename.type.def;
+	_.fileapi.globalvars.tablename.parent=_.fileapi;
+	_.fileapi.globalvars.tablename.occurrences[1].definition=_.fileapi.globalvars.tablename;
+	_.fileapi.globalvars.tablename.occurrences[2].definition=_.fileapi.globalvars.tablename;
+	_.fileapi.globalvars.tablename.occurrences[3]=_.fileapi.globalvars.tablename.type.def.fields.fieldname.type.expression;
+	_.internalcontent.content.content[1]=_.fileapi.globalvars.tablename.occurrences[1];
+	_.internalcontent.content.content[2].left=_.fileapi.globalvars.tablename.occurrences[2];
+	_.internalcontent.content.content[3]=_.fileapi.globalvars.tablename.type.def.fields.fieldname.type.expression;
+	return _;
+end

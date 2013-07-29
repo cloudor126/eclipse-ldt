@@ -51,7 +51,7 @@ function M.test(luasourcepath, serializedreferencepath)
 	--
 	-- Generate internal model
 	--
-	local internalmodel = internalmodelbuilder.createinternalcontent(ast,apimodel,comment2apiobj)
+	local internalmodel = internalmodelbuilder.createinternalcontent(ast,apimodel,comment2apiobj, "modulename")
 	
 	-- strip tables
 	internalmodel = tablecompare.stripfunctions(internalmodel)

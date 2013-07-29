@@ -1,59 +1,61 @@
-do local _ = {
-		description = "",
-		globalvars = {
+do local _={
+		description="",
+		globalvars={
 
 		}
-		--[[table: 0x9192730]],
-		metadata = {
-			usage = {
-				{
-					description = "local samples"
+		--[[table: 0x8f1ed28]],
+		metadata={
+			usage={
+				[1]={
+					description="local samples"
 				}
-				--[[table: 0x92aa588]],
-				tag = "usage"
+				--[[table: 0x9189db0]],
+				tag="usage"
 			}
-			--[[table: 0x91e6d10]]
+			--[[table: 0x8f9c378]]
 		}
-		--[[table: 0x9237e08]],
-		shortdescription = "",
-		name = "modulename",
-		returns = {
-			{
-				types = {
-					{
-						typename = "modulename",
-						tag = "internaltyperef"
+		--[[table: 0x8f9c350]],
+		shortdescription="",
+		name="modulename",
+		returns={
+			[1]={
+				types={
+					[1]={
+						typename="modulename",
+						tag="internaltyperef"
 					}
-					--[[table: 0x91926e0]]
+					--[[table: 0x9189e50]]
 				}
-				--[[table: 0x9168668]],
-				description = "",
-				tag = "return"
+				--[[table: 0x9189f58]],
+				description="",
+				tag="return"
 			}
-			--[[table: 0x9256520]]
+			--[[table: 0x9189eb8]]
 		}
-		--[[table: 0x92a2930]],
-		types = {
-			modulename = {
-				fields = {
+		--[[table: 0x8f1ed50]],
+		types={
+			modulename={
+				fields={
 
 				}
-				--[[table: 0x9256570]],
-				name = "modulename",
-				parent = nil --[[ref]],
-				sourcerange = {
-					min = 1,
-					max = 50
+				--[[table: 0x8f9c2a0]],
+				shortdescription="",
+				name="modulename",
+				parent=nil --[[ref]],
+				sourcerange={
+					min=1,
+					max=50
 				}
-				--[[table: 0x9237d80]],
-				tag = "recordtypedef"
+				--[[table: 0x8f9c2c8]],
+				description="",
+				tag="recordtypedef"
 			}
-			--[[table: 0x9256548]]
+			--[[table: 0x9189f80]]
 		}
-		--[[table: 0x9192708]],
-		tag = "file"
+		--[[table: 0x8f1ed00]],
+		tag="file"
 	}
-	--[[table: 0x91926b8]];
-	_.types.modulename.parent = _;
+	--[[table: 0x914e448]];
+	_.types.modulename.parent=_;
 	return _;
 end

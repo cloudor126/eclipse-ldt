@@ -1,25 +1,27 @@
 do local _={
 		fileapi={
+			description="",
 			globalvars={
 
 			}
-			--[[table: 0x8a7fb88]],
+			--[[table: 0x8699488]],
+			shortdescription="",
 			returns={
 
 			}
-			--[[table: 0x8a7fbb0]],
+			--[[table: 0x86994b0]],
 			types={
 
 			}
-			--[[table: 0x8a7fb60]],
+			--[[table: 0x8699460]],
 			tag="file"
 		}
-		--[[table: 0x8a73618]],
+		--[[table: 0x8699270]],
 		internalcontent={
 			unknownglobalvars={
 
 			}
-			--[[table: 0x8959f30]],
+			--[[table: 0x8923180]],
 			content={
 				localvars={
 					[1]={
@@ -31,49 +33,49 @@ do local _={
 								min=26,
 								max=26
 							}
-							--[[table: 0x8980658]],
+							--[[table: 0x896e160]],
 							occurrences={
 								[1]={
 									sourcerange={
 										min=26,
 										max=26
 									}
-									--[[table: 0x89bac28]],
+									--[[table: 0x89156c0]],
 									definition=nil --[[ref]],
 									tag="MIdentifier"
 								}
-								--[[table: 0x89bab88]]
+								--[[table: 0x8915620]]
 							}
-							--[[table: 0x8980630]],
+							--[[table: 0x8915938]],
 							tag="item"
 						}
-						--[[table: 0x8a2b9b0]],
+						--[[table: 0x896e138]],
 						scope={
 							min=0,
 							max=0
 						}
-						--[[table: 0x89807a8]]
+						--[[table: 0x8a08dd0]]
 					}
-					--[[table: 0x8980740]]
+					--[[table: 0x8a08d68]]
 				}
-				--[[table: 0x895a020]],
+				--[[table: 0x8923270]],
 				sourcerange={
 					min=1,
 					max=10000
 				}
-				--[[table: 0x895a048]],
+				--[[table: 0x8923298]],
 				content={
 					[1]=nil --[[ref]]
 				}
-				--[[table: 0x8959ff8]],
+				--[[table: 0x8923248]],
 				tag="MBlock"
 			}
-			--[[table: 0x8959f58]],
+			--[[table: 0x89231a8]],
 			tag="MInternalContent"
 		}
-		--[[table: 0x8959e90]]
+		--[[table: 0x89230e0]]
 	}
-	--[[table: 0x8980888]];
+	--[[table: 0x8a08eb0]];
 	_.internalcontent.content.localvars[1].item.occurrences[1].definition=_.internalcontent.content.localvars[1].item;
 	_.internalcontent.content.content[1]=_.internalcontent.content.localvars[1].item.occurrences[1];
 	return _;
