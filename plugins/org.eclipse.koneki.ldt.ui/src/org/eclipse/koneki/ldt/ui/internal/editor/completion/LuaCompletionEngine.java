@@ -292,6 +292,11 @@ public class LuaCompletionEngine extends ScriptCompletionEngine {
 	private void createMemberProposal(IMember member, int startIndex, int endIndex, boolean invocation) {
 		try {
 			CompletionProposal proposal = null;
+			if (member == null) {
+				NullPointerException e = new NullPointerException("the given IMember is null"); //$NON-NLS-1$
+				Activator.logWarning("Unable to perform completion", e); //$NON-NLS-1$
+				return;
+			}
 			switch (member.getElementType()) {
 			case IModelElement.METHOD:
 				// create method proposal

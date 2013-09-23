@@ -32,6 +32,54 @@ function M._file()
 			type.parent = self
 		end,
 		
+		mergetype =  function (self,newtype,erase)
+			local currenttype = self.types[newtype.name]
+			if currenttype then
+				-- merge recordtypedef
+				if currenttype.tag =="recordtypedef" and newtype.tag == "recordtypedef" then
+					-- merge fields
+					for fieldname ,field in pairs( newtype.fields) do
+						if erase or not currenttype[fieldname] then
+							currenttype:addfield(field)
+						end
+					end
+					
+					-- merge descriptions and source ranges
+					if erase then
+						if newtype.description or newtype.description == ""  then currenttype.description = newtype.description end
+						if newtype.shortdescription or newtype.shortdescription == ""  then currenttype.shortdescription = newtype.shortdescription end
+						if newtype.sourcerange.min then currenttype.sourcerange.min = newtype.sourcerange.min end
+						if newtype.sourcerange.max then currenttype.sourcerange.max = newtype.sourcerange.min end
+					end
+				-- merge functiontypedef
+				elseif currenttype.tag == "functiontypedef" and newtype.tag == "functiontypedef" then
+					-- merge params
+					for i, param1 in ipairs(newtype.params) do
+						local missing = true
+						for j, param2 in ipairs(currenttype.params) do
+							if param1.name == param2.name then
+								missing = false
+								break 
+							end
+						end 
+						if missing then
+							table.insert(currenttype.params,param1)	
+						end
+					end
+					
+					-- merge descriptions and source ranges
+					if erase then
+						if newtype.description or newtype.description == "" then currenttype.description = newtype.description end
+						if newtype.shortdescription or newtype.shortdescription == ""  then currenttype.shortdescription = newtype.shortdescription end
+						if newtype.sourcerange.min then currenttype.sourcerange.min = newtype.sourcerange.min end
+						if newtype.sourcerange.max then currenttype.sourcerange.max = newtype.sourcerange.min end
+					end
+				end
+			else
+				self:addtype(newtype)			
+			end
+		end,
+		
 		addglobalvar =  function (self,item)
 			self.globalvars[item.name] = item
 			item.parent = self
@@ -107,13 +155,20 @@ function M._item(name)
 			occ.definition = self
 		end,
 		
-		resolvetype = function (self)
-			if self and self.type and self.type.tag =="internaltyperef" then
-				if self.parent.tag == 'recordtypedef' then
-					local file = self.parent.parent
-					return file.types[ self.type.typename ]
-				elseif self.parent.tag == 'file' then
-					return self.parent.types[ self.type.typename ]
+		resolvetype = function (self,file)
+			if self and self.type then
+				if self.type.tag =="internaltyperef" then
+					-- if file is not given try to retrieve it.
+					if not file then
+						if self.parent and self.parent.tag == 'recordtypedef' then
+							file = self.parent.parent
+						elseif self.parent.tag == 'file' then
+							file = self.parent
+						end
+					end
+					if file then return file.types[self.type.typename] end
+				elseif self.type.tag =="inlinetyperef" then
+					return self.type.def
 				end
 			end	
 		end

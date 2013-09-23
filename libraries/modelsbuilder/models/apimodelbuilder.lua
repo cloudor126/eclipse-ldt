@@ -39,14 +39,14 @@ local function gettypedef(_file,name,kind,sourcerangemin,sourcerangemax)
 		if _typedef.tag == kind then return _typedef end
 	else
 		if kind == "recordtypedef" and name ~= "global" then
-			_recordtypedef = apimodel._recordtypedef(name)
+			local _recordtypedef = apimodel._recordtypedef(name)
 			
 			-- define sourcerange
 			_recordtypedef.sourcerange.min = sourcerangemin
 			_recordtypedef.sourcerange.max = sourcerangemax
 			
-			-- add to file
-			_file:addtype(_recordtypedef)
+			-- add to file if a name is defined
+			if _recordtypedef.name then _file:addtype(_recordtypedef) end
 			return _recordtypedef
 		elseif kind == "functiontypedef" then
 			-- TODO support function
@@ -61,7 +61,7 @@ end
 
 -- create a typeref from the typref doc_tag
 local function createtyperef(dt_typeref,_file,sourcerangemin,sourcerangemax)
-	local _typref
+	local _typeref
 	if dt_typeref.tag == "typeref" then
 		if dt_typeref.module then
 			-- manage external type
@@ -106,8 +106,6 @@ end
 
 -- create a item from the field doc_tag
 local function createfield(dt_field,_file,sourcerangemin,sourcerangemax)
-	if not dt_field.name then return nil end
-		
 	local _item = apimodel._item(dt_field.name)
 
 	if dt_field.shortdescription then
@@ -141,13 +139,18 @@ local function createparam(dt_param,_file,sourcerangemin,sourcerangemax)
 end
 
 -- get or create the typedef with the name "name"
-local function additemtoparent(_file,_item,scope,sourcerangemin,sourcerangemax)
+function M.additemtoparent(_file,_item,scope,sourcerangemin,sourcerangemax)
 	if scope and not scope.module then
-		if scope.type == "global" then
-			_file:addglobalvar(_item)
+		if _item.name then
+			if scope.type == "global" then
+				_file:addglobalvar(_item)
+			else
+				local _recordtypedef = gettypedef (_file, scope.type ,"recordtypedef",sourcerangemin,sourcerangemax)
+				_recordtypedef:addfield(_item)
+			end
 		else
-			local _recordtypedef = gettypedef (_file, scope.type ,"recordtypedef",sourcerangemin,sourcerangemax)
-			_recordtypedef:addfield(_item)
+			-- if no item name precise we store the scope in the item to be able to add it to the right parent later
+			_item.scope = scope
 		end
 	end
 end
@@ -211,7 +214,7 @@ end
 
 ------------------------------------------------------
 -- create the module api
-function M.createmoduleapi(ast)
+function M.createmoduleapi(ast,modulename)
 
 	-- Initialise function type naming
 	resetfunctiontypeidgenerator()
@@ -224,9 +227,10 @@ function M.createmoduleapi(ast)
 	
 		-- Extract information from tagged comments
 		local parsedcomment = ldp.parse(comment[1])
+		if not parsedcomment then return nil end
 		
 		-- Get tags from the languages
-		local regulartags = parsedcomment and parsedcomment.tags
+		local regulartags = parsedcomment.tags
 		
 		-- Will contain last API object generated from comments
 		local _lastapiobject
@@ -236,7 +240,7 @@ function M.createmoduleapi(ast)
 			-- manage "module" comment
 			if regulartags["module"] then
 				-- get name
-				_file.name = regulartags["module"][1].name
+				_file.name = regulartags["module"][1].name or modulename
 				_lastapiobject = _file
 
 				-- manage descriptions
@@ -256,7 +260,7 @@ function M.createmoduleapi(ast)
 				-- if no returns on module create a defaultreturn of type #modulename
 				if #_file.returns == 0 and _file.name then
 					-- create internal type ref
-					_typeref = apimodel._internaltyperef()
+					local _typeref = apimodel._internaltyperef()
 					_typeref.typename = _file.name
 					
 					-- create return
@@ -270,7 +274,7 @@ function M.createmoduleapi(ast)
 					gettypedef(_file,_typeref.typename,"recordtypedef",sourcerangemin,sourcerangemax)
 				end
 				-- manage "type" comment
-			elseif regulartags["type"] and regulartags["type"][1].name and regulartags["type"][1].name ~= "global" then
+			elseif regulartags["type"] and regulartags["type"][1].name ~= "global" then
 				local dt_type = regulartags["type"][1];
 				-- create record type if it doesn't exist
 				local sourcerangemin = comment.lineinfo.first.offset
@@ -313,13 +317,16 @@ function M.createmoduleapi(ast)
 
 				-- add item to its parent
 				local scope = regulartags["field"][1].parent
-				additemtoparent(_file,_item,scope,sourcerangemin,sourcerangemax)
-			elseif regulartags["function"] and regulartags["function"][1].name then
+				M.additemtoparent(_file,_item,scope,sourcerangemin,sourcerangemax)
+			elseif regulartags["function"] or regulartags["param"] or regulartags["return"] then
 				-- create item
-				local _item = apimodel._item(regulartags["function"][1].name)
+				local _item = apimodel._item()
 				_item.shortdescription = parsedcomment.shortdescription
 				_item.description = parsedcomment.description
 				_lastapiobject = _item
+
+				-- set name
+				if regulartags["function"] then	_item.name =  regulartags["function"][1].name end
 
 				-- define sourcerange
 				local sourcerangemin = comment.lineinfo.first.offset
@@ -362,37 +369,41 @@ function M.createmoduleapi(ast)
 				-- add item to its parent
 				local sourcerangemin = comment.lineinfo.first.offset
 				local sourcerangemax = comment.lineinfo.last.offset
-				local scope = regulartags["function"][1].parent
-				additemtoparent(_file,_item,scope,sourcerangemin,sourcerangemax)
-			end
-			
-			--
-			-- Store user defined tags
-			--
-			local thirdtags = parsedcomment and parsedcomment.unknowntags
-			if thirdtags and _lastapiobject then
-			
-				-- Define a storage index for user defined tags on current API element
-				if not _lastapiobject.metadata then _lastapiobject.metadata = {} end
-				
-				-- Loop over user defined tags
-				for usertag, taglist in pairs(thirdtags) do
-					if not _lastapiobject.metadata[ usertag ] then
-						_lastapiobject.metadata[ usertag ] = {
-							tag = usertag
-						}
-					end
-					for _, tag in ipairs( taglist ) do
-						table.insert(_lastapiobject.metadata[usertag], tag)
-					end
-				end
-			end
-			
-			-- if we create an api object linked it to
-			if _lastapiobject then
-				_comment2apiobj[comment] = _lastapiobject
+				local scope = (regulartags["function"] and regulartags["function"][1].parent) or nil
+				M.additemtoparent(_file,_item,scope,sourcerangemin,sourcerangemax)
 			end
 		end
+		
+		-- when we could not know which type of api object it is, we suppose this is an item
+		if not _lastapiobject then
+			_lastapiobject = apimodel._item()
+			_lastapiobject.shortdescription = parsedcomment.shortdescription
+			_lastapiobject.description = parsedcomment.description
+		end
+		
+		--
+		-- Store user defined tags
+		--
+		local thirdtags = parsedcomment and parsedcomment.unknowntags
+		if thirdtags  then
+			-- Define a storage index for user defined tags on current API element
+			if not _lastapiobject.metadata then _lastapiobject.metadata = {} end
+			
+			-- Loop over user defined tags
+			for usertag, taglist in pairs(thirdtags) do
+				if not _lastapiobject.metadata[ usertag ] then
+					_lastapiobject.metadata[ usertag ] = {
+						tag = usertag
+					}
+				end
+				for _, tag in ipairs( taglist ) do
+					table.insert(_lastapiobject.metadata[usertag], tag)
+				end
+			end
+		end
+		
+		-- if we create an api object linked it to
+		_comment2apiobj[comment] =_lastapiobject 
 	end
 
 	local function parsecomment(node, parent, ...)
@@ -432,7 +443,7 @@ function M.extractlocaltype ( commentblock,_file)
 	
 	local stringcomment = commentblock[1]
 	
-	parsedtag = ldp.parseinlinecomment(stringcomment)
+	local parsedtag = ldp.parseinlinecomment(stringcomment)
 	if parsedtag then
 		local sourcerangemin = commentblock.lineinfo.first.offset
 		local sourcerangemax = commentblock.lineinfo.last.offset

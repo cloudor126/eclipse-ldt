@@ -87,8 +87,11 @@ end
 -- create item
 function M._item(_item,notemplate,handledexpr)
 	local description = ""
-	if notemplate then
-		description = _item.description
+	if notemplate then		
+		local t = {}
+		if _item.shortdescription and _item.shortdescription ~= "" then table.insert(t,_item.shortdescription) end
+		if _item.description and _item.description ~= "" then table.insert(t,_item.description) end
+		if #t ~= 0 then description = string.format("<div style='white-space:pre'>%s</div>",table.concat(t,"\n") ) end
 	else 
 		description = templateengine.applytemplate(_item, 3)
 	end 
@@ -115,7 +118,10 @@ function M._typedef(_typedef,notemplate, handledexpr)
 		-- manage description
 		local description = ""
 		if notemplate then
-			description = _typedef.description
+			local t = {}
+			if _typedef.shortdescription and _typedef.shortdescription ~= "" then table.insert(t,_typedef.shortdescription) end
+			if _typedef.description and _typedef.description ~= "" then table.insert(t,_typedef.description) end
+			if #t ~= 0 then description = string.format("<div style='white-space:pre'>%s</div>",table.concat(t,"\n") ) end
 		else
 			description = templateengine.applytemplate(_typedef, 3)
 		end

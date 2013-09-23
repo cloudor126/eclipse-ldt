@@ -13,11 +13,13 @@ local gg = require 'metalua.grammar.generator'
 local lexer = require 'metalua.grammar.lexer'
 local mlp = mlc.parser
 
-local M = {} -- module
-local lx -- lexer used to parse tag
+local M = {}            -- module
+local lx                -- lexer used to parse tag
 local registeredparsers -- table {tagname => {list de parsers}}
 
+-- ----------------------------------------------------
 -- raise an error if result contains a node error
+-- ----------------------------------------------------
 local function raiserror(result)
 	for i, node in ipairs(result) do
 		assert(not node or node.tag ~= "Error")
@@ -25,7 +27,9 @@ local function raiserror(result)
 end
 
 
+-- ----------------------------------------------------
 -- copy key and value from one table to an other
+-- ----------------------------------------------------
 local function copykey(tablefrom, tableto)
 	for key, value in pairs(tablefrom) do
 		if key ~= "lineinfos" then
@@ -34,8 +38,9 @@ local function copykey(tablefrom, tableto)
 	end
 end
 
-------------------------------------------------------
+-- ----------------------------------------------------
 -- Handle keyword and identifiers as word
+-- ----------------------------------------------------
 local function parseword(lx)
 	local word = lx :peek()
 	local tag = word.tag
@@ -48,9 +53,10 @@ local function parseword(lx)
 	end
 end
 
-------------------------------------------------------
+-- ----------------------------------------------------
 -- parse an id
 -- return a table {name, lineinfo)
+-- ----------------------------------------------------
 local idparser = gg.sequence({
 	builder =	function (result)
 		raiserror(result)
@@ -59,9 +65,10 @@ local idparser = gg.sequence({
 	parseword
 })
 
-------------------------------------------------------
+-- ----------------------------------------------------
 -- parse a modulename  (id.)?id
 -- return a table {name, lineinfo)
+-- ----------------------------------------------------
 local modulenameparser = gg.list({
 	builder =	function (result)
 		raiserror(result)
@@ -74,14 +81,16 @@ local modulenameparser = gg.list({
 	primary  = idparser,
 	separators = '.'
 })
-------------------------------------------------------
+-- ----------------------------------------------------
 -- parse a typename  (id.)?id
 -- return a table {name, lineinfo)
+-- ----------------------------------------------------
 local typenameparser= modulenameparser
 
-------------------------------------------------------
+-- ----------------------------------------------------
 -- parse an internaltype ref
 -- return a table {name, lineinfo)
+-- ----------------------------------------------------
 local internaltyperefparser = gg.sequence({
 	builder =	function(result)
 		raiserror(result)
@@ -90,9 +99,10 @@ local internaltyperefparser = gg.sequence({
 	"#", typenameparser
 })
 
-------------------------------------------------------
+-- ----------------------------------------------------
 -- parse en external type ref
 -- return a table {name, lineinfo)
+-- ----------------------------------------------------
 local externaltyperefparser = gg.sequence({
 	builder =	function(result)
 		raiserror(result)
@@ -102,24 +112,27 @@ local externaltyperefparser = gg.sequence({
 })
 
 
-------------------------------------------------------
+-- ----------------------------------------------------
 -- parse a typeref
 -- return a table {name, lineinfo)
+-- ----------------------------------------------------
 local typerefparser =	gg.multisequence{
 	internaltyperefparser,
 	externaltyperefparser}
 
-------------------------------------------------------
+-- ----------------------------------------------------
 -- parse a list of typeref
 -- return a list of table {name, lineinfo)
+-- ----------------------------------------------------
 local typereflistparser = gg.list({
 	primary  = typerefparser,
 	separators = ','
 })
 
-------------------------------------------------------
+-- ----------------------------------------------------
 -- TODO use a more generic way to parse (modifier if not always a typeref)
 -- TODO support more than one modifier
+-- ----------------------------------------------------
 local modifiersparser = gg.sequence({
 	builder =	function(result)
 		raiserror(result)
@@ -128,8 +141,9 @@ local modifiersparser = gg.sequence({
 	"[", idparser ,  "=" , internaltyperefparser , "]"
 })
 
-------------------------------------------------------
+-- ----------------------------------------------------
 -- parse a return tag
+-- ----------------------------------------------------
 local returnparsers = {
 	-- full parser
 	gg.sequence({
@@ -149,8 +163,9 @@ local returnparsers = {
 	})
 }
 
-------------------------------------------------------
+-- ----------------------------------------------------
 -- parse a param tag
+-- ----------------------------------------------------
 local paramparsers = {
 	-- full parser
 	gg.sequence({
@@ -179,8 +194,9 @@ local paramparsers = {
 		'@','param', '...'
 	}),
 }
-------------------------------------------------------
+-- ----------------------------------------------------
 -- parse a field tag
+-- ----------------------------------------------------
 local fieldparsers = {
 	-- full parser
 	gg.sequence({
@@ -195,16 +211,18 @@ local fieldparsers = {
 		'@','field', modifiersparser, typerefparser, idparser
 	}),
 
-
-	-- parser  without modifiers
+	-- parser without name
 	gg.sequence({
 		builder = 	function (result)
 			raiserror(result)
-			return { name = result[2].name, type = result[1]}
+			local tag = {}
+			copykey(result[1],tag)
+			tag.type = result[2]
+			return tag
 		end,
-		'@','field', typerefparser, idparser
+		'@','field', modifiersparser, typerefparser
 	}),
-
+	
 	-- parser without type
 	gg.sequence({
 		builder = 	function (result)
@@ -217,19 +235,58 @@ local fieldparsers = {
 		'@','field', modifiersparser, idparser
 	}),
 
-	-- parser without type without modifiers
+	-- parser without type and name
+	gg.sequence({
+		builder = 	function (result)
+			raiserror(result)
+			local tag = {}
+			copykey(result[1],tag)
+			return tag
+		end,
+		'@','field', modifiersparser
+	}),
+	
+	-- parser  without modifiers
+	gg.sequence({
+		builder = 	function (result)
+			raiserror(result)
+			return { name = result[2].name, type = result[1]}
+		end,
+		'@','field', typerefparser, idparser
+	}),
+
+	-- parser without modifiers and name
+	gg.sequence({
+		builder = function (result)
+			raiserror(result)
+			return {type = result[1]}
+		end,
+		'@','field', typerefparser
+	}),
+	
+	-- parser without type and modifiers
 	gg.sequence({
 		builder = function (result)
 			raiserror(result)
 			return { name = result[1].name}
 		end,
 		'@','field', idparser
+	}),
+	
+	-- parser with nothing
+	gg.sequence({
+		builder = function (result)
+			raiserror(result)
+			return {}
+		end,
+		'@','field'
 	})
 }
 
-------------------------------------------------------
+-- ----------------------------------------------------
 -- parse a function tag
 -- TODO use a more generic way to parse modifier !
+-- ----------------------------------------------------
 local functionparsers = {
 	-- full parser
 	gg.sequence({
@@ -241,11 +298,43 @@ local functionparsers = {
 			return tag
 		end,
 		'@','function', modifiersparser, idparser
+	}),
+	
+	-- parser without name
+	gg.sequence({
+		builder = 	function (result)
+			raiserror(result)
+			local tag = {}
+			copykey(result[1],tag)
+			return tag
+		end,
+		'@','function', modifiersparser
+	}),
+	
+	-- parser without modifier
+	gg.sequence({
+		builder = 	function (result)
+			raiserror(result)
+			local tag = {}
+			tag.name = result[1].name
+			return tag
+		end,
+		'@','function', idparser
+	}),
+	
+	-- empty parser
+	gg.sequence({
+		builder = 	function (result)
+			raiserror(result)
+			return {}
+		end,
+		'@','function'
 	})
 }
 
-------------------------------------------------------
+-- ----------------------------------------------------
 -- parse a type tag
+-- ----------------------------------------------------
 local typeparsers = {
 	-- full parser
 	gg.sequence({
@@ -254,11 +343,20 @@ local typeparsers = {
 			return { name = result[1].name}
 		end,
 		'@','type',typenameparser
+	}),
+	-- parser without name
+	gg.sequence({
+		builder = 	function (result)
+			raiserror(result)
+			return {}
+		end,
+		'@','type'
 	})
 }
 
-------------------------------------------------------
+-- ----------------------------------------------------
 -- parse a module tag
+-- ----------------------------------------------------
 local moduleparsers = {
 	-- full parser
 	gg.sequence({
@@ -278,8 +376,9 @@ local moduleparsers = {
 	})
 }
 
-------------------------------------------------------
+-- ----------------------------------------------------
 -- parse a third tag
+-- ----------------------------------------------------
 local thirdtagsparser = gg.sequence({
 	builder = 	function (result)
 		raiserror(result)
@@ -287,8 +386,9 @@ local thirdtagsparser = gg.sequence({
 	end,
 	'@', mlp.id
 })
-------------------------------------------------------------
+-- ----------------------------------------------------
 -- init parser
+-- ----------------------------------------------------
 local function initparser()
 	-- register parsers
 	-- each tag name has several parsers
@@ -327,9 +427,10 @@ end
 
 initparser()
 
-------------------------------------------------------------
+-- ----------------------------------------------------
 -- get the string pattern to remove for each line of description
 -- the goal is to fix the indentation problems
+-- ----------------------------------------------------
 local function getstringtoremove (stringcomment,commentstart)
 	local _,_,capture = string.find(stringcomment,"\n?([ \t]*)@[^{]+",commentstart)
 	if not capture then
@@ -339,8 +440,9 @@ local function getstringtoremove (stringcomment,commentstart)
 	return capture
 end
 
-------------------------------------------------------------
+-- ----------------------------------------------------
 -- parse comment tag partition and return table structure
+-- ----------------------------------------------------
 local function parsetag(part)
 	if part.comment:find("^@") then
 		-- check if the part start by a supported tag
@@ -366,11 +468,12 @@ local function parsetag(part)
 	return nil
 end
 
-------------------------------------------------------------
+-- ----------------------------------------------------
 -- Parse third party tags.
 --
 -- Enable to parse a tag not defined in language.
 -- So for, accepted format is: @sometagname adescription
+-- ----------------------------------------------------
 local function parsethirdtag( part )
 
 	-- Check it there is someting to process
@@ -392,11 +495,12 @@ local function parsethirdtag( part )
 	return parsedtag.name, tag
 end
 
-------------------------------------------------------------
+-- ---------------------------------------------------------
 -- split string comment in several part
 -- return list of {comment = string, offset = number}
 -- the first part is the part before the first tag
 -- the others are the part from a tag to the next one
+-- ----------------------------------------------------
 local function split(stringcomment,commentstart)
 	local partstart = commentstart
 	local result = {}
@@ -428,8 +532,9 @@ local function split(stringcomment,commentstart)
 end
 
 
-------------------------------------------------------------
+-- ----------------------------------------------------
 -- parse a comment block and return a table
+-- ----------------------------------------------------
 function M.parse(stringcomment)
 
 	local _comment = {description="", shortdescription=""}

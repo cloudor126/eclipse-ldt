@@ -60,7 +60,7 @@ function M.build(source, modulename)
 	
 	-- Create api model
 	local apimodelbuilder = require 'models.apimodelbuilder'
-	local _file, comment2apiobj = apimodelbuilder.createmoduleapi(ast)
+	local _file, comment2apiobj = apimodelbuilder.createmoduleapi(ast,modulename)
 
 	-- create internal model
 	local internalmodelbuilder = require "models.internalmodelbuilder"
