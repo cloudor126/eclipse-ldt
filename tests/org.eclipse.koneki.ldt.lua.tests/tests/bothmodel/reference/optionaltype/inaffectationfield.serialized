@@ -1,0 +1,126 @@
+do local _={
+		fileapi={
+			description="",
+			globalvars={
+
+			}
+			--[[table: 0xa05ad98]],
+			types={
+				H={
+					shortdescription="",
+					description="",
+					name="H",
+					parent=nil --[[ref]],
+					sourcerange={
+						min=1,
+						max=10
+					}
+					--[[table: 0xa377a30]],
+					fields={
+						myfield={
+							type={
+								typename="string",
+								tag="primitivetyperef"
+							}
+							--[[table: 0xa02b238]],
+							description="",
+							parent=nil --[[ref]],
+							shortdescription="",
+							name="myfield",
+							sourcerange={
+								min=23,
+								max=29
+							}
+							--[[table: 0xa1e36b8]],
+							occurrences={
+
+							}
+							--[[table: 0xa1e3690]],
+							tag="item"
+						}
+						--[[table: 0xa1e34a0]]
+					}
+					--[[table: 0xa377a08]],
+					tag="recordtypedef"
+				}
+				--[[table: 0xa3778f8]]
+			}
+			--[[table: 0xa05ad70]],
+			shortdescription="",
+			returns={
+
+			}
+			--[[table: 0xa05adc0]],
+			tag="file"
+		}
+		--[[table: 0xa65fa18]],
+		internalcontent={
+			unknownglobalvars={
+
+			}
+			--[[table: 0xa0c5150]],
+			content={
+				localvars={
+					[1]={
+						item={
+							type={
+								typename="H",
+								tag="internaltyperef"
+							}
+							--[[table: 0xa0a2e80]],
+							description="",
+							shortdescription="",
+							name="H",
+							sourcerange={
+								min=17,
+								max=17
+							}
+							--[[table: 0xa60d028]],
+							occurrences={
+								[1]={
+									sourcerange={
+										min=17,
+										max=17
+									}
+									--[[table: 0xa275228]],
+									definition=nil --[[ref]],
+									tag="MIdentifier"
+								}
+								--[[table: 0xa275188]]
+							}
+							--[[table: 0xa60d000]],
+							tag="item"
+						}
+						--[[table: 0xa0a2ee8]],
+						scope={
+							min=0,
+							max=0
+						}
+						--[[table: 0xa0a2f50]]
+					}
+					--[[table: 0xa60d0c0]]
+				}
+				--[[table: 0xa0c5240]],
+				sourcerange={
+					min=1,
+					max=10000
+				}
+				--[[table: 0xa0c5268]],
+				content={
+					[1]=nil --[[ref]]
+				}
+				--[[table: 0xa0c5218]],
+				tag="MBlock"
+			}
+			--[[table: 0xa0c5178]],
+			tag="MInternalContent"
+		}
+		--[[table: 0xa0c50b0]]
+	}
+	--[[table: 0xa0a3030]];
+	_.fileapi.types.H.parent=_.fileapi;
+	_.fileapi.types.H.fields.myfield.parent=_.fileapi.types.H;
+	_.internalcontent.content.localvars[1].item.occurrences[1].definition=_.internalcontent.content.localvars[1].item;
+	_.internalcontent.content.content[1]=_.internalcontent.content.localvars[1].item.occurrences[1];
+	return _;
+end

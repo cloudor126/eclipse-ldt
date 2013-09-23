@@ -1,0 +1,119 @@
+do local _={
+		fileapi={
+			description="",
+			globalvars={
+
+			}
+			--[[table: 0x9094d08]],
+			types={
+				H={
+					fields={
+
+					}
+					--[[table: 0x8c2e950]],
+					shortdescription="",
+					name="H",
+					parent=nil --[[ref]],
+					sourcerange={
+						min=1,
+						max=12
+					}
+					--[[table: 0x8c2e978]],
+					description="",
+					tag="recordtypedef"
+				}
+				--[[table: 0x8c2f040]]
+			}
+			--[[table: 0x9094ce0]],
+			shortdescription="",
+			returns={
+
+			}
+			--[[table: 0x9094d30]],
+			tag="file"
+		}
+		--[[table: 0x9094cb8]],
+		internalcontent={
+			unknownglobalvars={
+
+			}
+			--[[table: 0x8c99ad0]],
+			content={
+				localvars={
+					[1]={
+						item={
+							type={
+								def={
+									shortdescription="",
+									name="___",
+									fields={
+
+									}
+									--[[table: 0x8c30cf8]],
+									sourcerange={
+										min=0,
+										max=0
+									}
+									--[[table: 0x8c30d20]],
+									description="",
+									tag="recordtypedef"
+								}
+								--[[table: 0x8c31250]],
+								tag="inlinetyperef"
+							}
+							--[[table: 0x8c30d48]],
+							description="",
+							shortdescription="",
+							name="H",
+							sourcerange={
+								min=20,
+								max=20
+							}
+							--[[table: 0x8c307f8]],
+							occurrences={
+								[1]={
+									sourcerange={
+										min=20,
+										max=20
+									}
+									--[[table: 0x8e9f158]],
+									definition=nil --[[ref]],
+									tag="MIdentifier"
+								}
+								--[[table: 0x8e9f0b8]]
+							}
+							--[[table: 0x8c307d0]],
+							tag="item"
+						}
+						--[[table: 0x8c30db0]],
+						scope={
+							min=0,
+							max=0
+						}
+						--[[table: 0x8c30590]]
+					}
+					--[[table: 0x8c30860]]
+				}
+				--[[table: 0x8bf4128]],
+				sourcerange={
+					min=1,
+					max=10000
+				}
+				--[[table: 0x8bf3f78]],
+				content={
+					[1]=nil --[[ref]]
+				}
+				--[[table: 0x8bf4100]],
+				tag="MBlock"
+			}
+			--[[table: 0x8c99af8]],
+			tag="MInternalContent"
+		}
+		--[[table: 0x8c99c28]]
+	}
+	--[[table: 0x8c30468]];
+	_.fileapi.types.H.parent=_.fileapi;
+	_.internalcontent.content.localvars[1].item.occurrences[1].definition=_.internalcontent.content.localvars[1].item;
+	_.internalcontent.content.content[1]=_.internalcontent.content.localvars[1].item.occurrences[1];
+	return _;
+end

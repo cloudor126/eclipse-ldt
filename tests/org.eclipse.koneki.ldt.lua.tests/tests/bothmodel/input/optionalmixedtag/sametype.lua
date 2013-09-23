@@ -1,0 +1,3 @@
+--- @type H
+
+local H = {}

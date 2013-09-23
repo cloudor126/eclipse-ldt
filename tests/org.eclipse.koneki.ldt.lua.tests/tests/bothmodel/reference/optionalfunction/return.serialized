@@ -1,0 +1,344 @@
+do local _={
+		fileapi={
+			description="",
+			globalvars={
+
+			}
+			--[[table: 0x8ec4360]],
+			types={
+				["__#number=__1"]={
+					shortdescription="",
+					description="",
+					name="__#number=__1",
+					parent=nil --[[ref]],
+					returns={
+						[1]={
+							types={
+								[1]={
+									typename="number",
+									tag="primitivetyperef"
+								}
+								--[[table: 0x8df40d0]]
+							}
+							--[[table: 0x91ffa08]],
+							description="",
+							tag="return"
+						}
+						--[[table: 0x91ff8f8]]
+					}
+					--[[table: 0x916b730]],
+					params={
+						[1]={
+							description="",
+							name="a",
+							tag="parameter"
+						}
+						--[[table: 0x8f377c8]],
+						[2]={
+							description="",
+							name="b",
+							tag="parameter"
+						}
+						--[[table: 0x8ee0168]],
+						[3]={
+							description="",
+							name="c",
+							tag="parameter"
+						}
+						--[[table: 0x8efdf28]]
+					}
+					--[[table: 0x915e698]],
+					tag="functiontypedef"
+				}
+				--[[table: 0x8e64250]],
+				modulename={
+					fields={
+						functioname={
+							type={
+								typename="__#number=__1",
+								tag="internaltyperef"
+							}
+							--[[table: 0x8de7fb8]],
+							description="",
+							parent=nil --[[ref]],
+							shortdescription="",
+							name="functioname",
+							sourcerange={
+								min=15,
+								max=34
+							}
+							--[[table: 0x8cf4c20]],
+							occurrences={
+
+							}
+							--[[table: 0x8fe5878]],
+							tag="item"
+						}
+						--[[table: 0x9130a70]]
+					}
+					--[[table: 0x8f271c8]],
+					shortdescription="",
+					name="modulename",
+					parent=nil --[[ref]],
+					sourcerange={
+						min=0,
+						max=0
+					}
+					--[[table: 0x8e603b8]],
+					description="",
+					tag="recordtypedef"
+				}
+				--[[table: 0x8fcb730]]
+			}
+			--[[table: 0x8ffb768]],
+			shortdescription="",
+			name="modulename",
+			returns={
+				[1]={
+					types={
+						[1]={
+							typename="modulename",
+							tag="internaltyperef"
+						}
+						--[[table: 0x9168ae8]]
+					}
+					--[[table: 0x8faf640]],
+					description="",
+					tag="return"
+				}
+				--[[table: 0x9067f48]]
+			}
+			--[[table: 0x8ec44d8]],
+			tag="file"
+		}
+		--[[table: 0x8ffb658]],
+		internalcontent={
+			unknownglobalvars={
+
+			}
+			--[[table: 0x8fdeb40]],
+			content={
+				localvars={
+					[1]={
+						item={
+							type={
+								typename="modulename",
+								tag="internaltyperef"
+							}
+							--[[table: 0x8f8e198]],
+							description="",
+							shortdescription="",
+							name="M",
+							sourcerange={
+								min=7,
+								max=7
+							}
+							--[[table: 0x8f51e08]],
+							occurrences={
+								[1]={
+									sourcerange={
+										min=7,
+										max=7
+									}
+									--[[table: 0x92088b8]],
+									definition=nil --[[ref]],
+									tag="MIdentifier"
+								}
+								--[[table: 0x8d62c18]],
+								[2]={
+									sourcerange={
+										min=35,
+										max=35
+									}
+									--[[table: 0x91ed9f8]],
+									definition=nil --[[ref]],
+									tag="MIdentifier"
+								}
+								--[[table: 0x8f91f28]],
+								[3]={
+									sourcerange={
+										min=90,
+										max=90
+									}
+									--[[table: 0x91c9220]],
+									definition=nil --[[ref]],
+									tag="MIdentifier"
+								}
+								--[[table: 0x913af50]]
+							}
+							--[[table: 0x8edcba8]],
+							tag="item"
+						}
+						--[[table: 0x8e759c0]],
+						scope={
+							min=0,
+							max=0
+						}
+						--[[table: 0x9028e08]]
+					}
+					--[[table: 0x8e71968]]
+				}
+				--[[table: 0x90f71f8]],
+				sourcerange={
+					min=1,
+					max=10000
+				}
+				--[[table: 0x90f8638]],
+				content={
+					[1]=nil --[[ref]],
+					[2]={
+						sourcerange={
+							min=35,
+							max=47
+						}
+						--[[table: 0x8d9ca58]],
+						right="functioname",
+						left=nil --[[ref]],
+						tag="MIndex"
+					}
+					--[[table: 0x8da0ba0]],
+					[3]={
+						localvars={
+							[1]={
+								item={
+									description="",
+									shortdescription="",
+									name="a",
+									sourcerange={
+										min=61,
+										max=61
+									}
+									--[[table: 0x9243c08]],
+									occurrences={
+										[1]={
+											sourcerange={
+												min=61,
+												max=61
+											}
+											--[[table: 0x8d19e20]],
+											definition=nil --[[ref]],
+											tag="MIdentifier"
+										}
+										--[[table: 0x8f64a48]]
+									}
+									--[[table: 0x8ef23f0]],
+									tag="item"
+								}
+								--[[table: 0x8ee0008]],
+								scope={
+									min=0,
+									max=0
+								}
+								--[[table: 0x8d51538]]
+							}
+							--[[table: 0x9025fe0]],
+							[2]={
+								item={
+									description="",
+									shortdescription="",
+									name="c",
+									sourcerange={
+										min=65,
+										max=65
+									}
+									--[[table: 0x8fb1500]],
+									occurrences={
+										[1]={
+											sourcerange={
+												min=65,
+												max=65
+											}
+											--[[table: 0x8e897e8]],
+											definition=nil --[[ref]],
+											tag="MIdentifier"
+										}
+										--[[table: 0x8d0ede8]]
+									}
+									--[[table: 0x8fb13f0]],
+									tag="item"
+								}
+								--[[table: 0x9247a50]],
+								scope={
+									min=0,
+									max=0
+								}
+								--[[table: 0x8ff7550]]
+							}
+							--[[table: 0x90db190]],
+							[3]={
+								item={
+									description="",
+									shortdescription="",
+									name="b",
+									sourcerange={
+										min=63,
+										max=63
+									}
+									--[[table: 0x9050f88]],
+									occurrences={
+										[1]={
+											sourcerange={
+												min=63,
+												max=63
+											}
+											--[[table: 0x8f17108]],
+											definition=nil --[[ref]],
+											tag="MIdentifier"
+										}
+										--[[table: 0x8d19fd0]]
+									}
+									--[[table: 0x8ccc150]],
+									tag="item"
+								}
+								--[[table: 0x91540e8]],
+								scope={
+									min=0,
+									max=0
+								}
+								--[[table: 0x8f2c428]]
+							}
+							--[[table: 0x915df68]]
+						}
+						--[[table: 0x8f06ea8]],
+						sourcerange={
+							min=51,
+							max=80
+						}
+						--[[table: 0x8ddfbc0]],
+						content={
+							[1]=nil --[[ref]],
+							[2]=nil --[[ref]],
+							[3]=nil --[[ref]]
+						}
+						--[[table: 0x8fc8e98]],
+						tag="MBlock"
+					}
+					--[[table: 0x91a6e58]],
+					[4]=nil --[[ref]]
+				}
+				--[[table: 0x8cc3040]],
+				tag="MBlock"
+			}
+			--[[table: 0x8fc2f08]],
+			tag="MInternalContent"
+		}
+		--[[table: 0x8fc1028]]
+	}
+	--[[table: 0x91cadb0]];
+	_.fileapi.types["__#number=__1"].parent=_.fileapi;
+	_.fileapi.types.modulename.fields.functioname.parent=_.fileapi.types.modulename;
+	_.fileapi.types.modulename.parent=_.fileapi;
+	_.internalcontent.content.localvars[1].item.occurrences[1].definition=_.internalcontent.content.localvars[1].item;
+	_.internalcontent.content.localvars[1].item.occurrences[2].definition=_.internalcontent.content.localvars[1].item;
+	_.internalcontent.content.localvars[1].item.occurrences[3].definition=_.internalcontent.content.localvars[1].item;
+	_.internalcontent.content.content[1]=_.internalcontent.content.localvars[1].item.occurrences[1];
+	_.internalcontent.content.content[2].left=_.internalcontent.content.localvars[1].item.occurrences[2];
+	_.internalcontent.content.content[3].localvars[1].item.occurrences[1].definition=_.internalcontent.content.content[3].localvars[1].item;
+	_.internalcontent.content.content[3].localvars[2].item.occurrences[1].definition=_.internalcontent.content.content[3].localvars[2].item;
+	_.internalcontent.content.content[3].localvars[3].item.occurrences[1].definition=_.internalcontent.content.content[3].localvars[3].item;
+	_.internalcontent.content.content[3].content[1]=_.internalcontent.content.content[3].localvars[1].item.occurrences[1];
+	_.internalcontent.content.content[3].content[2]=_.internalcontent.content.content[3].localvars[3].item.occurrences[1];
+	_.internalcontent.content.content[3].content[3]=_.internalcontent.content.content[3].localvars[2].item.occurrences[1];
+	_.internalcontent.content.content[4]=_.internalcontent.content.localvars[1].item.occurrences[3];
+	return _;
+end

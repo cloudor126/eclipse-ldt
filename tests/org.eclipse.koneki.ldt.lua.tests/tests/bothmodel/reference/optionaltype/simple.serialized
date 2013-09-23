@@ -1,0 +1,104 @@
+do local _={
+		fileapi={
+			description="",
+			globalvars={
+
+			}
+			--[[table: 0x8801f78]],
+			types={
+				H={
+					shortdescription="",
+					description="",
+					name="H",
+					parent=nil --[[ref]],
+					sourcerange={
+						min=1,
+						max=10
+					}
+					--[[table: 0x88e22d0]],
+					fields={
+
+					}
+					--[[table: 0x8c9d9d0]],
+					tag="recordtypedef"
+				}
+				--[[table: 0x87f6248]]
+			}
+			--[[table: 0x8801f50]],
+			shortdescription="",
+			returns={
+
+			}
+			--[[table: 0x8801fa0]],
+			tag="file"
+		}
+		--[[table: 0x8801d60]],
+		internalcontent={
+			unknownglobalvars={
+
+			}
+			--[[table: 0x89b64f8]],
+			content={
+				localvars={
+					[1]={
+						item={
+							type={
+								typename="H",
+								tag="internaltyperef"
+							}
+							--[[table: 0x87e22e8]],
+							description="",
+							shortdescription="",
+							name="H",
+							sourcerange={
+								min=17,
+								max=17
+							}
+							--[[table: 0x8917c78]],
+							occurrences={
+								[1]={
+									sourcerange={
+										min=17,
+										max=17
+									}
+									--[[table: 0x8b4ac58]],
+									definition=nil --[[ref]],
+									tag="MIdentifier"
+								}
+								--[[table: 0x8a03008]]
+							}
+							--[[table: 0x884a5d8]],
+							tag="item"
+						}
+						--[[table: 0x87e2310]],
+						scope={
+							min=0,
+							max=0
+						}
+						--[[table: 0x87813c0]]
+					}
+					--[[table: 0x8917ca0]]
+				}
+				--[[table: 0x8b4acc8]],
+				sourcerange={
+					min=1,
+					max=10000
+				}
+				--[[table: 0x8b4acf0]],
+				content={
+					[1]=nil --[[ref]]
+				}
+				--[[table: 0x86f0448]],
+				tag="MBlock"
+			}
+			--[[table: 0x89b6520]],
+			tag="MInternalContent"
+		}
+		--[[table: 0x89b6458]]
+	}
+	--[[table: 0x87814b0]];
+	_.fileapi.types.H.parent=_.fileapi;
+	_.internalcontent.content.localvars[1].item.occurrences[1].definition=_.internalcontent.content.localvars[1].item;
+	_.internalcontent.content.content[1]=_.internalcontent.content.localvars[1].item.occurrences[1];
+	return _;
+end

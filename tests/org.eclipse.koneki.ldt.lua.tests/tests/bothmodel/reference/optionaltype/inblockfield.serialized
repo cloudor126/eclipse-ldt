@@ -1,0 +1,121 @@
+do local _={
+		fileapi={
+			description="",
+			globalvars={
+
+			}
+			--[[table: 0xa2c8400]],
+			types={
+				mytype={
+					fields={
+						myfield={
+							description="",
+							parent=nil --[[ref]],
+							shortdescription=" ",
+							name="myfield",
+							sourcerange={
+								min=1,
+								max=40
+							}
+							--[[table: 0xa19b7d8]],
+							occurrences={
+
+							}
+							--[[table: 0xa31b1b0]],
+							tag="item"
+						}
+						--[[table: 0xa31b188]]
+					}
+					--[[table: 0xa1a5b60]],
+					shortdescription="",
+					name="mytype",
+					parent=nil --[[ref]],
+					sourcerange={
+						min=1,
+						max=40
+					}
+					--[[table: 0xa1a5b88]],
+					description="",
+					tag="recordtypedef"
+				}
+				--[[table: 0xa1a5b38]]
+			}
+			--[[table: 0xa2c83d8]],
+			shortdescription="",
+			returns={
+
+			}
+			--[[table: 0xa2c8428]],
+			tag="file"
+		}
+		--[[table: 0xa3a8e38]],
+		internalcontent={
+			unknownglobalvars={
+
+			}
+			--[[table: 0xa5777a0]],
+			content={
+				localvars={
+					[1]={
+						item={
+							type={
+								typename="mytype",
+								tag="internaltyperef"
+							}
+							--[[table: 0xa116a88]],
+							description="",
+							shortdescription="",
+							name="T",
+							sourcerange={
+								min=47,
+								max=47
+							}
+							--[[table: 0xa3a8600]],
+							occurrences={
+								[1]={
+									sourcerange={
+										min=47,
+										max=47
+									}
+									--[[table: 0xa0bfbd8]],
+									definition=nil --[[ref]],
+									tag="MIdentifier"
+								}
+								--[[table: 0xa0bfbb0]]
+							}
+							--[[table: 0xa12e9e8]],
+							tag="item"
+						}
+						--[[table: 0xa12e9c0]],
+						scope={
+							min=0,
+							max=0
+						}
+						--[[table: 0xa3584d8]]
+					}
+					--[[table: 0xa3a8668]]
+				}
+				--[[table: 0xa28e780]],
+				sourcerange={
+					min=1,
+					max=10000
+				}
+				--[[table: 0xa28e7a8]],
+				content={
+					[1]=nil --[[ref]]
+				}
+				--[[table: 0xa28e758]],
+				tag="MBlock"
+			}
+			--[[table: 0xa5777c8]],
+			tag="MInternalContent"
+		}
+		--[[table: 0xa577778]]
+	}
+	--[[table: 0xa5d2850]];
+	_.fileapi.types.mytype.fields.myfield.parent=_.fileapi.types.mytype;
+	_.fileapi.types.mytype.parent=_.fileapi;
+	_.internalcontent.content.localvars[1].item.occurrences[1].definition=_.internalcontent.content.localvars[1].item;
+	_.internalcontent.content.content[1]=_.internalcontent.content.localvars[1].item.occurrences[1];
+	return _;
+end

@@ -7,39 +7,34 @@ do local _={
 						typename="__=__1",
 						tag="internaltyperef"
 					}
-					--[[table: 0x9ede420]],
+					--[[table: 0x89c9230]],
 					description="",
 					parent=nil --[[ref]],
 					shortdescription="description",
 					name="g",
 					sourcerange={
-						min=52,
-						max=52
+						min=1,
+						max=51
 					}
-					--[[table: 0x9d85558]],
+					--[[table: 0x89c91a0]],
 					occurrences={
 						[1]={
 							sourcerange={
 								min=52,
 								max=52
 							}
-							--[[table: 0x9aeb2f8]],
+							--[[table: 0x891c710]],
 							definition=nil --[[ref]],
 							tag="MIdentifier"
 						}
-						--[[table: 0x9aeb258]]
+						--[[table: 0x891c670]]
 					}
-					--[[table: 0x9d85530]],
+					--[[table: 0x89c9178]],
 					tag="item"
 				}
-				--[[table: 0x9d85340]]
+				--[[table: 0x87c2dc8]]
 			}
-			--[[table: 0x9f28468]],
-			shortdescription="",
-			returns={
-
-			}
-			--[[table: 0x9f28490]],
+			--[[table: 0x894c8b8]],
 			types={
 				["__=__1"]={
 					shortdescription="description",
@@ -49,46 +44,51 @@ do local _={
 					returns={
 
 					}
-					--[[table: 0x9dae238]],
+					--[[table: 0x87c2f00]],
 					params={
 
 					}
-					--[[table: 0x9dae210]],
+					--[[table: 0x87c2ed8]],
 					tag="functiontypedef"
 				}
-				--[[table: 0x9d85580]]
+				--[[table: 0x89c91c8]]
 			}
-			--[[table: 0x9f28440]],
+			--[[table: 0x894c890]],
+			shortdescription="",
+			returns={
+
+			}
+			--[[table: 0x894c8e0]],
 			tag="file"
 		}
-		--[[table: 0x9f28250]],
+		--[[table: 0x8838db8]],
 		internalcontent={
 			unknownglobalvars={
 
 			}
-			--[[table: 0x9bebaf8]],
+			--[[table: 0x89ef908]],
 			content={
 				localvars={
 
 				}
-				--[[table: 0x9bebbe8]],
+				--[[table: 0x8db4ed8]],
 				sourcerange={
 					min=1,
 					max=10000
 				}
-				--[[table: 0x9bebc10]],
+				--[[table: 0x8db4f00]],
 				content={
 					[1]=nil --[[ref]]
 				}
-				--[[table: 0x9bebbc0]],
+				--[[table: 0x8db4eb0]],
 				tag="MBlock"
 			}
-			--[[table: 0x9bebb20]],
+			--[[table: 0x89ef930]],
 			tag="MInternalContent"
 		}
-		--[[table: 0x9ed0d18]]
+		--[[table: 0x89ef868]]
 	}
-	--[[table: 0x9bc7328]];
+	--[[table: 0x8789f70]];
 	_.fileapi.globalvars.g.parent=_.fileapi;
 	_.fileapi.globalvars.g.occurrences[1].definition=_.fileapi.globalvars.g;
 	_.fileapi.types["__=__1"].parent=_.fileapi;

@@ -1,0 +1,104 @@
+do local _={
+		fileapi={
+			description="",
+			globalvars={
+
+			}
+			--[[table: 0x86b4138]],
+			types={
+				H={
+					shortdescription="Short.",
+					description="Long *description*",
+					name="H",
+					parent=nil --[[ref]],
+					sourcerange={
+						min=1,
+						max=42
+					}
+					--[[table: 0x8a1fb80]],
+					fields={
+
+					}
+					--[[table: 0x8a1fb58]],
+					tag="recordtypedef"
+				}
+				--[[table: 0x8a1fa48]]
+			}
+			--[[table: 0x86b4110]],
+			shortdescription="",
+			returns={
+
+			}
+			--[[table: 0x86b4160]],
+			tag="file"
+		}
+		--[[table: 0x892da18]],
+		internalcontent={
+			unknownglobalvars={
+
+			}
+			--[[table: 0x88af350]],
+			content={
+				localvars={
+					[1]={
+						item={
+							type={
+								typename="H",
+								tag="internaltyperef"
+							}
+							--[[table: 0x86ddf98]],
+							description="",
+							shortdescription="",
+							name="H",
+							sourcerange={
+								min=49,
+								max=49
+							}
+							--[[table: 0x8708670]],
+							occurrences={
+								[1]={
+									sourcerange={
+										min=49,
+										max=49
+									}
+									--[[table: 0x8713fc8]],
+									definition=nil --[[ref]],
+									tag="MIdentifier"
+								}
+								--[[table: 0x8713f28]]
+							}
+							--[[table: 0x8708648]],
+							tag="item"
+						}
+						--[[table: 0x86ddfc0]],
+						scope={
+							min=0,
+							max=0
+						}
+						--[[table: 0x8708758]]
+					}
+					--[[table: 0x87086f0]]
+				}
+				--[[table: 0x88af440]],
+				sourcerange={
+					min=1,
+					max=10000
+				}
+				--[[table: 0x88af468]],
+				content={
+					[1]=nil --[[ref]]
+				}
+				--[[table: 0x88af418]],
+				tag="MBlock"
+			}
+			--[[table: 0x88af378]],
+			tag="MInternalContent"
+		}
+		--[[table: 0x88af2b0]]
+	}
+	--[[table: 0x86de060]];
+	_.fileapi.types.H.parent=_.fileapi;
+	_.internalcontent.content.localvars[1].item.occurrences[1].definition=_.internalcontent.content.localvars[1].item;
+	_.internalcontent.content.content[1]=_.internalcontent.content.localvars[1].item.occurrences[1];
+	return _;
+end

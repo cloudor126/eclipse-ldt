@@ -1,0 +1,130 @@
+do local _={
+		fileapi={
+			description="",
+			globalvars={
+
+			}
+			--[[table: 0x96f86a0]],
+			types={
+				modulename={
+					fields={
+
+					}
+					--[[table: 0x997cb80]],
+					shortdescription="",
+					name="modulename",
+					parent=nil --[[ref]],
+					sourcerange={
+						min=0,
+						max=0
+					}
+					--[[table: 0x997cba8]],
+					description="",
+					tag="recordtypedef"
+				}
+				--[[table: 0x9550c50]]
+			}
+			--[[table: 0x96f8678]],
+			shortdescription="",
+			name="modulename",
+			returns={
+				[1]={
+					types={
+						[1]={
+							typename="modulename",
+							tag="internaltyperef"
+						}
+						--[[table: 0x96c4ba0]]
+					}
+					--[[table: 0x97fa6f0]],
+					description="",
+					tag="return"
+				}
+				--[[table: 0x997cca0]]
+			}
+			--[[table: 0x96f86c8]],
+			tag="file"
+		}
+		--[[table: 0x95d9258]],
+		internalcontent={
+			unknownglobalvars={
+
+			}
+			--[[table: 0x986ef38]],
+			content={
+				localvars={
+					[1]={
+						item={
+							type={
+								typename="modulename",
+								tag="internaltyperef"
+							}
+							--[[table: 0x96c4c08]],
+							description="",
+							shortdescription="",
+							name="M",
+							sourcerange={
+								min=7,
+								max=7
+							}
+							--[[table: 0x97fa640]],
+							occurrences={
+								[1]={
+									sourcerange={
+										min=7,
+										max=7
+									}
+									--[[table: 0x99f63b0]],
+									definition=nil --[[ref]],
+									tag="MIdentifier"
+								}
+								--[[table: 0x99f6310]],
+								[2]={
+									sourcerange={
+										min=22,
+										max=22
+									}
+									--[[table: 0x99f65b0]],
+									definition=nil --[[ref]],
+									tag="MIdentifier"
+								}
+								--[[table: 0x99f6588]]
+							}
+							--[[table: 0x97fa618]],
+							tag="item"
+						}
+						--[[table: 0x997cc38]],
+						scope={
+							min=0,
+							max=0
+						}
+						--[[table: 0x9550cb8]]
+					}
+					--[[table: 0x97fa6c8]]
+				}
+				--[[table: 0x9a397b0]],
+				sourcerange={
+					min=1,
+					max=10000
+				}
+				--[[table: 0x9a397d8]],
+				content={
+					[1]=nil --[[ref]],
+					[2]=nil --[[ref]]
+				}
+				--[[table: 0x986f000]],
+				tag="MBlock"
+			}
+			--[[table: 0x986ef60]],
+			tag="MInternalContent"
+		}
+		--[[table: 0x986ee98]]
+	}
+	--[[table: 0x96c4ce8]];
+	_.fileapi.types.modulename.parent=_.fileapi;
+	_.internalcontent.content.localvars[1].item.occurrences[1].definition=_.internalcontent.content.localvars[1].item;
+	_.internalcontent.content.localvars[1].item.occurrences[2].definition=_.internalcontent.content.localvars[1].item;
+	_.internalcontent.content.content[1]=_.internalcontent.content.localvars[1].item.occurrences[1];
+	_.internalcontent.content.content[2]=_.internalcontent.content.localvars[1].item.occurrences[2];
+	return _;
+end

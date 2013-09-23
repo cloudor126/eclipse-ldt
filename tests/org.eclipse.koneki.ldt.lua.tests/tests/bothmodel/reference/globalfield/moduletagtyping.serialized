@@ -4,10 +4,25 @@ do local _={
 			globalvars={
 				g={
 					type={
-						typename="modulename",
-						tag="internaltyperef"
+						def={
+							shortdescription="",
+							name="___",
+							fields={
+
+							}
+							--[[table: 0x98c3408]],
+							sourcerange={
+								min=0,
+								max=0
+							}
+							--[[table: 0x98c3430]],
+							description="",
+							tag="recordtypedef"
+						}
+						--[[table: 0x98da278]],
+						tag="inlinetyperef"
 					}
-					--[[table: 0x8722470]],
+					--[[table: 0x98c3458]],
 					description="",
 					parent=nil --[[ref]],
 					shortdescription="",
@@ -16,25 +31,45 @@ do local _={
 						min=42,
 						max=42
 					}
-					--[[table: 0x84f8368]],
+					--[[table: 0x987f108]],
 					occurrences={
 						[1]={
 							sourcerange={
 								min=42,
 								max=42
 							}
-							--[[table: 0x89a6ef0]],
+							--[[table: 0x9d8aaa8]],
 							definition=nil --[[ref]],
 							tag="MIdentifier"
 						}
-						--[[table: 0x89a6ec8]]
+						--[[table: 0x9d8aa08]]
 					}
-					--[[table: 0x84f8340]],
+					--[[table: 0x987f0e0]],
 					tag="item"
 				}
-				--[[table: 0x84f8318]]
+				--[[table: 0x98c34c0]]
 			}
-			--[[table: 0x85563b8]],
+			--[[table: 0x9c89fd0]],
+			types={
+				modulename={
+					fields={
+
+					}
+					--[[table: 0x97e2458]],
+					shortdescription="",
+					name="modulename",
+					parent=nil --[[ref]],
+					sourcerange={
+						min=1,
+						max=41
+					}
+					--[[table: 0x97e2480]],
+					description="",
+					tag="recordtypedef"
+				}
+				--[[table: 0x97e2348]]
+			}
+			--[[table: 0x9c89fa8]],
 			shortdescription="description",
 			name="modulename",
 			returns={
@@ -44,65 +79,45 @@ do local _={
 							typename="modulename",
 							tag="internaltyperef"
 						}
-						--[[table: 0x86c7e60]]
+						--[[table: 0x99b28b0]]
 					}
-					--[[table: 0x86c7eb0]],
+					--[[table: 0x97e2320]],
 					description="",
 					tag="return"
 				}
-				--[[table: 0x86c7e88]]
+				--[[table: 0x97e2280]]
 			}
-			--[[table: 0x85563e0]],
-			types={
-				modulename={
-					fields={
-
-					}
-					--[[table: 0x87af710]],
-					shortdescription="",
-					name="modulename",
-					parent=nil --[[ref]],
-					sourcerange={
-						min=1,
-						max=41
-					}
-					--[[table: 0x87af738]],
-					description="",
-					tag="recordtypedef"
-				}
-				--[[table: 0x87af6e8]]
-			}
-			--[[table: 0x8556390]],
+			--[[table: 0x9c89ff8]],
 			tag="file"
 		}
-		--[[table: 0x87916c8]],
+		--[[table: 0x9d64fb0]],
 		internalcontent={
 			unknownglobalvars={
 
 			}
-			--[[table: 0x866fd90]],
+			--[[table: 0x9d30b10]],
 			content={
 				localvars={
 
 				}
-				--[[table: 0x87113f0]],
+				--[[table: 0x9d30c00]],
 				sourcerange={
 					min=1,
 					max=10000
 				}
-				--[[table: 0x8711418]],
+				--[[table: 0x9d30c28]],
 				content={
 					[1]=nil --[[ref]]
 				}
-				--[[table: 0x87113c8]],
+				--[[table: 0x9d30bd8]],
 				tag="MBlock"
 			}
-			--[[table: 0x866fdb8]],
+			--[[table: 0x9d30b38]],
 			tag="MInternalContent"
 		}
-		--[[table: 0x866fd68]]
+		--[[table: 0x9d30a70]]
 	}
-	--[[table: 0x8a08fd0]];
+	--[[table: 0x98da2c8]];
 	_.fileapi.globalvars.g.parent=_.fileapi;
 	_.fileapi.globalvars.g.occurrences[1].definition=_.fileapi.globalvars.g;
 	_.fileapi.types.modulename.parent=_.fileapi;
