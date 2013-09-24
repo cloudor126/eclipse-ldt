@@ -29,18 +29,18 @@ function M.test(luasourcepath, serializedreferencepath)
 	local luasource = luafile:read('*a')
 	luafile:close()
 
+	-- Check if an error occurred
+	local sourceisvalid, msg = loadstring(luasource, 'AST source')
+	assert(
+    sourceisvalid,
+		string.format('Generated AST contains an error.\n%s', msg or '')
+	)
+
 	-- Generate AST
 	local ast, errormessage = mlc:src_to_ast( luasource )
 	assert(
 		ast,
 		string.format('Unable to generate AST for %s.\n%s', luasourcepath, errormessage or '')
-	)
-
-	-- Check if an error occurred
-	local status, astisvalid, msg = pcall(compiler.check_ast, ast)
-	assert(
-		status and astisvalid,
-		string.format('Generated AST contains an error.\n%s', msg or '')
 	)
 
 	--

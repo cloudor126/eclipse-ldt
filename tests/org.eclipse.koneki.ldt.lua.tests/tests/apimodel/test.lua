@@ -28,15 +28,15 @@ function M.test(luasourcepath, serializedreferencepath)
 	local luasource = luafile:read('*a')
 	luafile:close()
 
-	-- Generate AST
-	local ast = mlc:src_to_ast(luasource)
-
 	-- Check if an error occurred
-	local status, astisvalid, msg = pcall(compiler.check_ast, ast)
+	local sourceisvalid, msg = loadstring(luasource)
 	assert(
-		status and astisvalid,
+		sourceisvalid,
 		string.format('Generated AST contains an error.\n%s', msg or '')
 	)
+
+	-- Generate AST
+	local ast = mlc:src_to_ast(luasource)
 
 	--
 	-- Generate API model

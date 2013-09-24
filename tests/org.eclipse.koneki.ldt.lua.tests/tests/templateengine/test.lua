@@ -56,7 +56,6 @@ function M.test(luasourcepath, referencepath)
 	end
 
 	-- Check that they are equivalent
-		-- Check that they are equivalent
 	return testutil.comparehtml(htmltable,htmlreferencetable, inputhtml,referencehtml)
 end
 

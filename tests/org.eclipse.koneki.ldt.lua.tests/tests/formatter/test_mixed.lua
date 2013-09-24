@@ -24,7 +24,7 @@ function M.test(luainputpath, luareferencepath)
 	local luasource = luafile:read('*a')
 	luafile:close()
 
-	-- format code
+	-- Format code
 	local formattedCode = formatter.indentcode(luasource, '\n', true, 4, 3)
 	assert(
 		formattedCode,
