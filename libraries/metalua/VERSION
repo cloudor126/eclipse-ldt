@@ -1,4 +1,4 @@
 This version of Metalua is available at:
     * git://git.eclipse.org/gitroot/koneki/org.eclipse.koneki.metalua.git
-    * The commit is a7c5e2a5ad97d6edf0d16fb020b207999da0e9fb    
+    * The commit is a81f3ea05c2b0e6a05c3003cf2ff6b8f5a8f69e4
 + removal of checks() calls in the lexer to fix performance issue.
