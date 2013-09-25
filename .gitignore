@@ -4,3 +4,4 @@ bin/
 target/
 workspace/
 /plugin_customization.ini
+*~
