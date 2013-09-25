@@ -30,6 +30,8 @@ function M.build(source, modulename)
 	-- create root object
 	local root = javamodelfactory.newsourceroot(#source)
 	
+	-- manage shebang
+	if source then source = source:gsub("^(#.-\n)", function (s) return string.rep(' ',string.len(s)) end) end
 	-- check for errors
 	local f, err = loadstring(source,'source_to_check')
 	if not f then
