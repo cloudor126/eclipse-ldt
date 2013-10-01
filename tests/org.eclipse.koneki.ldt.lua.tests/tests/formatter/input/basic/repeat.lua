@@ -1,6 +1,6 @@
 ---
 -- repeat loop to be process
 --
-repeat  
+repeat
 print 'hello'
 until true

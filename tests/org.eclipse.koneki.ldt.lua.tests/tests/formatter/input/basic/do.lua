@@ -1,6 +1,6 @@
 ---
 -- do end to be process
 --
-do 
+do
 print 'hello'
 end

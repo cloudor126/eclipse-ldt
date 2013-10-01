@@ -1,6 +1,6 @@
 ---
 -- while loop to be process
 --
-while true do 
+while true do
 print 'hello'
 end
