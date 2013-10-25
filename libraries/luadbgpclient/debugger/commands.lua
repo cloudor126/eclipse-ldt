@@ -156,9 +156,22 @@ function M.eval(self, args, data)
     
     local response = { tag = "response", attr = { command = "eval", transaction_id = args.i } }
     if not err then
-        response.attr.success = 1
+        local nresults = result.n
+        if nresults == 1 then result = result[1] end
+        
+        -- store result for further use (property_*)
+        -- TODO: this could be optimized: this is only used for Expressions view and totally useless for interactive console,
+        --       so storing result or not could be set by an argument
+        local idx
+        if nresults > 0 then
+            local cache = env[context.Context[-1]]
+            idx = #cache + 1
+            cache[idx] = result
+        end
+        
         -- As of Lua 5.1, the maximum stack size (and result count) is 8000, this limit is used to fit all results in one page
-        response[1] = introspection.make_property(0, result, data, "", 1, 8000, 0, nil)
+        response[1] = introspection.make_property(-1, result, idx or "", nil, 1, 8000, 0, nil)
+        response.attr.success = 1
     else
         response.attr.success = 0
         response[1] = dbgp.make_error(206, err)
@@ -357,7 +370,7 @@ property_evaluation_environment.__index = property_evaluation_environment
 
 function M.property_get(self, args)
     --TODO BUG ECLIPSE TOOLSLINUX-99 352316
-    local cxt_num, name = assert(util.unb64(args.n):match("^(%d+)|(.*)$"))
+    local cxt_num, name = assert(util.unb64(args.n):match("^(%-?%d+)|(.*)$"))
     cxt_num = tonumber(args.c or cxt_num)
     local cxt_id = context.Context[cxt_num] or dbgp.error(302, "No such context: "..tostring(cxt_num))
     local level = tonumber(args.d or 0)
@@ -384,7 +397,7 @@ function M.property_value(self, args)
 end
 
 function M.property_set(self, args, data)
-    local cxt_num, name = assert(util.unb64(args.n):match("^(%d+)|(.*)$"))
+    local cxt_num, name = assert(util.unb64(args.n):match("^(%-?%d+)|(.*)$"))
     cxt_num = tonumber(args.c or cxt_num)
     local cxt_id = context.Context[cxt_num] or dbgp.error(302, "No such context: "..tostring(cxt_num))
     local level = tonumber(args.d or 0)

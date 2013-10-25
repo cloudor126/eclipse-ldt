@@ -17,7 +17,7 @@ local dbgp = require "debugger.dbgp"
 local util = require "debugger.util"
 
 -- make unique object to access contexts
-local LOCAL, UPVAL, GLOBAL, STORE, HANDLE = {}, {}, {}, {}, {}
+local LOCAL, UPVAL, GLOBAL, EVAL, STORE, HANDLE = {}, {}, {}, {}, {}, {}
 
 local getglobals
 if _VERSION == "Lua 5.1" then
@@ -45,6 +45,8 @@ M.Context = {
     [0] = LOCAL,
     [1] = GLOBAL, -- DLTK internal ID for globals is 1
     [2] = UPVAL,
+    -- EVAL is used to keep results from eval in cache in order to browse or modify them, results are stored as sequence
+    [-1] = EVAL,
     STORE = STORE,
     
     -- gets a variable by name with correct handling of Lua scope chain
@@ -141,7 +143,7 @@ M.Context = {
         locals = setmetatable({ [STORE] = locals, [HANDLE] = { level = level, coro = coro } }, cls.LocalContext)
         upvalues = setmetatable({ [STORE] = upvalues, [HANDLE] = func }, cls.UpvalContext)
         
-        local result = setmetatable({ [LOCAL] = locals, [UPVAL] = upvalues }, cls)
+        local result = setmetatable({ [LOCAL] = locals, [UPVAL] = upvalues, [EVAL] = {} }, cls)
         rawset(result, GLOBAL, getglobals(func, result))
         return result
     end,

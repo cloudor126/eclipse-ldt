@@ -57,7 +57,7 @@ end
 	</target>
 
 	<!--Find a path from a lua module name -->
-	<target name="findPath">
+	<target name="findPath" unless="path">
 		<script language="javascript">
 		    var module = project.getProperty("module");
 		    project.setProperty("path", module.replace(".", "/") + ".lua");
@@ -66,7 +66,7 @@ end
 	
 	<!--Append a module in the file -->
 	<target name="appendModule" depends="findPath">
-		<antcall target="findPath" />
+		<antcall target="findPath"/>
 
 		<loadfile property="fileContent" srcFile="${antFileFolder}/${path}" />
 		<echo file="${debuggerFile}" append="true" message="${moduleheaderstart}${module}" />
@@ -112,6 +112,13 @@ end
 		</antcall>
 		<antcall target="appendModule">
 			<param name="module" value="debugger.introspection" />
+		</antcall>
+		<antcall target="appendModule">
+			<param name="module" value="debugger.plugins.ffi" />
+			<param name="path" value="debugger/plugins/ffi/init.lua" />
+		</antcall>
+		<antcall target="appendModule">
+			<param name="module" value="debugger.plugins.ffi.reflect" />
 		</antcall>
 		<antcall target="appendModule">
 			<param name="module" value="debugger.platform" />
