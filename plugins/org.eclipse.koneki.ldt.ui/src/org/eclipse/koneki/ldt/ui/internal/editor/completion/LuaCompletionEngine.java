@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
 
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.dltk.codeassist.ScriptCompletionEngine;
 import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.compiler.util.Util;
@@ -26,6 +27,8 @@ import org.eclipse.dltk.core.IMethod;
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
+import org.eclipse.koneki.ldt.core.internal.LuaLanguageToolkit;
+import org.eclipse.koneki.ldt.core.internal.PreferenceInitializer;
 import org.eclipse.koneki.ldt.core.internal.ast.models.LuaASTModelUtils;
 import org.eclipse.koneki.ldt.core.internal.ast.models.LuaASTUtils;
 import org.eclipse.koneki.ldt.core.internal.ast.models.LuaASTUtils.Definition;
@@ -36,6 +39,7 @@ import org.eclipse.koneki.ldt.core.internal.ast.models.api.Parameter;
 import org.eclipse.koneki.ldt.core.internal.ast.models.api.RecordTypeDef;
 import org.eclipse.koneki.ldt.core.internal.ast.models.common.LuaSourceRoot;
 import org.eclipse.koneki.ldt.ui.internal.Activator;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 public class LuaCompletionEngine extends ScriptCompletionEngine {
 
@@ -72,7 +76,14 @@ public class LuaCompletionEngine extends ScriptCompletionEngine {
 
 	private void addGlobalDeclarations(ISourceModule sourceModule, String start, int cursorPosition) {
 		// get all global variable which start by the string "start"
-		List<Definition> globalvars = LuaASTUtils.getAllGlobalVarsDefinition(sourceModule, start);
+		// from current module
+		List<Definition> globalvars = new ArrayList<Definition>();
+
+		// from global.lua of the EE
+		ISourceModule preloadedSourceModule = LuaASTUtils.getPreloadSourceModule(sourceModule);
+		if (preloadedSourceModule != null) {
+			globalvars.addAll(LuaASTUtils.getAllInternalGlobalVarsDefinition(preloadedSourceModule, start));
+		}
 
 		// for each global var, get the corresponding model element and create the proposal
 		for (Definition definition : globalvars) {
@@ -80,6 +91,24 @@ public class LuaCompletionEngine extends ScriptCompletionEngine {
 			if (member != null)
 				createMemberProposal(member, cursorPosition - start.length(), cursorPosition);
 		}
+
+		// Add globals other that preloaded but with a lower relevance
+		ScopedPreferenceStore preferenceStore = new ScopedPreferenceStore(InstanceScope.INSTANCE, LuaLanguageToolkit.getDefault()
+				.getPreferenceQualifier());
+
+		if (preferenceStore.getBoolean(PreferenceInitializer.USE_GLOBAL_VAR_IN_LDT)) {
+
+			List<Definition> othersglobalvars = LuaASTUtils.getAllInternalGlobalVarsDefinition(sourceModule, start);
+			othersglobalvars.addAll(LuaASTUtils.getAllExternalGlobalVarsDefinition(sourceModule, start));
+
+			// for each global var, get the corresponding model element and create the proposal
+			for (Definition definition : othersglobalvars) {
+				IMember member = LuaASTModelUtils.getIMember(definition.getModule(), definition.getItem());
+				if (member != null)
+					createMemberProposal(member, cursorPosition - start.length(), cursorPosition, false, 25);
+			}
+		}
+
 	}
 
 	private void addKeywords(String start, int cursorPosition) {
@@ -290,6 +319,10 @@ public class LuaCompletionEngine extends ScriptCompletionEngine {
 	}
 
 	private void createMemberProposal(IMember member, int startIndex, int endIndex, boolean invocation) {
+		createMemberProposal(member, startIndex, endIndex, invocation, 50);
+	}
+
+	private void createMemberProposal(IMember member, int startIndex, int endIndex, boolean invocation, int relevance) {
 		try {
 			CompletionProposal proposal = null;
 			if (member == null) {
@@ -331,7 +364,7 @@ public class LuaCompletionEngine extends ScriptCompletionEngine {
 			proposal.setName(member.getElementName());
 			proposal.setCompletion(member.getElementName());
 			proposal.setReplaceRange(startIndex, endIndex);
-			proposal.setRelevance(2);
+			proposal.setRelevance(relevance);
 			this.requestor.accept(proposal);
 
 		} catch (ModelException e) {

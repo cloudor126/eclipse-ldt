@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 Sierra Wireless and others.
+ * Copyright (c) 2013 Sierra Wireless and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,16 +13,18 @@ package org.eclipse.koneki.ldt.core;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.dltk.core.IScriptFolder;
+import org.eclipse.dltk.core.ISourceModule;
 
 /**
- * 
- * @deprecated Use {@link org.eclipse.koneki.ldt.core.IProjectSourceVisitor2} instead.
+ * @since 1.1
  */
-public interface IProjectSourceVisitor {
+public interface IProjectSourceVisitor2 {
 
-	public abstract void processFile(final IPath absolutePath, final IPath relativePath, final String charset, final IProgressMonitor monitor)
-			throws CoreException;
+	public abstract void processFile(final ISourceModule sourceModule, final IPath absolutePath, final IPath relativePath, final String charset,
+			final IProgressMonitor monitor) throws CoreException;
 
-	public abstract void processDirectory(final IPath absolutePath, final IPath relativePath, final IProgressMonitor monitor) throws CoreException;
+	public abstract void processDirectory(final IScriptFolder sourceModule, final IPath absolutePath, final IPath relativePath,
+			final IProgressMonitor monitor) throws CoreException;
 
 }

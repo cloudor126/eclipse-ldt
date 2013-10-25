@@ -12,15 +12,26 @@ package org.eclipse.koneki.ldt.core.internal.ast.models;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.ASTVisitor;
+import org.eclipse.dltk.core.IScriptFolder;
 import org.eclipse.dltk.core.ISourceModule;
+import org.eclipse.koneki.ldt.core.IProjectSourceVisitor2;
 import org.eclipse.koneki.ldt.core.LuaUtils;
+import org.eclipse.koneki.ldt.core.LuaUtils.ProjectFragmentFilter;
 import org.eclipse.koneki.ldt.core.internal.Activator;
+import org.eclipse.koneki.ldt.core.internal.LuaLanguageToolkit;
+import org.eclipse.koneki.ldt.core.internal.PreferenceInitializer;
 import org.eclipse.koneki.ldt.core.internal.ast.models.api.ExprTypeRef;
 import org.eclipse.koneki.ldt.core.internal.ast.models.api.ExternalTypeRef;
 import org.eclipse.koneki.ldt.core.internal.ast.models.api.FunctionTypeDef;
@@ -44,6 +55,7 @@ import org.eclipse.koneki.ldt.core.internal.ast.models.file.Invoke;
 import org.eclipse.koneki.ldt.core.internal.ast.models.file.LocalVar;
 import org.eclipse.koneki.ldt.core.internal.ast.models.file.LuaExpression;
 import org.eclipse.koneki.ldt.core.internal.ast.models.file.LuaInternalContent;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 public final class LuaASTUtils {
 	private LuaASTUtils() {
@@ -446,28 +458,32 @@ public final class LuaASTUtils {
 		return null;
 	}
 
-	public static List<Definition> getAllGlobalVarsDefinition(ISourceModule sourceModule, String start) {
+	public static List<Definition> getAllGlobalVarsDefinition(final ISourceModule sourceModule, final String start) {
 		final List<Definition> definitions = new ArrayList<Definition>();
 
-		// global vars defined preloaded module.
-		// ----------------------------------------
-		// get preloaded module
+		// SEARCH IN PRELOADED SOURCE MODULE
 		ISourceModule preloadedSourceModule = getPreloadSourceModule(sourceModule);
 		if (preloadedSourceModule != null) {
-			// get lua source root
-			LuaSourceRoot preloadedLuaSourceRoot = LuaASTModelUtils.getLuaSourceRoot(preloadedSourceModule);
-			if (preloadedLuaSourceRoot != null) {
-
-				// global var which start with 'start'
-				for (Item globalvar : preloadedLuaSourceRoot.getFileapi().getGlobalvars().values()) {
-					if (start == null || start.isEmpty() || globalvar.getName().toLowerCase().startsWith(start.toLowerCase()))
-						definitions.add(new Definition(preloadedSourceModule, globalvar));
-				}
-			}
+			definitions.addAll(getAllInternalGlobalVarsDefinition(preloadedSourceModule, start));
 		}
 
+		// SEARCH IN CURRENT SOURCE MODULE
+		definitions.addAll(getAllInternalGlobalVarsDefinition(sourceModule, start));
+
+		// SEARCH IN EXTERNAL SOURCE MODULE
+		ScopedPreferenceStore preferenceStore = new ScopedPreferenceStore(InstanceScope.INSTANCE, LuaLanguageToolkit.getDefault()
+				.getPreferenceQualifier());
+		if (preferenceStore.getBoolean(PreferenceInitializer.USE_GLOBAL_VAR_IN_LDT)) {
+			definitions.addAll(getAllExternalGlobalVarsDefinition(sourceModule, start));
+		}
+
+		return definitions;
+	}
+
+	public static List<Definition> getAllInternalGlobalVarsDefinition(final ISourceModule sourceModule, final String start) {
+		final List<Definition> definitions = new ArrayList<Definition>();
+
 		// global vars defined in current module.
-		// ----------------------------------------
 		LuaSourceRoot currentluaSourceRoot = LuaASTModelUtils.getLuaSourceRoot(sourceModule);
 		if (currentluaSourceRoot != null) {
 			// global var which start with 'start'
@@ -476,7 +492,45 @@ public final class LuaASTUtils {
 					definitions.add(new Definition(sourceModule, globalvar));
 			}
 		}
+		return definitions;
+	}
 
+	public static List<Definition> getAllExternalGlobalVarsDefinition(final ISourceModule originalSourceModule, final String start) {
+		return getExternalGlobalVarsDefinition(originalSourceModule, start, false);
+	}
+
+	private static List<Definition> getExternalGlobalVarsDefinition(final ISourceModule originalSourceModule, final String start,
+			final boolean exactName) {
+		final List<Definition> definitions = new ArrayList<Definition>();
+
+		IProjectSourceVisitor2 visitor = new IProjectSourceVisitor2() {
+
+			@Override
+			public void processFile(ISourceModule sourceModule, IPath absolutePath, IPath relativePath, String charset, IProgressMonitor monitor)
+					throws CoreException {
+				if (sourceModule != null && !sourceModule.equals(originalSourceModule)) {
+					if (exactName) {
+						definitions.add(getInternalGlobalVarDefinition(sourceModule, start));
+					} else {
+						definitions.addAll(getAllInternalGlobalVarsDefinition(sourceModule, start));
+					}
+				}
+
+			}
+
+			@Override
+			public void processDirectory(IScriptFolder sourceModule, IPath absolutePath, IPath relativePath, IProgressMonitor monitor)
+					throws CoreException {
+				// nothing to do
+			}
+		};
+
+		try {
+			LuaUtils.visitSourceFiles(originalSourceModule.getScriptProject(), EnumSet.of(ProjectFragmentFilter.DEPENDENT_PROJECT), visitor,
+					new NullProgressMonitor());
+		} catch (CoreException e) {
+			Activator.logError("Unable to get external global for auto-complete", e); //$NON-NLS-1$
+		}
 		return definitions;
 	}
 
@@ -490,6 +544,15 @@ public final class LuaASTUtils {
 		definition = getInternalGlobalVarDefinition(sourceModule, varname);
 		if (definition != null)
 			return definition;
+
+		// SEARCH IN EXTERNAL SOURCE MODULE
+		ScopedPreferenceStore preferenceStore = new ScopedPreferenceStore(InstanceScope.INSTANCE, LuaLanguageToolkit.getDefault()
+				.getPreferenceQualifier());
+		if (preferenceStore.getBoolean(PreferenceInitializer.USE_GLOBAL_VAR_IN_LDT)) {
+			definition = getExternalGlobalVarDefinition(sourceModule, varname);
+			if (definition != null)
+				return definition;
+		}
 
 		return null;
 	}
@@ -525,6 +588,14 @@ public final class LuaASTUtils {
 			return null;
 
 		return new Definition(sourceModule, item);
+	}
+
+	public static Definition getExternalGlobalVarDefinition(final ISourceModule originalSourceModule, final String start) {
+		List<Definition> definitions = getExternalGlobalVarsDefinition(originalSourceModule, start, true);
+		if (!definitions.isEmpty()) {
+			return definitions.get(0);
+		}
+		return null;
 	}
 
 	public static ISourceModule getPreloadSourceModule(ISourceModule sourceModule) {

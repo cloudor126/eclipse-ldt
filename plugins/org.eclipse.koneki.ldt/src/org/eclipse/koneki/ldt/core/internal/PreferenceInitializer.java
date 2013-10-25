@@ -17,6 +17,7 @@ import org.eclipse.ui.preferences.ScopedPreferenceStore;
 public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
 	public static final String EE_DEFAULT_ID = "EE__default_id"; //$NON-NLS-1$
+	public static final String USE_GLOBAL_VAR_IN_LDT = "USE_GLOBAL_VAR_IN_LDT"; //$NON-NLS-1$
 
 	@Override
 	public void initializeDefaultPreferences() {
@@ -24,5 +25,6 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 				.getPreferenceQualifier());
 
 		preferenceStore.setDefault(EE_DEFAULT_ID, "lua-5.1"); //$NON-NLS-1$
+		preferenceStore.setDefault(USE_GLOBAL_VAR_IN_LDT, true);
 	}
 }

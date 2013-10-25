@@ -10,26 +10,23 @@
  ******************************************************************************/
 package org.eclipse.koneki.ldt.ui.internal.preferences;
 
-import org.eclipse.dltk.ui.preferences.AbstractConfigurationBlock;
-import org.eclipse.dltk.ui.preferences.AbstractConfigurationBlockPreferencePage;
-import org.eclipse.dltk.ui.preferences.IPreferenceConfigurationBlock;
-import org.eclipse.dltk.ui.preferences.OverlayPreferenceStore;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.dltk.ui.util.SWTFactory;
+import org.eclipse.jface.preference.BooleanFieldEditor;
+import org.eclipse.jface.preference.PreferencePage;
+import org.eclipse.koneki.ldt.core.internal.LuaLanguageToolkit;
+import org.eclipse.koneki.ldt.core.internal.PreferenceInitializer;
 import org.eclipse.koneki.ldt.ui.internal.Activator;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
-public class GlobalLuaPreferencePage extends AbstractConfigurationBlockPreferencePage {
+public class GlobalLuaPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
 
-	protected IPreferenceConfigurationBlock createConfigurationBlock(OverlayPreferenceStore overlayPreferenceStore) {
-		return new AbstractConfigurationBlock(overlayPreferenceStore, this) {
-			public Control createControl(Composite parent) {
-				Composite composite = SWTFactory.createComposite(parent, parent.getFont(), 1, 1, GridData.FILL_HORIZONTAL);
-				return composite;
-			}
-		};
-	}
+	private BooleanFieldEditor useGlobalVars;
 
 	protected String getHelpId() {
 		return null;
@@ -42,4 +39,28 @@ public class GlobalLuaPreferencePage extends AbstractConfigurationBlockPreferenc
 	protected void setPreferenceStore() {
 		setPreferenceStore(Activator.getDefault().getPreferenceStore());
 	}
+
+	@Override
+	protected Control createContents(Composite parent) {
+		Composite composite = SWTFactory.createComposite(parent, parent.getFont(), 1, 1, GridData.FILL_HORIZONTAL);
+
+		useGlobalVars = new BooleanFieldEditor(PreferenceInitializer.USE_GLOBAL_VAR_IN_LDT, Messages.GlobalLuaPreferencePage_use_global_vars,
+				composite);
+		useGlobalVars.setPreferenceStore(new ScopedPreferenceStore(InstanceScope.INSTANCE, LuaLanguageToolkit.getDefault().getPreferenceQualifier()));
+		useGlobalVars.load();
+
+		return composite;
+	}
+
+	@Override
+	public void init(IWorkbench workbench) {
+
+	}
+
+	@Override
+	public boolean performOk() {
+		useGlobalVars.store();
+		return super.performOk();
+	}
+
 }

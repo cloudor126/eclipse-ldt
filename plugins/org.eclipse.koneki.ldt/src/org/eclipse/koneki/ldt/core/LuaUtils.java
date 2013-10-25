@@ -369,9 +369,30 @@ public final class LuaUtils {
 		return filteredProjecFragment;
 	}
 
-	/** Enable to perform operation in Root source folders */
+	/**
+	 * @since 1.1
+	 */
+	public static void visitRootSourceFolder(final IScriptProject project, EnumSet<ProjectFragmentFilter> filter,
+			final IProjectSourceRootFolderVisitor2 visitor, final IProgressMonitor monitor) throws CoreException {
+
+		visitRootSourceFolder(project, filter, (Object) visitor, monitor);
+	}
+
+	/**
+	 * Enable to perform operation in Root source folders
+	 * 
+	 * @deprecated Use visitRootSourceFolder(IScriptProject, EnumSet<ProjectFragmentFilter>, IProjectSourceRootFolderVisitor2, IProgressMonitor)
+	 *             instead.
+	 * */
 	public static void visitRootSourceFolder(final IScriptProject project, EnumSet<ProjectFragmentFilter> filter,
 			final IProjectSourceRootFolderVisitor visitor, final IProgressMonitor monitor) throws CoreException {
+
+		visitRootSourceFolder(project, filter, (Object) visitor, monitor);
+	}
+
+	@SuppressWarnings("deprecation")
+	private static void visitRootSourceFolder(final IScriptProject project, EnumSet<ProjectFragmentFilter> filter, final Object visitor,
+			final IProgressMonitor monitor) throws CoreException {
 
 		SubMonitor subMonitor = SubMonitor.convert(monitor, 10);
 
@@ -385,12 +406,37 @@ public final class LuaUtils {
 				return;
 
 			IPath absolutePathFromModelElement = getAbsolutePathFromModelElement(projectFragment);
-			visitor.processSourceRootFolder(absolutePathFromModelElement, visitLoopMonitor.newChild(1));
+
+			SubMonitor subMonitor2 = visitLoopMonitor.newChild(1);
+			if (visitor instanceof IProjectSourceRootFolderVisitor2) {
+				((IProjectSourceRootFolderVisitor2) visitor).processSourceRootFolder(projectFragment, absolutePathFromModelElement, subMonitor2);
+			} else if (visitor instanceof IProjectSourceVisitor) {
+				((IProjectSourceRootFolderVisitor) visitor).processSourceRootFolder(absolutePathFromModelElement, subMonitor2);
+			}
 		}
 	}
 
-	/** Enable to perform operation in all files and directories in project fragments source directories */
+	/**
+	 * @since 1.1
+	 */
+	public static void visitSourceFiles(final IScriptProject project, EnumSet<ProjectFragmentFilter> filter, final IProjectSourceVisitor2 visitor,
+			final IProgressMonitor monitor) throws CoreException {
+
+		visitSourceFiles(project, filter, (Object) visitor, monitor);
+	}
+
+	/**
+	 * Enable to perform operation in all files and directories in project fragments source directories
+	 * 
+	 * @deprecated Use visitSourceFiles(IScriptProject, EnumSet<ProjectFragmentFilter>, IProjectSourceVisitor2, IProgressMonitor) instead
+	 * */
 	public static void visitSourceFiles(final IScriptProject project, EnumSet<ProjectFragmentFilter> filter, final IProjectSourceVisitor visitor,
+			final IProgressMonitor monitor) throws CoreException {
+
+		visitSourceFiles(project, filter, (Object) visitor, monitor);
+	}
+
+	private static void visitSourceFiles(final IScriptProject project, EnumSet<ProjectFragmentFilter> filter, final Object visitor,
 			final IProgressMonitor monitor) throws CoreException {
 
 		SubMonitor subMonitor = SubMonitor.convert(monitor, 10);
@@ -407,8 +453,9 @@ public final class LuaUtils {
 		}
 	}
 
-	private static void visitSourceFiles(final IParent parent, final IProjectSourceVisitor visitor, final IProgressMonitor monitor,
-			final IPath currentPath) throws CoreException {
+	@SuppressWarnings("deprecation")
+	private static void visitSourceFiles(final IParent parent, final Object visitor, final IProgressMonitor monitor, final IPath currentPath)
+			throws CoreException {
 
 		final IModelElement[] children = parent.getChildren();
 
@@ -425,7 +472,14 @@ public final class LuaUtils {
 				String charset = getCharsetOfModelElement(modelElement);
 
 				final IPath relativeFilePath = currentPath.append(absolutePath.lastSegment());
-				visitor.processFile(absolutePath, relativeFilePath, charset, subMonitor.newChild(1));
+
+				if (visitor instanceof IProjectSourceVisitor2) {
+					((IProjectSourceVisitor2) visitor).processFile((ISourceModule) modelElement, absolutePath, relativeFilePath, charset,
+							subMonitor.newChild(1));
+				} else if (visitor instanceof IProjectSourceVisitor) {
+					((IProjectSourceVisitor) visitor).processFile(absolutePath, relativeFilePath, charset, subMonitor.newChild(1));
+				}
+
 			} else if (modelElement instanceof IScriptFolder) {
 
 				/*
@@ -434,10 +488,15 @@ public final class LuaUtils {
 				final IScriptFolder innerSourceFolder = (IScriptFolder) modelElement;
 				// Do not notify interface for Source folders
 				if (!innerSourceFolder.isRootFolder()) {
-					IPath absolutePath = getAbsolutePathFromModelElement(modelElement);
 
+					IPath absolutePath = getAbsolutePathFromModelElement(modelElement);
 					final IPath newPath = currentPath.append(innerSourceFolder.getElementName());
-					visitor.processDirectory(absolutePath, newPath, monitor);
+
+					if (visitor instanceof IProjectSourceVisitor2) {
+						((IProjectSourceVisitor2) visitor).processDirectory(innerSourceFolder, absolutePath, newPath, subMonitor.newChild(1));
+					} else if (visitor instanceof IProjectSourceVisitor) {
+						((IProjectSourceVisitor) visitor).processDirectory(absolutePath, newPath, subMonitor.newChild(1));
+					}
 					visitSourceFiles(innerSourceFolder, visitor, subMonitor.newChild(1), newPath);
 				} else {
 					// Deal with sub elements

@@ -14,6 +14,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 
+/**
+ * @deprecated Use org.eclipse.koneki.ldt.core.IProjectSourceRootFolderVisitor2 instead.
+ */
 public interface IProjectSourceRootFolderVisitor {
 	public abstract void processSourceRootFolder(final IPath absolutePath, final IProgressMonitor monitor) throws CoreException;
 }
