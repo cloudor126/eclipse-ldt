@@ -24,6 +24,7 @@ import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.koneki.ldt.core.LuaConstants;
 import org.eclipse.koneki.ldt.core.LuaNature;
+import org.eclipse.koneki.ldt.core.internal.buildpath.LuaExecutionEnvironment;
 import org.eclipse.koneki.ldt.ui.internal.Activator;
 import org.eclipse.koneki.ldt.ui.internal.ImageConstants;
 import org.eclipse.koneki.ldt.ui.wizards.pages.LuaProjectSettingsPage;
@@ -98,17 +99,36 @@ public class LuaProjectWizard extends GenericDLTKProjectWizard {
 	public boolean performFinish() {
 		boolean superResult = super.performFinish();
 
-		// Open main file of the created project in a editor
-		IPath mainFilePath = new Path(LuaConstants.SOURCE_FOLDER).append(LuaConstants.DEFAULT_MAIN_FILE);
-		IFile mainFile = getProject().getFile(mainFilePath);
-		if (mainFile.exists()) {
-			try {
-				IDE.openEditor(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage(), mainFile, true);
-			} catch (PartInitException e) {
-				final String message = MessageFormat.format("Unable to open lua editor for %s", mainFile.getFullPath()); //$NON-NLS-1$
-				Activator.logError(message, e);
+		// open a file of the project in a editor
+		if (firstPage.hasToCreateTemplate()) {
+			IPath filePathToOpen = null;
+
+			// look in the EE if the file to open is set
+			LuaExecutionEnvironment ee = firstPage.getExecutionEnvironment();
+			if (ee != null && ee.getDefaultTemplateInfo() != null) {
+				Object openfile = ee.getDefaultTemplateInfo().get(LuaExecutionEnvironment.OPEN_FILE);
+				if (openfile instanceof String) {
+					filePathToOpen = new Path((String) openfile);
+				}
+			}
+
+			// if no file specified, try a default one
+			if (filePathToOpen == null) {
+				filePathToOpen = new Path(LuaConstants.SOURCE_FOLDER).append(LuaConstants.DEFAULT_MAIN_FILE);
+			}
+
+			// do opening file
+			IFile fileToOpen = getProject().getFile(filePathToOpen);
+			if (fileToOpen.exists()) {
+				try {
+					IDE.openEditor(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage(), fileToOpen, true);
+				} catch (PartInitException e) {
+					final String message = MessageFormat.format("Unable to open lua editor for %s", fileToOpen.getFullPath()); //$NON-NLS-1$
+					Activator.logError(message, e);
+				}
 			}
 		}
+
 		return superResult;
 	}
 }

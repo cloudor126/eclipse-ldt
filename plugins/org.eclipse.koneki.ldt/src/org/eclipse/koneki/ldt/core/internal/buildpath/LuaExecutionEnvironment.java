@@ -10,32 +10,48 @@
  *******************************************************************************/
 package org.eclipse.koneki.ldt.core.internal.buildpath;
 
+import java.util.Map;
+
 import org.eclipse.core.runtime.IPath;
 
 public class LuaExecutionEnvironment implements Comparable<LuaExecutionEnvironment> {
 
+	public static final String DEFAULT_TEMPLATE = "default"; //$NON-NLS-1$
+	public static final String TEMPLATE_BUILDPATH = "buildpath"; //$NON-NLS-1$
+	public static final Object OPEN_FILE = "openfile"; //$NON-NLS-1$
+
 	private final String id;
 	private final String version;
 	private final IPath path;
-	private final IPath main;
+	private final IPath oldTemplate;
+	private final IPath templates;
 	private boolean embedded;
+	private Map<?, ?> templatesInfo;
 
-	public LuaExecutionEnvironment(final String identifier, final String eeversion, final IPath pathToEE) {
+	public LuaExecutionEnvironment(final String identifier, final String eeversion, final Map<?, ?> templatesInfo, final IPath pathToEE) {
 		id = identifier;
 		version = eeversion;
 		path = pathToEE;
 		embedded = false;
+		this.templatesInfo = templatesInfo;
 
-		// Create path to main.lua
-		IPath mainPath = null;
+		// Old template folder (supported for legacy only)
+		IPath oldTemplatePath = null;
 		if (pathToEE != null)
-			mainPath = pathToEE.append(LuaExecutionEnvironmentConstants.EE_FILE_MAIN);
-
-		// Keep it if main file really exists
-		if (mainPath != null && mainPath.toFile().exists())
-			main = mainPath;
+			oldTemplatePath = pathToEE.append(LuaExecutionEnvironmentConstants.EE_OLDTEMPLATE_FOLDER);
+		if (oldTemplatePath != null && oldTemplatePath.toFile().exists())
+			oldTemplate = oldTemplatePath;
 		else
-			main = null;
+			oldTemplate = null;
+
+		// New templates folder (allow multiple templates)
+		IPath templatesPath = null;
+		if (pathToEE != null)
+			templatesPath = pathToEE.append(LuaExecutionEnvironmentConstants.EE_TEMPLATE_FOLDER);
+		if (templatesPath != null && templatesPath.toFile().exists())
+			templates = templatesPath;
+		else
+			templates = null;
 	}
 
 	protected void setEmbedded(final boolean embeddedEE) {
@@ -123,8 +139,28 @@ public class LuaExecutionEnvironment implements Comparable<LuaExecutionEnvironme
 		return getEEIdentifier().compareTo(ee.getEEIdentifier());
 	}
 
-	public IPath getMainPath() {
-		return main;
+	public IPath getOldTemplatePath() {
+		return oldTemplate;
 	}
 
+	public IPath getTemplatesPath() {
+		return templates;
+	}
+
+	public Map<?, ?> getDefaultTemplateInfo() {
+		if (templatesInfo != null) {
+			Object defaultTemplate = templatesInfo.get(DEFAULT_TEMPLATE);
+			if (defaultTemplate instanceof Map && !((Map<?, ?>) defaultTemplate).isEmpty()) {
+				return (Map<?, ?>) defaultTemplate;
+			}
+		}
+		return null;
+	}
+
+	public IPath getDefaultTemplatePath() {
+		final IPath templatesPath = this.getTemplatesPath();
+		if (templatesPath == null)
+			return null;
+		return templatesPath.append(LuaExecutionEnvironment.DEFAULT_TEMPLATE);
+	}
 }

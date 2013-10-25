@@ -13,6 +13,7 @@ package org.eclipse.koneki.ldt.ui.internal.preferences;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 
 import org.eclipse.core.filebuffers.IDocumentSetupParticipant;
 import org.eclipse.core.runtime.Platform;
@@ -87,7 +88,9 @@ public class LuaEditorColoringConfigurationBlock extends AbstractScriptEditorCol
 
 	protected InputStream getPreviewContentReader() {
 		try {
-			return Activator.getDefault().getBundle().getEntry(PREVIEW_FILE_NAME).openStream();
+			URL fileURL = Activator.getDefault().getBundle().getEntry(PREVIEW_FILE_NAME);
+			if (fileURL != null)
+				return fileURL.openStream();
 		} catch (IOException e) {
 			Activator.logError("Unable to generate code preview", e); //$NON-NLS-1$
 		}

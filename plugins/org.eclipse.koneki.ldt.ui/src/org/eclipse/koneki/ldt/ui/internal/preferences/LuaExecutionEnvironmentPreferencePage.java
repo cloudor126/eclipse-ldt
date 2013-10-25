@@ -47,7 +47,6 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -116,19 +115,14 @@ public class LuaExecutionEnvironmentPreferencePage extends PreferencePage implem
 			public void checkStateChanged(CheckStateChangedEvent event) {
 				LuaExecutionEnvironment defaultEE = (LuaExecutionEnvironment) event.getElement();
 				if (event.getChecked()) {
-
 					// allow to check only one element of the table
 					eeTreeViewer.setCheckedElements(new Object[] { defaultEE });
 					getPreferenceStore().setValue(PreferenceInitializer.EE_DEFAULT_ID, defaultEE.getEEIdentifier());
-
-					// remove warning no default EE message if any
-					setMessage(null);
 				} else {
-
 					// removing the default ee from pref
 					getPreferenceStore().setValue(PreferenceInitializer.EE_DEFAULT_ID, "none"); //$NON-NLS-1$
-					setMessage(Messages.LuaExecutionEnvironmentPreferencePage_warning_nodefault, WARNING);
 				}
+				validateInstalledExecutionEnvironements();
 			}
 		});
 
@@ -154,33 +148,23 @@ public class LuaExecutionEnvironmentPreferencePage extends PreferencePage implem
 
 		// ----------------
 		// ADD LISTENERS
-		addButton.addSelectionListener(new SelectionListener() {
-
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				doAddButtonSelection(e);
-			}
-
-			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
-				widgetSelected(e);
-			}
-		});
-		removeButton.addSelectionListener(new SelectionListener() {
-
+		addButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
-				widgetDefaultSelected(e);
+				doAddButtonSelection(e);
 			}
+		});
 
+		removeButton.addSelectionListener(new SelectionAdapter() {
 			@Override
-			public void widgetDefaultSelected(final SelectionEvent e) {
+			public void widgetSelected(final SelectionEvent e) {
 				doRemoveSelection(e);
 			}
 		});
+
 		availableEELink.addSelectionListener(new SelectionAdapter() {
 			@Override
-			public void widgetSelected(SelectionEvent e) {
+			public void widgetSelected(final SelectionEvent e) {
 				try {
 					PlatformUI.getWorkbench().getBrowserSupport().getExternalBrowser().openURL(new URL(AVAILABLE_EXECUTION_ENVIRONEMENT_URL));
 				} catch (PartInitException e1) {
@@ -198,6 +182,23 @@ public class LuaExecutionEnvironmentPreferencePage extends PreferencePage implem
 		// Initialize UI
 		initializePage();
 		return containerComposite;
+	}
+
+	public void validateInstalledExecutionEnvironements() {
+		if (eeTreeViewer.getCheckedElements().length == 0) {
+			setMessage(Messages.LuaExecutionEnvironmentPreferencePage_warning_nodefault, WARNING);
+			return;
+		}
+
+		for (LuaExecutionEnvironment ee : LuaExecutionEnvironmentManager.getInstalledExecutionEnvironments()) {
+			String warning = LuaExecutionEnvironmentManager.check(ee);
+			if (warning != null) {
+				setMessage(warning, WARNING);
+				return;
+			}
+		}
+
+		setMessage(null);
 	}
 
 	private void doAddButtonSelection(SelectionEvent se) {
@@ -223,9 +224,12 @@ public class LuaExecutionEnvironmentPreferencePage extends PreferencePage implem
 				if (!okToInstall)
 					return;
 			}
-			LuaExecutionEnvironmentManager.installLuaExecutionEnvironment(selectedFilePath);
 
-			// Refresh the treeviewer
+			// Check Execution Environment's quality
+			ee = LuaExecutionEnvironmentManager.installLuaExecutionEnvironment(selectedFilePath);
+			validateInstalledExecutionEnvironements();
+
+			// Refresh the TreeViewer
 			initializePage();
 		} catch (CoreException e) {
 			ErrorDialog.openError(filedialog.getParent(), null, null, e.getStatus());
@@ -245,12 +249,7 @@ public class LuaExecutionEnvironmentPreferencePage extends PreferencePage implem
 			// Remove selected Execution Environment
 			LuaExecutionEnvironmentManager.uninstallLuaExecutionEnvironment(ee);
 
-			// remove default EE if juste removed
-			if (getPreferenceStore().getString(PreferenceInitializer.EE_DEFAULT_ID).equals(ee.getEEIdentifier())) {
-				getPreferenceStore().setValue(PreferenceInitializer.EE_DEFAULT_ID, "none"); //$NON-NLS-1$
-
-				setMessage(Messages.LuaExecutionEnvironmentPreferencePage_warning_nodefault, WARNING);
-			}
+			validateInstalledExecutionEnvironements();
 
 			// Recompute page content
 			initializePage();
@@ -301,6 +300,9 @@ public class LuaExecutionEnvironmentPreferencePage extends PreferencePage implem
 
 		// As list is refreshed, they is no selection
 		refreshRemoveButton();
+
+		// validate installed execution environments.
+		validateInstalledExecutionEnvironements();
 	}
 
 	/**

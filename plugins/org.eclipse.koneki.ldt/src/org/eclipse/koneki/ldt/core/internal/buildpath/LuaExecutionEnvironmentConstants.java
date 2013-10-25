@@ -20,5 +20,6 @@ public interface LuaExecutionEnvironmentConstants {
 	public String EE_FILE_API_ARCHIVE = "api.zip"; //$NON-NLS-1$
 	public String EE_FILE_DOCS_FOLDER = "docs/"; //$NON-NLS-1$
 	public String EE_FILE_DOCS_INDEX = "index.html"; //$NON-NLS-1$
-	public String EE_FILE_MAIN = "template/main.lua"; //$NON-NLS-1$
+	public String EE_TEMPLATE_FOLDER = "templates/"; //$NON-NLS-1$
+	public String EE_OLDTEMPLATE_FOLDER = "template/"; //$NON-NLS-1$
 }

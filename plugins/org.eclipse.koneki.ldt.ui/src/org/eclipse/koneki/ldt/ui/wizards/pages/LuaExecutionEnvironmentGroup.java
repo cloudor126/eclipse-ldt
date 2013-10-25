@@ -99,7 +99,7 @@ public class LuaExecutionEnvironmentGroup extends Observable {
 
 		// Should we create a main.lua
 		mainCheckBox = new Button(group, SWT.CHECK);
-		mainCheckBox.setText(Messages.LuaExecutionEnvironmentGroupMainLabel);
+		mainCheckBox.setText(Messages.LuaExecutionEnvironmentGroupTemplateLabel);
 		mainCheckBox.setSelection(hasToCreateMain);
 		GridDataFactory.swtDefaults().span(3, 1).applyTo(mainCheckBox);
 		mainCheckBox.addSelectionListener(new SelectionAdapter() {

@@ -21,9 +21,10 @@ import java.net.URL;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
@@ -45,7 +46,11 @@ import org.eclipse.dltk.core.IBuildpathEntry;
 import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.koneki.ldt.core.internal.Activator;
+import org.eclipse.osgi.util.NLS;
 import org.osgi.framework.Bundle;
+
+import com.naef.jnlua.LuaException;
+import com.naef.jnlua.LuaState;
 
 public final class LuaExecutionEnvironmentManager {
 
@@ -54,10 +59,37 @@ public final class LuaExecutionEnvironmentManager {
 	private static final String ATTRIBUTE_VERSION = "version"; //$NON-NLS-1$
 	private static final String ATTRIBUTE_RESOURCEDIRECTORY = "resourcedirectory"; //$NON-NLS-1$
 
+	private static final String MANIFEST_NAME = "package"; //$NON-NLS-1$
+	private static final String MANIFEST_VERSION = "version"; //$NON-NLS-1$
+	private static final String MANIFEST_TEMPLATES = "templates"; //$NON-NLS-1$
+
 	private static final String INSTALLATION_FOLDER = "ee"; //$NON-NLS-1$
 
 	private LuaExecutionEnvironmentManager() {
 
+	}
+
+	/**
+	 * Detect if an installed {@link LuaExecutionEnvironment} follows current recommendations. Useful for UI warnings.
+	 * 
+	 * @param ee
+	 *            Execution Environment to check
+	 * @return null when everything is all right, warning {@link String} else way.
+	 */
+	public static String check(final LuaExecutionEnvironment ee) {
+
+		// Check if default template exists
+		if (ee.getTemplatesPath() != null) {
+			if (ee.getDefaultTemplatePath() == null || !ee.getDefaultTemplatePath().toFile().exists())
+				return NLS.bind(Messages.LuaExecutionEnvironmentManagerNoDefaultTemplate, ee.getEEIdentifier());
+		}
+
+		// Check if old template folder is being used
+		if (ee.getOldTemplatePath() != null)
+			return NLS.bind(Messages.LuaExecutionEnvironmentManagerLegacyTemplateFolder, ee.getEEIdentifier());
+
+		// All good
+		return null;
 	}
 
 	public static LuaExecutionEnvironment getExecutionEnvironmentFromCompressedFile(final String filePath) throws CoreException {
@@ -148,34 +180,77 @@ public final class LuaExecutionEnvironmentManager {
 		return getLuaExecutionEnvironmentFromManifest(manifestString, new Path(executionEnvironmentDirectory.getPath()));
 	}
 
+	// create a map which store all this data in the JVM
+	private static Map<?, ?> createJavaCopy(Map<?, ?> mapToCopy) {
+		HashMap<Object, Object> result = new HashMap<Object, Object>();
+
+		for (Entry<?, ?> entry : mapToCopy.entrySet()) {
+			// manage key
+			Object key = entry.getKey();
+			Object newKey = null;
+			if (key instanceof String || key instanceof Number || key instanceof Character) {
+				newKey = key;
+			} else if (key instanceof Map<?, ?>) {
+				newKey = createJavaCopy((Map<?, ?>) key);
+			}
+
+			// manage value
+			Object value = entry.getValue();
+			Object newValue = null;
+			if (value instanceof String || value instanceof Number || value instanceof Character) {
+				newValue = value;
+			} else if (value instanceof Map<?, ?>) {
+				newValue = createJavaCopy((Map<?, ?>) value);
+			}
+
+			// add the key/value
+			if (newKey == null || newValue == null) {
+				Activator.logWarning(MessageFormat.format(
+						"An execution environment contains invalid map in manifest : unexpected key/value {0}/{1}", key, value)); //$NON-NLS-1$
+			} else {
+				result.put(newKey, newValue);
+			}
+		}
+		return result;
+	}
+
 	private static LuaExecutionEnvironment getLuaExecutionEnvironmentFromManifest(String manifestString, final IPath installDirectory)
 			throws CoreException {
-		/*
-		 * Match available package name
-		 */
-		Pattern namePattern = Pattern.compile("(?:^|\\s+)package\\s*=\\s*(?:[\"']|\\[*)([\\w.]+)"); //$NON-NLS-1$
-		String name = null;
-		Matcher matcher = namePattern.matcher(manifestString);
-		if (matcher.find() && matcher.groupCount() > 0) {
-			name = matcher.group(1);
-		}
 
-		/*
-		 * Match available version
-		 */
-		String version = null;
-		namePattern = Pattern.compile("(?:^|\\s+)version\\s*=\\s*(?:[\"']|\\[*)([\\w.]+)"); //$NON-NLS-1$
-		matcher = namePattern.matcher(manifestString);
-		if (matcher.find() && matcher.groupCount() > 0) {
-			version = matcher.group(1);
-		}
+		// execute the manifest
+		LuaState luaState = new LuaState();
+		try {
+			luaState.load(manifestString, "Lua error:"); //$NON-NLS-1$
+			luaState.call(0, 0);
 
-		// Create object representing a valid Execution Environment
-		if (name == null || version == null) {
-			throwException("Manifest from given file has no package name or version.", null, IStatus.ERROR); //$NON-NLS-1$
-		}
+			// Retrieve field as global variables
+			luaState.getGlobal(MANIFEST_NAME);
+			String name = luaState.toString(-1);
 
-		return new LuaExecutionEnvironment(name, version, installDirectory);
+			luaState.getGlobal(MANIFEST_VERSION);
+			String version = luaState.toString(-1);
+
+			// Create object representing a valid Execution Environment
+			if (name == null || version == null) {
+				throwException("Manifest from given file has no package name or version.", null, IStatus.ERROR); //$NON-NLS-1$
+			}
+
+			Map<?, ?> templates = null;
+			luaState.getGlobal(MANIFEST_TEMPLATES);
+			Map<?, ?> luatemplates = luaState.toJavaObject(-1, Map.class);
+			if (luatemplates != null)
+				templates = createJavaCopy(luatemplates);
+
+			return new LuaExecutionEnvironment(name, version, templates, installDirectory);
+		} catch (LuaException e) {
+			luaState.close();
+			throwException("Error while loading the manifest", e, IStatus.ERROR); //$NON-NLS-1$
+		} catch (ClassCastException e) {
+			throwException("Unable to parse the templates attribute in the EE manifest", e, IStatus.ERROR); //$NON-NLS-1$
+		} finally {
+			luaState.close();
+		}
+		return null;
 	}
 
 	private static LuaExecutionEnvironment getExecutionEnvironmentFromContribution(IConfigurationElement contribution) throws CoreException {
@@ -335,7 +410,7 @@ public final class LuaExecutionEnvironmentManager {
 		}
 
 		// try to get installed Execution Environment to be sure, it is well installed
-		getInstalledExecutionEnvironment(ee.getID(), ee.getVersion());
+		ee = getInstalledExecutionEnvironment(ee.getID(), ee.getVersion());
 
 		refreshDLTKModel(ee);
 		return ee;
@@ -407,8 +482,8 @@ public final class LuaExecutionEnvironmentManager {
 		return availableExecutionEnvironments;
 	}
 
-	private static IPath getLuaExecutionEnvironmentPath(final String name, final String version) {
-		return getInstallDirectory().append(name + '-' + version);
+	private static IPath getLuaExecutionEnvironmentPath(final String id, final String version) {
+		return getInstallDirectory().append(NLS.bind("{0}-{1}", id, version)); //$NON-NLS-1$
 	}
 
 	public static LuaExecutionEnvironment getInstalledExecutionEnvironment(String name, String version) throws CoreException {
@@ -480,7 +555,7 @@ public final class LuaExecutionEnvironmentManager {
 			}
 			DLTKCore.setBuildpathContainer(containerPath, projects, containers, null);
 		} catch (ModelException e) {
-			Activator.logError("Unable to refresh Model after execution environment change", e); //$NON-NLS-1$
+			Activator.logError("Unable to refresh Model after Execution Environment change.", e); //$NON-NLS-1$
 		}
 	}
 
