@@ -331,6 +331,8 @@ local function getindentlevel(source, indenttable)
   local walk = require 'metalua.walk'
   local ast = mlc:src_to_ast(source)
   walker.indenttable = indenttable
+  walker.indentation = {}
+  walker.reference = {}
   walker.source = source
   walk.block(walker, ast)
 
