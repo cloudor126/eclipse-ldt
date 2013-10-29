@@ -107,7 +107,7 @@
 		<repository>
 			<id>wikitext</id>
 			<layout>p2</layout>
-			<url>http://download.eclipse.org/tools/mylyn/update/weekly</url>
+			<url>http://download.eclipse.org/mylyn/releases/latest</url>
 		</repository>
 	</repositories>
 
