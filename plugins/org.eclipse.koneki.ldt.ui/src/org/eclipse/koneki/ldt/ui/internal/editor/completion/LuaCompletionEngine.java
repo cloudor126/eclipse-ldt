@@ -20,13 +20,13 @@ import java.util.Map.Entry;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.dltk.codeassist.ScriptCompletionEngine;
 import org.eclipse.dltk.compiler.env.IModuleSource;
-import org.eclipse.dltk.compiler.util.Util;
 import org.eclipse.dltk.core.CompletionProposal;
 import org.eclipse.dltk.core.IMember;
 import org.eclipse.dltk.core.IMethod;
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
+import org.eclipse.jface.text.Document;
 import org.eclipse.koneki.ldt.core.internal.LuaLanguageToolkit;
 import org.eclipse.koneki.ldt.core.internal.PreferenceInitializer;
 import org.eclipse.koneki.ldt.core.internal.ast.models.LuaASTModelUtils;
@@ -38,7 +38,12 @@ import org.eclipse.koneki.ldt.core.internal.ast.models.api.Item;
 import org.eclipse.koneki.ldt.core.internal.ast.models.api.Parameter;
 import org.eclipse.koneki.ldt.core.internal.ast.models.api.RecordTypeDef;
 import org.eclipse.koneki.ldt.core.internal.ast.models.common.LuaSourceRoot;
+import org.eclipse.koneki.ldt.core.internal.ast.models.file.Identifier;
+import org.eclipse.koneki.ldt.core.internal.ast.models.file.Index;
+import org.eclipse.koneki.ldt.core.internal.ast.models.file.Invoke;
+import org.eclipse.koneki.ldt.core.internal.ast.models.file.LuaExpression;
 import org.eclipse.koneki.ldt.ui.internal.Activator;
+import org.eclipse.koneki.ldt.ui.internal.editor.text.LuaHeuristicScanner;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 public class LuaCompletionEngine extends ScriptCompletionEngine {
@@ -52,17 +57,34 @@ public class LuaCompletionEngine extends ScriptCompletionEngine {
 			return;
 		}
 		ISourceModule sourceModule = (ISourceModule) modelElement;
+		String sourceContent = module.getSourceContents();
 
-		// Retrieve start position of word current user is typing
-		String start = getWordStarting(module.getSourceContents(), position);
+		// For now, we does not match case where there are white space before the cursor
+		if (Character.isWhitespace(sourceContent.charAt(position - 1))) {
+			// Search local declaration in AST
+			addLocalDeclarations(sourceModule, "", position); //$NON-NLS-1$
 
-		this.requestor.beginReporting();
-		if (start.contains(".") || start.contains(":")) { //$NON-NLS-1$//$NON-NLS-2$
-			// Select between module fields if completion is asked after a module reference
-			final List<String> ids = new ArrayList<String>();
-			Character lastOperator = getExpressionIdentifiers(start, ids);
-			addFields(sourceModule, ids, position, lastOperator, start);
-		} else {
+			// Search global declaration in DLTK model
+			addGlobalDeclarations(sourceModule, "", position); //$NON-NLS-1$
+
+			// Add keywords
+			addKeywords("", position); //$NON-NLS-1$
+			return;
+		}
+
+		// try to find the incomplete expression before the cursor
+		LuaHeuristicScanner luaHeuristicScanner = new LuaHeuristicScanner(new Document(module.getSourceContents()));
+		LuaExpression luaExpression = luaHeuristicScanner.guessLuaExpression(position);
+		if (luaExpression == null)
+			return;
+
+		requestor.beginReporting();
+		if (luaExpression instanceof Identifier) {
+			// manage incomplete Identifier
+			// ----------------------------
+			Item definition = ((Identifier) luaExpression).getDefinition();
+			String start = definition.getName();
+
 			// Search local declaration in AST
 			addLocalDeclarations(sourceModule, start, position);
 
@@ -71,7 +93,33 @@ public class LuaCompletionEngine extends ScriptCompletionEngine {
 
 			// Add keywords
 			addKeywords(start, position);
+		} else if (luaExpression instanceof Index) {
+			// manage incomplete Index
+			// ----------------------------
+
+			// resolve type of left part
+			LuaExpression left = ((Index) luaExpression).getLeft();
+			TypeResolution resolveType = LuaASTUtils.resolveType(sourceModule, left);
+
+			// find all field we start by the right part
+			String right = ((Index) luaExpression).getRight();
+			addFields(resolveType, right, position);
+		} else if (luaExpression instanceof Invoke) {
+			// manage incomplete Invoke
+			// ----------------------------
+
+			// resolve type of record
+			LuaExpression record = ((Invoke) luaExpression).getRecord();
+			TypeResolution resolveType = LuaASTUtils.resolveType(sourceModule, record);
+
+			// find all field we start by the right part
+			String right = ((Invoke) luaExpression).getFunctionName();
+			// we do not manage complete invoke
+			if (luaExpression.isIncomplete())
+				addInvocableFields(resolveType, right, position);
 		}
+		// we do not complete call for now
+		requestor.endReporting();
 	}
 
 	private void addGlobalDeclarations(ISourceModule sourceModule, String start, int cursorPosition) {
@@ -142,65 +190,38 @@ public class LuaCompletionEngine extends ScriptCompletionEngine {
 
 	}
 
-	private void addFields(final ISourceModule initialSourceModule, final List<String> ids, int position, Character lastOperator, String start) {
-		if (ids.size() < 2)
+	private void addFields(TypeResolution recordTypeResolution, String fieldName, int position) {
+		if (recordTypeResolution == null)
 			return;
 
-		// get the closest definition with the name of the first element of ids
-		// we support only Identifier root for now.
-		final String rootIdentifierName = ids.get(0);
-		final LuaSourceRoot luaSourceRoot = LuaASTModelUtils.getLuaSourceRoot(initialSourceModule);
-		Item rootItem = LuaASTUtils.getClosestLocalVar(luaSourceRoot, rootIdentifierName, position - start.length());
-		ISourceModule itemSourceModule = initialSourceModule;
-		if (rootItem == null) {
-			// try to find a global
-			Definition globalVarDefinition = LuaASTUtils.getGlobalVarDefinition(initialSourceModule, rootIdentifierName);
-			if (globalVarDefinition == null)
-				return;
-			rootItem = globalVarDefinition.getItem();
-			itemSourceModule = globalVarDefinition.getModule();
-		}
-
-		// resolve Item Type
-		TypeResolution typeResolution = LuaASTUtils.resolveType(itemSourceModule, rootItem.getType());
-		if (typeResolution == null || !(typeResolution.getTypeDef() instanceof RecordTypeDef))
-			return;
-
-		// found type of the last bigger complete index
-		// (e.g. for identifier.field1.field2.f, get the type of identifier.field1.field2)
-		TypeResolution currentTypeResolution = typeResolution;
-		RecordTypeDef currentRecordTypeDef = (RecordTypeDef) typeResolution.getTypeDef();
-		ISourceModule currentSourceModule = typeResolution.getModule();
-		for (int i = 1; i < ids.size() - 1; i++) {
-			// check if the current type
-			String fieldname = ids.get(i);
-			Item item = currentRecordTypeDef.getFields().get(fieldname);
-
-			// we could resolve the type of this field we stop the research
-			if (item == null)
-				return;
-
-			// resolve the type
-			currentTypeResolution = LuaASTUtils.resolveType(currentSourceModule, item.getType());
-			// we are interested only by record type
-			if (currentTypeResolution == null || !(currentTypeResolution.getTypeDef() instanceof RecordTypeDef))
-				return;
-
-			currentRecordTypeDef = (RecordTypeDef) currentTypeResolution.getTypeDef();
-			currentSourceModule = currentTypeResolution.getModule();
-		}
-
-		// get available field for the type found.
-		final String fieldName = ids.get(ids.size() - 1);
-		for (Entry<String, Item> entry : currentRecordTypeDef.getFields().entrySet()) {
-			Item item = entry.getValue();
-			final boolean goodStart = item.getName().toLowerCase().startsWith(fieldName.toLowerCase());
-			final boolean nostart = fieldName.isEmpty();
-			if (goodStart || nostart) {
-				if (lastOperator == '.') {
-					// MANAGE INDEX :
+		if (recordTypeResolution.getTypeDef() instanceof RecordTypeDef) {
+			RecordTypeDef currentRecordTypeDef = (RecordTypeDef) recordTypeResolution.getTypeDef();
+			ISourceModule currentSourceModule = recordTypeResolution.getModule();
+			// get available field for the type found.
+			for (Entry<String, Item> entry : currentRecordTypeDef.getFields().entrySet()) {
+				Item item = entry.getValue();
+				final boolean goodStart = item.getName().toLowerCase().startsWith(fieldName.toLowerCase());
+				final boolean nostart = fieldName.isEmpty();
+				if (goodStart || nostart) {
 					createMemberProposal(LuaASTModelUtils.getIMember(currentSourceModule, item), position - fieldName.length(), position, false);
-				} else if (lastOperator == ':') {
+				}
+			}
+		}
+	}
+
+	private void addInvocableFields(TypeResolution recordTypeResolution, String fieldName, int position) {
+		if (recordTypeResolution == null)
+			return;
+
+		if (recordTypeResolution.getTypeDef() instanceof RecordTypeDef) {
+			RecordTypeDef currentRecordTypeDef = (RecordTypeDef) recordTypeResolution.getTypeDef();
+			ISourceModule currentSourceModule = recordTypeResolution.getModule();
+			// get available field for the type found.
+			for (Entry<String, Item> entry : currentRecordTypeDef.getFields().entrySet()) {
+				Item item = entry.getValue();
+				final boolean goodStart = item.getName().toLowerCase().startsWith(fieldName.toLowerCase());
+				final boolean nostart = fieldName.isEmpty();
+				if (goodStart || nostart) {
 					// MANAGE INVOCATION :
 					// resolve field type
 					final TypeResolution fieldTypeResolution = LuaASTUtils.resolveType(currentSourceModule, item.getType());
@@ -224,85 +245,11 @@ public class LuaCompletionEngine extends ScriptCompletionEngine {
 					// or
 					// if the first parameter is of the same type as the type on which it is invoked : it's ok !
 					final TypeResolution parameterTypeResolution = LuaASTUtils.resolveType(currentSourceModule, firstParamter.getType());
-					if (currentTypeResolution.equals(parameterTypeResolution))
+					if (recordTypeResolution.equals(parameterTypeResolution))
 						createMemberProposal(LuaASTModelUtils.getIMember(currentSourceModule, item), position - fieldName.length(), position, true);
 				}
 			}
 		}
-	}
-
-	// I'm unable to handle spaces in composed identifiers like 'someTable . someField'
-	private String getWordStarting(final String content, final int position) {
-		// manage inconsistent parameters
-		if (position <= 0 || position > content.length())
-			return Util.EMPTY_STRING;
-
-		// search the begin on the string sequence to autocomplete
-		int currentPosition = position;
-		int lastValidPosition = position;
-		boolean lastCharIsIndex = false;
-		boolean finish = false;
-		do {
-			currentPosition--;
-			final char currentChar = content.charAt(currentPosition);
-			final boolean isInvokeChar = currentChar == ':';
-			final boolean isIndexChar = currentChar == '.';
-			final boolean isIdentifierPart = Character.isLetterOrDigit(currentChar) || currentChar == '_';
-
-			// we stop if we found a character which is neiter a identifier part or an operator
-			// or if we found the concatenation character (..)
-			if (lastCharIsIndex && isIndexChar) { // we found a the .. char
-				lastValidPosition = lastValidPosition + 1;
-				finish = true;
-			} else if (isIdentifierPart || isIndexChar || isInvokeChar) { // we found a valid char
-				lastValidPosition = currentPosition;
-				lastCharIsIndex = isIndexChar;
-			} else {
-				finish = true;
-			}
-
-			// if we are at the end of the file it's finish too
-		} while (!finish && currentPosition > 0);
-
-		if (lastValidPosition >= position)
-			return Util.EMPTY_STRING;
-		return content.substring(lastValidPosition, position);
-	}
-
-	private Character getExpressionIdentifiers(final String composedId, List<String> result) {
-		StringBuffer stringToParse = new StringBuffer(composedId);
-		StringBuffer nextId = new StringBuffer();
-		Character lastOperator = '\0'; // we support only if invoke is the last operator
-
-		for (int i = 0; i < stringToParse.length(); i++) {
-			Character character = stringToParse.charAt(i);
-
-			if (!(character == '.') && !(character == ':')) {
-				// if it's not an operator then append the next char
-				nextId.append(character);
-			} else {
-				// we have an operator
-
-				// don't allow 2 sucesssive operator
-				if (nextId.length() == 0)
-					return null;
-
-				// we support only if invoke is the last operator
-				if (lastOperator == ':' && character == ':')
-					return null;
-
-				// store value to next validation
-				lastOperator = character;
-
-				// store previous value
-				result.add(nextId.toString());
-				nextId = new StringBuffer();
-			}
-		}
-
-		result.add(nextId.toString());
-
-		return lastOperator;
 	}
 
 	private void createKeyWordProposal(String keyword, int startIndex, int endIndex) {

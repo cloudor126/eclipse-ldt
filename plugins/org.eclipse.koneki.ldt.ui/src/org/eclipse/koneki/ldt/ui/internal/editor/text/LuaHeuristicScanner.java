@@ -19,6 +19,13 @@ import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITypedRegion;
 import org.eclipse.jface.text.TextUtilities;
 import org.eclipse.jface.text.TypedRegion;
+import org.eclipse.koneki.ldt.core.internal.ast.models.api.Item;
+import org.eclipse.koneki.ldt.core.internal.ast.models.api.UnknownItem;
+import org.eclipse.koneki.ldt.core.internal.ast.models.file.Call;
+import org.eclipse.koneki.ldt.core.internal.ast.models.file.Identifier;
+import org.eclipse.koneki.ldt.core.internal.ast.models.file.Index;
+import org.eclipse.koneki.ldt.core.internal.ast.models.file.Invoke;
+import org.eclipse.koneki.ldt.core.internal.ast.models.file.LuaExpression;
 
 /**
  * Utility methods for heuristic based Lua manipulations in an incomplete Lua source file.
@@ -48,6 +55,7 @@ public class LuaHeuristicScanner implements LuaSymbols {
 	private static final char RPAREN = ')';
 	private static final char SEMICOLON = ';';
 	private static final char COLON = ':';
+	private static final char DOT = '.';
 	private static final char COMMA = ',';
 	private static final char LBRACKET = '[';
 	private static final char RBRACKET = ']';
@@ -314,6 +322,10 @@ public class LuaHeuristicScanner implements LuaSymbols {
 			return TOKEN_MINUS;
 		case SHARP:
 			return TOKEN_SHARP;
+		case DOT:
+			return TOKEN_DOT;
+		case COLON:
+			return TOKEN_COLON;
 		default:
 			break;
 		}
@@ -399,6 +411,8 @@ public class LuaHeuristicScanner implements LuaSymbols {
 			return TOKEN_MINUS;
 		case SHARP:
 			return TOKEN_SHARP;
+		case DOT:
+			return TOKEN_DOT;
 		default:
 			break;
 		}
@@ -771,5 +785,247 @@ public class LuaHeuristicScanner implements LuaSymbols {
 	private boolean contains(IRegion region, int position) {
 		int offset = region.getOffset();
 		return offset <= position && position < offset + region.getLength();
+	}
+
+	public boolean eatForwardBetweenSepartor(int start, int bound, int leftSeparatorToken, int rightSeparatorToken) {
+		int position = start;
+
+		// first token should be the left separator
+		int currenttoken = nextToken(position, bound);
+		if (currenttoken != leftSeparatorToken)
+			return false;
+
+		// eat everything until we found the right separator
+		position = getPosition();
+		do {
+			currenttoken = nextToken(position, bound);
+
+			// if we found the right separator, so we eat all between the 2 separators
+			if (currenttoken == rightSeparatorToken) {
+				return true;
+			}
+			// if this is a left separator we must eat if completely
+			else if (currenttoken == leftSeparatorToken) {
+				// if we don't eat it correctly return false;
+				if (!eatForwardBetweenSepartor(position, bound, leftSeparatorToken, rightSeparatorToken))
+					return false;
+				// else we continue to search ending separator
+			} else if (currenttoken == TOKEN_EOF) {
+				// End of File we stop the search, we can't not eat the pattern completely.
+				return false;
+			}
+			position = getPosition();
+		} while (true);
+	}
+
+	public boolean eatBackwardBetweenSepartor(int start, int bound, int leftSeparatorToken, int rightSeparatorToken) {
+		int position = start;
+
+		// first token should be the right separator
+		int currenttoken = previousToken(position, bound);
+		if (currenttoken != rightSeparatorToken)
+			return false;
+
+		// eat everything until we found the left separator
+		position = getPosition();
+		do {
+			currenttoken = previousToken(position, bound);
+
+			// if we found the left separator, so we eat all between the 2 separators
+			if (currenttoken == leftSeparatorToken) {
+				return true;
+			}
+			// if this is a right separator we must eat if completely
+			else if (currenttoken == rightSeparatorToken) {
+				// if we don't eat it correctly return false;
+				if (!eatBackwardBetweenSepartor(position, bound, leftSeparatorToken, rightSeparatorToken))
+					return false;
+				// else we continue to search ending separator
+			} else if (currenttoken == TOKEN_EOF) {
+				// End of File we stop the search, we can't not eat the pattern completely.
+				return false;
+			}
+			position = getPosition();
+		} while (true);
+	}
+
+	/**
+	 * try to guess if cursor is in an expression
+	 * 
+	 * @throws BadLocationException
+	 */
+	public LuaExpression guessLuaExpression(int start) {
+		try {
+
+			final int tokenStuffBetweenParentheses = -2000;
+
+			// find begin of expression
+			// ----------------------------------
+			int position = start - 1;
+			boolean stop = false;
+
+			// eat first token
+			int previousToken = previousToken(position, UNBOUND);
+			if (previousToken == TOKEN_RPAREN) {
+				if (!eatBackwardBetweenSepartor(position, UNBOUND, TOKEN_LPAREN, TOKEN_RPAREN)) {
+					return null;
+				} else {
+					previousToken = tokenStuffBetweenParentheses;
+				}
+			}
+			position = getPosition();
+
+			do {
+				// get previous token
+				int currenttoken = previousToken(position, UNBOUND);
+
+				switch (previousToken) {
+				case TOKEN_COLON:
+				case TOKEN_DOT:
+				case tokenStuffBetweenParentheses:
+					// before dot and colon or left parent, we must found '(...)' or an identifier
+					if (currenttoken != TOKEN_RPAREN && currenttoken != TOKEN_IDENT)
+						return null;
+
+					if (currenttoken == TOKEN_RPAREN) {
+						// case : stuff between parentheses
+						if (!eatBackwardBetweenSepartor(position, UNBOUND, TOKEN_LPAREN, TOKEN_RPAREN)) {
+							return null;
+						} else {
+							previousToken = tokenStuffBetweenParentheses;
+						}
+					} else {
+						// case : identifier
+						previousToken = currenttoken;
+					}
+					position = getPosition();
+					break;
+				case TOKEN_IDENT:
+					// before an identifier, we must found dot or colon
+					if (currenttoken == TOKEN_COLON || currenttoken == TOKEN_DOT) {
+						position = getPosition();
+						previousToken = currenttoken;
+					} else {
+						stop = true;
+					}
+					break;
+				default:
+					return null;
+				}
+
+			} while (!stop);
+
+			// parse expression
+			// ----------------------------------
+			position = position + 1;
+			int nextToken = nextToken(position, start);
+
+			// 1 - first token must be an identifier
+			if (nextToken != TOKEN_IDENT)
+				return null;
+			String itemname = fDocument.get(position, getPosition() - position).trim();
+			Item item = new UnknownItem();
+			item.setName(itemname);
+			Identifier identifier = new Identifier();
+			identifier.setDefinition(item);
+			identifier.setStart(position);
+			identifier.setEnd(getPosition());
+
+			// 2 - next token should be expression (index, call, invoke)
+			stop = false;
+			position = getPosition();
+			LuaExpression exp = identifier;
+			do {
+				nextToken = nextToken(position, start);
+				switch (nextToken) {
+				case TOKEN_EOF:
+					stop = true;
+					break;
+				case TOKEN_DOT:
+					// manage index
+					position = getPosition();
+					nextToken = nextToken(getPosition(), start);
+
+					// next token should be an identifier or EOF for incomplete index
+					String indexfieldname;
+					if (nextToken == TOKEN_EOF) {
+						indexfieldname = ""; //$NON-NLS-1$
+					} else if (nextToken == TOKEN_IDENT) {
+						indexfieldname = fDocument.get(position, getPosition() - position).trim();
+					} else {
+						// if it's not an identifier or a EOF, we do not manage this case
+						return null;
+					}
+
+					// create index
+					Index index = new Index();
+					index.setLeft(exp);
+					index.setRight(indexfieldname);
+					if (nextToken == TOKEN_EOF)
+						index.setIncomplete(true); // no identifier after the '.' this is an incomplete Index
+
+					// update loop variable
+					exp = index;
+					position = getPosition();
+					break;
+				case TOKEN_COLON:
+					// manage invoke
+					position = getPosition();
+
+					// next token should be an identifier or EOF for incomplete invocation
+					nextToken = nextToken(getPosition(), start);
+					String invokefunctionname;
+					if (nextToken == TOKEN_EOF) {
+						invokefunctionname = ""; //$NON-NLS-1$
+					} else if (nextToken == TOKEN_IDENT) {
+						invokefunctionname = fDocument.get(position, getPosition() - position).trim();
+					} else {
+						// if it's not an identifier or a EOF, we do not manage this case
+						return null;
+					}
+					// create Invoke
+					Invoke invoke = new Invoke();
+					invoke.setRecord(exp);
+					invoke.setFunctionName(invokefunctionname);
+
+					// consume the full invocation ( left parent until right parent)
+					position = getPosition();
+					nextToken = nextToken(getPosition(), start);
+					if (nextToken == TOKEN_LPAREN) {
+						if (!eatForwardBetweenSepartor(position, start, TOKEN_LPAREN, TOKEN_RPAREN))
+							invoke.setIncomplete(true); // no right parentheses so this is an incomplete invoke
+					} else if (nextToken != TOKEN_EOF) {
+						return null; // invalid invocation
+					} else {
+						invoke.setIncomplete(true); // no left parentheses so this is an incomplete invoke
+					}
+
+					// update loop variable
+					exp = invoke;
+					position = getPosition();
+					break;
+				case TOKEN_LPAREN:
+					// manage call
+					Call call = new Call();
+					call.setFunction(exp);
+
+					// consume the call invocation ( left parent until right parent)
+					if (!eatForwardBetweenSepartor(position, start, TOKEN_LPAREN, TOKEN_RPAREN)) {
+						call.setIncomplete(true); // no right parentheses so this is an incomplete invoke
+					}
+
+					// update loop variable
+					exp = call;
+					position = getPosition();
+					break;
+				default:
+					return null;
+				}
+			} while (!stop);
+
+			return exp;
+		} catch (BadLocationException e) {
+		}
+		return null;
 	}
 }

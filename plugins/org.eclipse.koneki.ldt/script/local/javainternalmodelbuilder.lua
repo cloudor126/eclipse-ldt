@@ -41,6 +41,9 @@ function J._internalcontent(_internalcontent,_file,handledexpr)
 	-- Appending global variables
 	for _, _item in pairs(_file.globalvars) do
 		local jitem = handledexpr[_item]
+		if _item.type and _item.type.tag == "exprtyperef" then
+			javaapimodelfactory.setexpression(jitem,handledexpr[_item.type.expression])
+		end
 		
 		-- add occurrences
 		if jitem then
@@ -98,6 +101,10 @@ end
 --------------------------------------
 -- create expression java object
 function J._expression(_expr,handledexpr)
+	-- search if already handled
+    if handledexpr and handledexpr[_expr] then return handledexpr[_expr] end
+    
+    -- else handle it
 	local tag = _expr.tag
 	if tag == "MIdentifier" then
 		return J._identifier(_expr,handledexpr)

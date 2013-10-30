@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 Sierra Wireless and others.
+ * Copyright (c) 2013 Sierra Wireless and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,19 +8,8 @@
  * Contributors:
  *     Sierra Wireless - initial API and implementation
  *******************************************************************************/
-package org.eclipse.koneki.ldt.core.internal.ast.models.file;
+package org.eclipse.koneki.ldt.core.internal.ast.models.api;
 
-import org.eclipse.koneki.ldt.core.internal.ast.models.common.LuaASTNode;
+public class UnknownItem extends Item {
 
-public abstract class LuaExpression extends LuaASTNode {
-
-	private boolean incomplete;
-
-	public boolean isIncomplete() {
-		return incomplete;
-	}
-
-	public void setIncomplete(boolean incomplete) {
-		this.incomplete = incomplete;
-	}
 }

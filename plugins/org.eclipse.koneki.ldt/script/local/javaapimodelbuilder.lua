@@ -76,7 +76,7 @@ function M._typeref (_type,handledexpr)
 	elseif _type.tag == "moduletyperef" then
 		return javaapimodelfactory.newmoduletyperef(_type.modulename,_type.returnposition)
 	elseif _type.tag == "exprtyperef" then
-		return javaapimodelfactory.newexprtyperef(_type.returnposition)
+		return javaapimodelfactory.newexprtyperef(_type.returnposition,handledexpr[_type.expression]) 
 	elseif _type.tag == "primitivetyperef" then
 		return javaapimodelfactory.newprimitivetyperef(_type.typename)
 	elseif _type.tag == "inlinetyperef" then
@@ -102,9 +102,6 @@ function M._item(_item,notemplate,handledexpr)
 		_item.sourcerange.max,
 		M._typeref(_item.type,handledexpr)
 	)
-	if _item.type and _item.type.tag == "exprtyperef" then
-		javaapimodelfactory.setexpression(jitem,handledexpr[_item.type.expression])
-	end
 	handledexpr[_item] = jitem
 	return jitem
 end

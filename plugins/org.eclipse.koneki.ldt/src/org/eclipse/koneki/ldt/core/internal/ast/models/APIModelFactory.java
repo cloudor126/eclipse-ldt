@@ -188,8 +188,12 @@ public final class APIModelFactory {
 			@Override
 			public int invoke(LuaState l) {
 				int returnposition = l.checkInteger(1);
+				LuaExpression expr = l.checkJavaObject(2, LuaExpression.class);
 
 				ExprTypeRef typeref = new ExprTypeRef(returnposition);
+				if (expr != null)
+					typeref.setExpression(expr);
+
 				l.pushJavaObject(typeref);
 
 				return 1;
