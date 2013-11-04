@@ -26,6 +26,7 @@ import org.eclipse.dltk.core.IMethod;
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
+import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.koneki.ldt.core.internal.LuaLanguageToolkit;
 import org.eclipse.koneki.ldt.core.internal.PreferenceInitializer;
@@ -44,6 +45,7 @@ import org.eclipse.koneki.ldt.core.internal.ast.models.file.Invoke;
 import org.eclipse.koneki.ldt.core.internal.ast.models.file.LuaExpression;
 import org.eclipse.koneki.ldt.ui.internal.Activator;
 import org.eclipse.koneki.ldt.ui.internal.editor.text.LuaHeuristicScanner;
+import org.eclipse.koneki.ldt.ui.internal.editor.text.LuaSymbols;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 public class LuaCompletionEngine extends ScriptCompletionEngine {
@@ -60,7 +62,7 @@ public class LuaCompletionEngine extends ScriptCompletionEngine {
 		String sourceContent = module.getSourceContents();
 
 		// For now, we does not match case where there are white space before the cursor
-		if (Character.isWhitespace(sourceContent.charAt(position - 1))) {
+		if (position <= 0 || Character.isWhitespace(sourceContent.charAt(position - 1))) {
 			// Search local declaration in AST
 			addLocalDeclarations(sourceModule, "", position); //$NON-NLS-1$
 
@@ -72,14 +74,44 @@ public class LuaCompletionEngine extends ScriptCompletionEngine {
 			return;
 		}
 
-		// try to find the incomplete expression before the cursor
-		LuaHeuristicScanner luaHeuristicScanner = new LuaHeuristicScanner(new Document(module.getSourceContents()));
-		LuaExpression luaExpression = luaHeuristicScanner.guessLuaExpression(position);
-		if (luaExpression == null)
-			return;
+		Document document = new Document(sourceContent);
+		LuaHeuristicScanner luaHeuristicScanner = new LuaHeuristicScanner(document);
+		// manage incomplete keyword
+		int previousToken = luaHeuristicScanner.previousToken(position - 1, LuaHeuristicScanner.UNBOUND);
+		if (LuaSymbols.isKeywords(previousToken)) {
+			try {
+				// search keyword
+				int start = Math.max(luaHeuristicScanner.getPosition(), 0);
+				int end = position;
+				String keyword = document.get(start, end - start).trim();
 
+				// Search local declaration in AST
+				addLocalDeclarations(sourceModule, keyword, position);
+
+				// Search global declaration in DLTK model
+				addGlobalDeclarations(sourceModule, keyword, position);
+
+				// Add keywords
+				addKeywords(keyword, position);
+
+			} catch (BadLocationException e) {
+				Activator.logWarning("LuaCompletionEngine : Unable to extract keyword. ", e); //$NON-NLS-1$
+			}
+			return;
+		}
+
+		LuaExpression luaExpression = luaHeuristicScanner.guessLuaExpression(position);
 		requestor.beginReporting();
-		if (luaExpression instanceof Identifier) {
+		if (luaExpression == null) {
+			// Search local declaration in AST
+			addLocalDeclarations(sourceModule, "", position); //$NON-NLS-1$
+
+			// Search global declaration in DLTK model
+			addGlobalDeclarations(sourceModule, "", position); //$NON-NLS-1$
+
+			// Add keywords
+			addKeywords("", position); //$NON-NLS-1$
+		} else if (luaExpression instanceof Identifier) {
 			// manage incomplete Identifier
 			// ----------------------------
 			Item definition = ((Identifier) luaExpression).getDefinition();

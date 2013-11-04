@@ -36,7 +36,7 @@ import org.eclipse.koneki.ldt.core.internal.ast.models.file.LuaExpression;
  * 
  * inspired by org.eclipse.jdt.internal.ui.text.JavaHeuristicScanner
  */
-public class LuaHeuristicScanner implements LuaSymbols {
+public class LuaHeuristicScanner {
 
 	/**
 	 * Returned by all methods when the requested position could not be found, or if a {@link BadLocationException} was thrown while scanning.
@@ -51,19 +51,28 @@ public class LuaHeuristicScanner implements LuaSymbols {
 	/* character constants */
 	private static final char LBRACE = '{';
 	private static final char RBRACE = '}';
-	private static final char LPAREN = '(';
-	private static final char RPAREN = ')';
-	private static final char SEMICOLON = ';';
-	private static final char COLON = ':';
-	private static final char DOT = '.';
-	private static final char COMMA = ',';
 	private static final char LBRACKET = '[';
 	private static final char RBRACKET = ']';
+	private static final char LPAREN = '(';
+	private static final char RPAREN = ')';
+
+	private static final char SEMICOLON = ';';
+	private static final char COMMA = ',';
+
+	private static final char COLON = ':';
+	private static final char DOT = '.';
+
 	private static final char EQUAL = '=';
 	private static final char LANGLE = '<';
 	private static final char RANGLE = '>';
+
 	private static final char PLUS = '+';
 	private static final char MINUS = '-';
+	private static final char ASTERISK = '*';
+	private static final char SLASH = '/';
+	private static final char PERSENT = '%';
+	private static final char CARET = '^';
+
 	private static final char SHARP = '#';
 
 	/* preset stop conditions */
@@ -283,49 +292,57 @@ public class LuaHeuristicScanner implements LuaSymbols {
 	public int nextToken(int start, int bound) {
 		int pos = scanForward(start, bound, fNonWSDefaultPart);
 		if (pos == NOT_FOUND)
-			return TOKEN_EOF;
+			return LuaSymbols.TOKEN_EOF;
 
 		fPos++;
 
 		// first, detect string
 		if (getPartition(pos).getType().equals(ILuaPartitions.LUA_STRING)) {
-			return TOKEN_STRING;
+			return LuaSymbols.TOKEN_STRING;
 		}
 
 		// detect key char
 		switch (fChar) {
 		case LBRACE:
-			return TOKEN_LBRACE;
+			return LuaSymbols.TOKEN_LBRACE;
 		case RBRACE:
-			return TOKEN_RBRACE;
+			return LuaSymbols.TOKEN_RBRACE;
 		case LBRACKET:
-			return TOKEN_LBRACKET;
+			return LuaSymbols.TOKEN_LBRACKET;
 		case RBRACKET:
-			return TOKEN_RBRACKET;
+			return LuaSymbols.TOKEN_RBRACKET;
 		case LPAREN:
-			return TOKEN_LPAREN;
+			return LuaSymbols.TOKEN_LPAREN;
 		case RPAREN:
-			return TOKEN_RPAREN;
+			return LuaSymbols.TOKEN_RPAREN;
 		case SEMICOLON:
-			return TOKEN_SEMICOLON;
+			return LuaSymbols.TOKEN_SEMICOLON;
 		case COMMA:
-			return TOKEN_COMMA;
+			return LuaSymbols.TOKEN_COMMA;
 		case EQUAL:
-			return TOKEN_EQUAL;
+			return LuaSymbols.TOKEN_EQUAL;
 		case LANGLE:
-			return TOKEN_LESSTHAN;
+			return LuaSymbols.TOKEN_LESSTHAN;
 		case RANGLE:
-			return TOKEN_GREATERTHAN;
+			return LuaSymbols.TOKEN_GREATERTHAN;
 		case PLUS:
-			return TOKEN_PLUS;
+			return LuaSymbols.TOKEN_PLUS;
 		case MINUS:
-			return TOKEN_MINUS;
+			return LuaSymbols.TOKEN_MINUS;
 		case SHARP:
-			return TOKEN_SHARP;
+			return LuaSymbols.TOKEN_SHARP;
 		case DOT:
-			return TOKEN_DOT;
+			return LuaSymbols.TOKEN_DOT;
 		case COLON:
-			return TOKEN_COLON;
+			return LuaSymbols.TOKEN_COLON;
+		case ASTERISK:
+			return LuaSymbols.TOKEN_ASTERISK;
+		case SLASH:
+			return LuaSymbols.TOKEN_SLASH;
+		case PERSENT:
+			return LuaSymbols.TOKEN_PERSENT;
+		case CARET:
+			return LuaSymbols.TOKEN_CARET;
 		default:
 			break;
 		}
@@ -345,14 +362,14 @@ public class LuaHeuristicScanner implements LuaSymbols {
 			try {
 				identOrKeyword = fDocument.get(from, to - from);
 			} catch (BadLocationException e) {
-				return TOKEN_EOF;
+				return LuaSymbols.TOKEN_EOF;
 			}
 
 			return getToken(identOrKeyword);
 
 		} else {
 			// operators, number literals etc
-			return TOKEN_OTHER;
+			return LuaSymbols.TOKEN_OTHER;
 		}
 	}
 
@@ -370,49 +387,57 @@ public class LuaHeuristicScanner implements LuaSymbols {
 	public int previousToken(int start, int bound) {
 		int pos = scanBackward(start, bound, fNonWSDefaultPart);
 		if (pos == NOT_FOUND)
-			return TOKEN_EOF;
+			return LuaSymbols.TOKEN_EOF;
 
 		fPos--;
 
 		// first, detect string
 		if (getPartition(pos).getType().equals(ILuaPartitions.LUA_STRING)) {
-			return TOKEN_STRING;
+			return LuaSymbols.TOKEN_STRING;
 		}
 
 		// detect key char
 		switch (fChar) {
 		case LBRACE:
-			return TOKEN_LBRACE;
+			return LuaSymbols.TOKEN_LBRACE;
 		case RBRACE:
-			return TOKEN_RBRACE;
+			return LuaSymbols.TOKEN_RBRACE;
 		case LBRACKET:
-			return TOKEN_LBRACKET;
+			return LuaSymbols.TOKEN_LBRACKET;
 		case RBRACKET:
-			return TOKEN_RBRACKET;
+			return LuaSymbols.TOKEN_RBRACKET;
 		case LPAREN:
-			return TOKEN_LPAREN;
+			return LuaSymbols.TOKEN_LPAREN;
 		case RPAREN:
-			return TOKEN_RPAREN;
+			return LuaSymbols.TOKEN_RPAREN;
 		case SEMICOLON:
-			return TOKEN_SEMICOLON;
+			return LuaSymbols.TOKEN_SEMICOLON;
 		case COLON:
-			return TOKEN_COLON;
+			return LuaSymbols.TOKEN_COLON;
 		case COMMA:
-			return TOKEN_COMMA;
+			return LuaSymbols.TOKEN_COMMA;
 		case EQUAL:
-			return TOKEN_EQUAL;
+			return LuaSymbols.TOKEN_EQUAL;
 		case LANGLE:
-			return TOKEN_LESSTHAN;
+			return LuaSymbols.TOKEN_LESSTHAN;
 		case RANGLE:
-			return TOKEN_GREATERTHAN;
+			return LuaSymbols.TOKEN_GREATERTHAN;
 		case PLUS:
-			return TOKEN_PLUS;
+			return LuaSymbols.TOKEN_PLUS;
 		case MINUS:
-			return TOKEN_MINUS;
+			return LuaSymbols.TOKEN_MINUS;
 		case SHARP:
-			return TOKEN_SHARP;
+			return LuaSymbols.TOKEN_SHARP;
 		case DOT:
-			return TOKEN_DOT;
+			return LuaSymbols.TOKEN_DOT;
+		case ASTERISK:
+			return LuaSymbols.TOKEN_ASTERISK;
+		case SLASH:
+			return LuaSymbols.TOKEN_SLASH;
+		case PERSENT:
+			return LuaSymbols.TOKEN_PERSENT;
+		case CARET:
+			return LuaSymbols.TOKEN_CARET;
 		default:
 			break;
 		}
@@ -433,14 +458,14 @@ public class LuaHeuristicScanner implements LuaSymbols {
 			try {
 				identOrKeyword = fDocument.get(from, to - from);
 			} catch (BadLocationException e) {
-				return TOKEN_EOF;
+				return LuaSymbols.TOKEN_EOF;
 			}
 
 			return getToken(identOrKeyword);
 
 		} else {
 			// operators, number literals etc
-			return TOKEN_OTHER;
+			return LuaSymbols.TOKEN_OTHER;
 		}
 
 	}
@@ -458,58 +483,58 @@ public class LuaHeuristicScanner implements LuaSymbols {
 		switch (s.length()) {
 		case 2:
 			if ("if".equals(s)) //$NON-NLS-1$
-				return TOKEN_IF;
+				return LuaSymbols.TOKEN_IF;
 			if ("do".equals(s)) //$NON-NLS-1$
-				return TOKEN_DO;
+				return LuaSymbols.TOKEN_DO;
 			if ("or".equals(s)) //$NON-NLS-1$
-				return TOKEN_OR;
+				return LuaSymbols.TOKEN_OR;
 			break;
 		case 3:
 			if ("for".equals(s)) //$NON-NLS-1$
-				return TOKEN_FOR;
+				return LuaSymbols.TOKEN_FOR;
 			if ("end".equals(s)) //$NON-NLS-1$
-				return TOKEN_END;
+				return LuaSymbols.TOKEN_END;
 			if ("nil".equals(s)) //$NON-NLS-1$
-				return TOKEN_NIL;
+				return LuaSymbols.TOKEN_NIL;
 			if ("and".equals(s)) //$NON-NLS-1$
-				return TOKEN_AND;
+				return LuaSymbols.TOKEN_AND;
 			if ("not".equals(s)) //$NON-NLS-1$
-				return TOKEN_NOT;
+				return LuaSymbols.TOKEN_NOT;
 			break;
 		case 4:
 			if ("else".equals(s)) //$NON-NLS-1$
-				return TOKEN_ELSE;
+				return LuaSymbols.TOKEN_ELSE;
 			if ("then".equals(s)) //$NON-NLS-1$
-				return TOKEN_THEN;
+				return LuaSymbols.TOKEN_THEN;
 			if ("true".equals(s)) //$NON-NLS-1$
-				return TOKEN_TRUE;
+				return LuaSymbols.TOKEN_TRUE;
 			break;
 		case 5:
 			if ("break".equals(s)) //$NON-NLS-1$
-				return TOKEN_BREAK;
+				return LuaSymbols.TOKEN_BREAK;
 			if ("while".equals(s)) //$NON-NLS-1$
-				return TOKEN_WHILE;
+				return LuaSymbols.TOKEN_WHILE;
 			if ("local".equals(s)) //$NON-NLS-1$
-				return TOKEN_LOCAL;
+				return LuaSymbols.TOKEN_LOCAL;
 			if ("false".equals(s)) //$NON-NLS-1$
-				return TOKEN_FALSE;
+				return LuaSymbols.TOKEN_FALSE;
 			break;
 		case 6:
 			if ("return".equals(s)) //$NON-NLS-1$
-				return TOKEN_RETURN;
+				return LuaSymbols.TOKEN_RETURN;
 			if ("repeat".equals(s)) //$NON-NLS-1$
-				return TOKEN_REPEAT;
+				return LuaSymbols.TOKEN_REPEAT;
 			if ("elseif".equals(s)) //$NON-NLS-1$
-				return TOKEN_ELSEIF;
+				return LuaSymbols.TOKEN_ELSEIF;
 			break;
 		case 8:
 			if ("function".equals(s)) //$NON-NLS-1$
-				return TOKEN_FUNCTION;
+				return LuaSymbols.TOKEN_FUNCTION;
 			break;
 		default:
 			break;
 		}
-		return TOKEN_IDENT;
+		return LuaSymbols.TOKEN_IDENT;
 	}
 
 	/**
@@ -810,7 +835,7 @@ public class LuaHeuristicScanner implements LuaSymbols {
 				if (!eatForwardBetweenSepartor(position, bound, leftSeparatorToken, rightSeparatorToken))
 					return false;
 				// else we continue to search ending separator
-			} else if (currenttoken == TOKEN_EOF) {
+			} else if (currenttoken == LuaSymbols.TOKEN_EOF) {
 				// End of File we stop the search, we can't not eat the pattern completely.
 				return false;
 			}
@@ -841,7 +866,7 @@ public class LuaHeuristicScanner implements LuaSymbols {
 				if (!eatBackwardBetweenSepartor(position, bound, leftSeparatorToken, rightSeparatorToken))
 					return false;
 				// else we continue to search ending separator
-			} else if (currenttoken == TOKEN_EOF) {
+			} else if (currenttoken == LuaSymbols.TOKEN_EOF) {
 				// End of File we stop the search, we can't not eat the pattern completely.
 				return false;
 			}
@@ -866,8 +891,8 @@ public class LuaHeuristicScanner implements LuaSymbols {
 
 			// eat first token
 			int previousToken = previousToken(position, UNBOUND);
-			if (previousToken == TOKEN_RPAREN) {
-				if (!eatBackwardBetweenSepartor(position, UNBOUND, TOKEN_LPAREN, TOKEN_RPAREN)) {
+			if (previousToken == LuaSymbols.TOKEN_RPAREN) {
+				if (!eatBackwardBetweenSepartor(position, UNBOUND, LuaSymbols.TOKEN_LPAREN, LuaSymbols.TOKEN_RPAREN)) {
 					return null;
 				} else {
 					previousToken = tokenStuffBetweenParentheses;
@@ -880,16 +905,23 @@ public class LuaHeuristicScanner implements LuaSymbols {
 				int currenttoken = previousToken(position, UNBOUND);
 
 				switch (previousToken) {
-				case TOKEN_COLON:
-				case TOKEN_DOT:
+				case LuaSymbols.TOKEN_COLON:
+				case LuaSymbols.TOKEN_DOT:
 				case tokenStuffBetweenParentheses:
+					// manage case where there are 2 dots
+					if (previousToken == LuaSymbols.TOKEN_DOT && currenttoken == LuaSymbols.TOKEN_DOT) {
+						position = position + 1;
+						stop = true;
+						break;
+					}
+
 					// before dot and colon or left parent, we must found '(...)' or an identifier
-					if (currenttoken != TOKEN_RPAREN && currenttoken != TOKEN_IDENT)
+					if (currenttoken != LuaSymbols.TOKEN_RPAREN && currenttoken != LuaSymbols.TOKEN_IDENT)
 						return null;
 
-					if (currenttoken == TOKEN_RPAREN) {
+					if (currenttoken == LuaSymbols.TOKEN_RPAREN) {
 						// case : stuff between parentheses
-						if (!eatBackwardBetweenSepartor(position, UNBOUND, TOKEN_LPAREN, TOKEN_RPAREN)) {
+						if (!eatBackwardBetweenSepartor(position, UNBOUND, LuaSymbols.TOKEN_LPAREN, LuaSymbols.TOKEN_RPAREN)) {
 							return null;
 						} else {
 							previousToken = tokenStuffBetweenParentheses;
@@ -900,9 +932,9 @@ public class LuaHeuristicScanner implements LuaSymbols {
 					}
 					position = getPosition();
 					break;
-				case TOKEN_IDENT:
+				case LuaSymbols.TOKEN_IDENT:
 					// before an identifier, we must found dot or colon
-					if (currenttoken == TOKEN_COLON || currenttoken == TOKEN_DOT) {
+					if (currenttoken == LuaSymbols.TOKEN_COLON || currenttoken == LuaSymbols.TOKEN_DOT) {
 						position = getPosition();
 						previousToken = currenttoken;
 					} else {
@@ -921,7 +953,7 @@ public class LuaHeuristicScanner implements LuaSymbols {
 			int nextToken = nextToken(position, start);
 
 			// 1 - first token must be an identifier
-			if (nextToken != TOKEN_IDENT)
+			if (nextToken != LuaSymbols.TOKEN_IDENT)
 				return null;
 			String itemname = fDocument.get(position, getPosition() - position).trim();
 			Item item = new UnknownItem();
@@ -938,19 +970,19 @@ public class LuaHeuristicScanner implements LuaSymbols {
 			do {
 				nextToken = nextToken(position, start);
 				switch (nextToken) {
-				case TOKEN_EOF:
+				case LuaSymbols.TOKEN_EOF:
 					stop = true;
 					break;
-				case TOKEN_DOT:
+				case LuaSymbols.TOKEN_DOT:
 					// manage index
 					position = getPosition();
 					nextToken = nextToken(getPosition(), start);
 
 					// next token should be an identifier or EOF for incomplete index
 					String indexfieldname;
-					if (nextToken == TOKEN_EOF) {
+					if (nextToken == LuaSymbols.TOKEN_EOF) {
 						indexfieldname = ""; //$NON-NLS-1$
-					} else if (nextToken == TOKEN_IDENT) {
+					} else if (nextToken == LuaSymbols.TOKEN_IDENT) {
 						indexfieldname = fDocument.get(position, getPosition() - position).trim();
 					} else {
 						// if it's not an identifier or a EOF, we do not manage this case
@@ -961,23 +993,23 @@ public class LuaHeuristicScanner implements LuaSymbols {
 					Index index = new Index();
 					index.setLeft(exp);
 					index.setRight(indexfieldname);
-					if (nextToken == TOKEN_EOF)
+					if (nextToken == LuaSymbols.TOKEN_EOF)
 						index.setIncomplete(true); // no identifier after the '.' this is an incomplete Index
 
 					// update loop variable
 					exp = index;
 					position = getPosition();
 					break;
-				case TOKEN_COLON:
+				case LuaSymbols.TOKEN_COLON:
 					// manage invoke
 					position = getPosition();
 
 					// next token should be an identifier or EOF for incomplete invocation
 					nextToken = nextToken(getPosition(), start);
 					String invokefunctionname;
-					if (nextToken == TOKEN_EOF) {
+					if (nextToken == LuaSymbols.TOKEN_EOF) {
 						invokefunctionname = ""; //$NON-NLS-1$
-					} else if (nextToken == TOKEN_IDENT) {
+					} else if (nextToken == LuaSymbols.TOKEN_IDENT) {
 						invokefunctionname = fDocument.get(position, getPosition() - position).trim();
 					} else {
 						// if it's not an identifier or a EOF, we do not manage this case
@@ -991,10 +1023,10 @@ public class LuaHeuristicScanner implements LuaSymbols {
 					// consume the full invocation ( left parent until right parent)
 					position = getPosition();
 					nextToken = nextToken(getPosition(), start);
-					if (nextToken == TOKEN_LPAREN) {
-						if (!eatForwardBetweenSepartor(position, start, TOKEN_LPAREN, TOKEN_RPAREN))
+					if (nextToken == LuaSymbols.TOKEN_LPAREN) {
+						if (!eatForwardBetweenSepartor(position, start, LuaSymbols.TOKEN_LPAREN, LuaSymbols.TOKEN_RPAREN))
 							invoke.setIncomplete(true); // no right parentheses so this is an incomplete invoke
-					} else if (nextToken != TOKEN_EOF) {
+					} else if (nextToken != LuaSymbols.TOKEN_EOF) {
 						return null; // invalid invocation
 					} else {
 						invoke.setIncomplete(true); // no left parentheses so this is an incomplete invoke
@@ -1004,13 +1036,13 @@ public class LuaHeuristicScanner implements LuaSymbols {
 					exp = invoke;
 					position = getPosition();
 					break;
-				case TOKEN_LPAREN:
+				case LuaSymbols.TOKEN_LPAREN:
 					// manage call
 					Call call = new Call();
 					call.setFunction(exp);
 
 					// consume the call invocation ( left parent until right parent)
-					if (!eatForwardBetweenSepartor(position, start, TOKEN_LPAREN, TOKEN_RPAREN)) {
+					if (!eatForwardBetweenSepartor(position, start, LuaSymbols.TOKEN_LPAREN, LuaSymbols.TOKEN_RPAREN)) {
 						call.setIncomplete(true); // no right parentheses so this is an incomplete invoke
 					}
 
