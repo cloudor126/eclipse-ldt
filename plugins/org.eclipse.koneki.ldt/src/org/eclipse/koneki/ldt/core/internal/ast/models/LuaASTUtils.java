@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.ASTVisitor;
 import org.eclipse.dltk.core.IScriptFolder;
@@ -56,7 +56,6 @@ import org.eclipse.koneki.ldt.core.internal.ast.models.file.Invoke;
 import org.eclipse.koneki.ldt.core.internal.ast.models.file.LocalVar;
 import org.eclipse.koneki.ldt.core.internal.ast.models.file.LuaExpression;
 import org.eclipse.koneki.ldt.core.internal.ast.models.file.LuaInternalContent;
-import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 public final class LuaASTUtils {
 	private LuaASTUtils() {
@@ -485,13 +484,13 @@ public final class LuaASTUtils {
 			definitions.addAll(getAllInternalGlobalVarsDefinition(preloadedSourceModule, start));
 		}
 
-		// SEARCH IN CURRENT SOURCE MODULE
-		definitions.addAll(getAllInternalGlobalVarsDefinition(sourceModule, start));
+		if (Platform.getPreferencesService().getBoolean(LuaLanguageToolkit.getDefault().getPreferenceQualifier(),
+				PreferenceInitializer.USE_GLOBAL_VAR_IN_LDT, true, null)) {
 
-		// SEARCH IN EXTERNAL SOURCE MODULE
-		ScopedPreferenceStore preferenceStore = new ScopedPreferenceStore(InstanceScope.INSTANCE, LuaLanguageToolkit.getDefault()
-				.getPreferenceQualifier());
-		if (preferenceStore.getBoolean(PreferenceInitializer.USE_GLOBAL_VAR_IN_LDT)) {
+			// SEARCH IN CURRENT SOURCE MODULE
+			definitions.addAll(getAllInternalGlobalVarsDefinition(sourceModule, start));
+
+			// SEARCH IN EXTERNAL SOURCE MODULE
 			definitions.addAll(getAllExternalGlobalVarsDefinition(sourceModule, start));
 		}
 
@@ -558,15 +557,15 @@ public final class LuaASTUtils {
 		if (definition != null)
 			return definition;
 
-		// SEARCH IN CURRENT SOURCE MODULE
-		definition = getInternalGlobalVarDefinition(sourceModule, varname);
-		if (definition != null)
-			return definition;
+		if (Platform.getPreferencesService().getBoolean(LuaLanguageToolkit.getDefault().getPreferenceQualifier(),
+				PreferenceInitializer.USE_GLOBAL_VAR_IN_LDT, true, null)) {
 
-		// SEARCH IN EXTERNAL SOURCE MODULE
-		ScopedPreferenceStore preferenceStore = new ScopedPreferenceStore(InstanceScope.INSTANCE, LuaLanguageToolkit.getDefault()
-				.getPreferenceQualifier());
-		if (preferenceStore.getBoolean(PreferenceInitializer.USE_GLOBAL_VAR_IN_LDT)) {
+			// SEARCH IN CURRENT SOURCE MODULE
+			definition = getInternalGlobalVarDefinition(sourceModule, varname);
+			if (definition != null)
+				return definition;
+
+			// SEARCH IN EXTERNAL SOURCE MODULE
 			definition = getExternalGlobalVarDefinition(sourceModule, varname);
 			if (definition != null)
 				return definition;

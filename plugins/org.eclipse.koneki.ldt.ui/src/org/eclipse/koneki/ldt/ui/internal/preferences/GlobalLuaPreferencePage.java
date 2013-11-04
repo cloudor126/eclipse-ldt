@@ -10,23 +10,16 @@
  ******************************************************************************/
 package org.eclipse.koneki.ldt.ui.internal.preferences;
 
-import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.eclipse.dltk.ui.util.SWTFactory;
+import org.eclipse.core.runtime.preferences.ConfigurationScope;
 import org.eclipse.jface.preference.BooleanFieldEditor;
-import org.eclipse.jface.preference.PreferencePage;
+import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.koneki.ldt.core.internal.LuaLanguageToolkit;
 import org.eclipse.koneki.ldt.core.internal.PreferenceInitializer;
-import org.eclipse.koneki.ldt.ui.internal.Activator;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
-public class GlobalLuaPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
-
-	private BooleanFieldEditor useGlobalVars;
+public class GlobalLuaPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
 	protected String getHelpId() {
 		return null;
@@ -36,31 +29,15 @@ public class GlobalLuaPreferencePage extends PreferencePage implements IWorkbenc
 		setDescription(Messages.GlobalLuaPreferencePage_description);
 	}
 
-	protected void setPreferenceStore() {
-		setPreferenceStore(Activator.getDefault().getPreferenceStore());
-	}
-
 	@Override
-	protected Control createContents(Composite parent) {
-		Composite composite = SWTFactory.createComposite(parent, parent.getFont(), 1, 1, GridData.FILL_HORIZONTAL);
-
-		useGlobalVars = new BooleanFieldEditor(PreferenceInitializer.USE_GLOBAL_VAR_IN_LDT, Messages.GlobalLuaPreferencePage_use_global_vars,
-				composite);
-		useGlobalVars.setPreferenceStore(new ScopedPreferenceStore(InstanceScope.INSTANCE, LuaLanguageToolkit.getDefault().getPreferenceQualifier()));
-		useGlobalVars.load();
-
-		return composite;
+	protected void createFieldEditors() {
+		BooleanFieldEditor useGlobalVarField = new BooleanFieldEditor(PreferenceInitializer.USE_GLOBAL_VAR_IN_LDT,
+				Messages.GlobalLuaPreferencePage_use_global_vars, getFieldEditorParent());
+		addField(useGlobalVarField);
 	}
 
 	@Override
 	public void init(IWorkbench workbench) {
-
+		setPreferenceStore(new ScopedPreferenceStore(ConfigurationScope.INSTANCE, LuaLanguageToolkit.getDefault().getPreferenceQualifier()));
 	}
-
-	@Override
-	public boolean performOk() {
-		useGlobalVars.store();
-		return super.performOk();
-	}
-
 }

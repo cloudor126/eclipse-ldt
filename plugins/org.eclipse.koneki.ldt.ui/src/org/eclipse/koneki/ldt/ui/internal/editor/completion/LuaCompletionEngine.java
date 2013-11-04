@@ -17,7 +17,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
 
-import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.dltk.codeassist.ScriptCompletionEngine;
 import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.core.CompletionProposal;
@@ -46,7 +46,6 @@ import org.eclipse.koneki.ldt.core.internal.ast.models.file.LuaExpression;
 import org.eclipse.koneki.ldt.ui.internal.Activator;
 import org.eclipse.koneki.ldt.ui.internal.editor.text.LuaHeuristicScanner;
 import org.eclipse.koneki.ldt.ui.internal.editor.text.LuaSymbols;
-import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 public class LuaCompletionEngine extends ScriptCompletionEngine {
 
@@ -173,10 +172,8 @@ public class LuaCompletionEngine extends ScriptCompletionEngine {
 		}
 
 		// Add globals other that preloaded but with a lower relevance
-		ScopedPreferenceStore preferenceStore = new ScopedPreferenceStore(InstanceScope.INSTANCE, LuaLanguageToolkit.getDefault()
-				.getPreferenceQualifier());
-
-		if (preferenceStore.getBoolean(PreferenceInitializer.USE_GLOBAL_VAR_IN_LDT)) {
+		if (Platform.getPreferencesService().getBoolean(LuaLanguageToolkit.getDefault().getPreferenceQualifier(),
+				PreferenceInitializer.USE_GLOBAL_VAR_IN_LDT, true, null)) {
 
 			List<Definition> othersglobalvars = LuaASTUtils.getAllInternalGlobalVarsDefinition(sourceModule, start);
 			othersglobalvars.addAll(LuaASTUtils.getAllExternalGlobalVarsDefinition(sourceModule, start));
