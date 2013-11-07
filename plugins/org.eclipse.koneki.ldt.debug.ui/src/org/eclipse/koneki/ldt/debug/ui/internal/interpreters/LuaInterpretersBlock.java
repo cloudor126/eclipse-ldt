@@ -52,11 +52,7 @@ public class LuaInterpretersBlock extends InterpretersBlock {
 		return button;
 	}
 
-	@Override
-	protected void enableButtons() {
-		super.enableButtons();
-
-		// Disable Edit button if the selection contain one interpreter contributed by extension points
+	public boolean canEditInterpreter() {
 		Object[] selectedInterpreters = ((IStructuredSelection) fInterpreterList.getSelection()).toArray();
 		boolean enableEdit = selectedInterpreters.length > 0;
 		for (Object selected : selectedInterpreters) {
@@ -66,6 +62,19 @@ public class LuaInterpretersBlock extends InterpretersBlock {
 				enableEdit = enableEdit && !isContributed;
 			}
 		}
-		editButton.setEnabled(enableEdit);
+		return enableEdit;
+	}
+
+	@Override
+	protected void editInterpreter() {
+		if (canEditInterpreter())
+			super.editInterpreter();
+	}
+
+	@Override
+	protected void enableButtons() {
+		super.enableButtons();
+		// Disable Edit button if the selection contain one interpreter contributed by extension points
+		editButton.setEnabled(canEditInterpreter());
 	}
 }
