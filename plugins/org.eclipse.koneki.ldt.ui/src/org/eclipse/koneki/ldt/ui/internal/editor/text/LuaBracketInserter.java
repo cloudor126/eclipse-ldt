@@ -82,7 +82,7 @@ public class LuaBracketInserter extends BracketInserter {
 		IDocument document = sourceViewer.getDocument();
 
 		final Point selection = sourceViewer.getSelectedRange();
-		final int offset = selection.x;
+		final int offset = (selection.x == document.getLength() ? selection.x - 1 : selection.x);
 		final int length = selection.y;
 
 		try {
