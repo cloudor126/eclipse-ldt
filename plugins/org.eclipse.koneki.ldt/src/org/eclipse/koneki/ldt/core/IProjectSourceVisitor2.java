@@ -24,7 +24,7 @@ public interface IProjectSourceVisitor2 {
 	public abstract void processFile(final ISourceModule sourceModule, final IPath absolutePath, final IPath relativePath, final String charset,
 			final IProgressMonitor monitor) throws CoreException;
 
-	public abstract void processDirectory(final IScriptFolder sourceModule, final IPath absolutePath, final IPath relativePath,
+	public abstract void processDirectory(final IScriptFolder scriptFolder, final IPath absolutePath, final IPath relativePath,
 			final IProgressMonitor monitor) throws CoreException;
 
 }

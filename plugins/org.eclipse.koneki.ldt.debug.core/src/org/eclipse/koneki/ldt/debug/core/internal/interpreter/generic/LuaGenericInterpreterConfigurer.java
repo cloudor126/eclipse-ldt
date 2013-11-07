@@ -27,16 +27,15 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.dltk.core.DLTKCore;
+import org.eclipse.dltk.core.IProjectFragment;
 import org.eclipse.dltk.launching.EnvironmentVariable;
 import org.eclipse.dltk.launching.IInterpreterInstall;
 import org.eclipse.dltk.launching.InterpreterConfig;
 import org.eclipse.dltk.launching.ScriptLaunchConfigurationConstants;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.koneki.ldt.core.IProjectSourceRootFolderVisitor;
+import org.eclipse.koneki.ldt.core.IProjectSourceRootFolderVisitor2;
 import org.eclipse.koneki.ldt.core.LuaUtils;
 import org.eclipse.koneki.ldt.core.LuaUtils.ProjectFragmentFilter;
 import org.eclipse.koneki.ldt.debug.core.internal.LuaDebugConstants;
-import org.eclipse.koneki.ldt.debug.core.internal.model.interpreter.Info;
 
 public class LuaGenericInterpreterConfigurer {
 
@@ -128,10 +127,10 @@ public class LuaGenericInterpreterConfigurer {
 		final List<IPath> luaPath = new ArrayList<IPath>();
 		LuaUtils.visitRootSourceFolder(DLTKCore.create(project),
 				EnumSet.complementOf(EnumSet.of(ProjectFragmentFilter.ARCHIVE, ProjectFragmentFilter.EXECUTION_ENVIRONMENT)),
-				new IProjectSourceRootFolderVisitor() {
-
+				new IProjectSourceRootFolderVisitor2() {
 					@Override
-					public void processSourceRootFolder(IPath absolutePath, IProgressMonitor monitor) throws CoreException {
+					public void processSourceRootFolder(IProjectFragment scriptFolder, IPath absolutePath, IProgressMonitor monitor)
+							throws CoreException {
 						luaPath.add(absolutePath);
 					}
 				}, new NullProgressMonitor());

@@ -18,8 +18,10 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
+import org.eclipse.dltk.core.IScriptFolder;
 import org.eclipse.dltk.core.IScriptProject;
-import org.eclipse.koneki.ldt.core.IProjectSourceVisitor;
+import org.eclipse.dltk.core.ISourceModule;
+import org.eclipse.koneki.ldt.core.IProjectSourceVisitor2;
 import org.eclipse.koneki.ldt.core.LuaUtils;
 import org.eclipse.koneki.ldt.remote.core.internal.Activator;
 import org.eclipse.rse.core.model.IHost;
@@ -42,10 +44,11 @@ public final class LuaRSEUtil {
 	 */
 	public static void uploadFiles(final IRemoteFileSubSystem subsystem, final IScriptProject project, final String destinationFolderPath,
 			final IProgressMonitor monitor) throws CoreException {
-		final IProjectSourceVisitor visitor = new IProjectSourceVisitor() {
+		final IProjectSourceVisitor2 visitor = new IProjectSourceVisitor2() {
 
 			@Override
-			public void processFile(IPath absolutePath, IPath relativePath, String charset, IProgressMonitor monitor) throws CoreException {
+			public void processFile(ISourceModule sourceModule, IPath absolutePath, IPath relativePath, String charset, IProgressMonitor monitor)
+					throws CoreException {
 				final String destinationPath = destinationFolderPath + subsystem.getSeparator() + relativePath.toPortableString();
 				final String destinationEncoding = subsystem.getRemoteEncoding();
 				final SubMonitor subMonitor = SubMonitor.convert(monitor, 1);
@@ -58,7 +61,8 @@ public final class LuaRSEUtil {
 			}
 
 			@Override
-			public void processDirectory(IPath absolutePath, IPath relativePath, IProgressMonitor monitor) throws CoreException {
+			public void processDirectory(IScriptFolder scriptFolder, IPath absolutePath, IPath relativePath, IProgressMonitor monitor)
+					throws CoreException {
 				final String innerDestinationFolderPath = destinationFolderPath + subsystem.getSeparator() + relativePath.toPortableString();
 				final SubMonitor subMonitor = SubMonitor.convert(monitor, 1);
 				try {

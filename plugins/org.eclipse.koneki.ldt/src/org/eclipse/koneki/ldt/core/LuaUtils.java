@@ -410,7 +410,7 @@ public final class LuaUtils {
 			SubMonitor subMonitor2 = visitLoopMonitor.newChild(1);
 			if (visitor instanceof IProjectSourceRootFolderVisitor2) {
 				((IProjectSourceRootFolderVisitor2) visitor).processSourceRootFolder(projectFragment, absolutePathFromModelElement, subMonitor2);
-			} else if (visitor instanceof IProjectSourceVisitor) {
+			} else if (visitor instanceof IProjectSourceRootFolderVisitor) {
 				((IProjectSourceRootFolderVisitor) visitor).processSourceRootFolder(absolutePathFromModelElement, subMonitor2);
 			}
 		}
