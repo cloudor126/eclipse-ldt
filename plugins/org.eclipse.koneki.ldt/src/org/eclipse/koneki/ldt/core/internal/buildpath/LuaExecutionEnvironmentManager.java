@@ -369,7 +369,7 @@ public final class LuaExecutionEnvironmentManager {
 					// copy file
 					FileOutputStream fileOutputStream = null;
 					try {
-						fileOutputStream = new FileOutputStream(outputFile);
+						fileOutputStream = FileUtils.openOutputStream(outputFile);
 						// Inflate file
 						IOUtils.copy(zipStream, fileOutputStream);
 
