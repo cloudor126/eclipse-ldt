@@ -82,7 +82,7 @@ public class LuaBracketInserter extends BracketInserter {
 		IDocument document = sourceViewer.getDocument();
 
 		final Point selection = sourceViewer.getSelectedRange();
-		final int offset = (selection.x == document.getLength() ? selection.x - 1 : selection.x);
+		final int offset = selection.x;
 		final int length = selection.y;
 
 		try {
@@ -92,7 +92,9 @@ public class LuaBracketInserter extends BracketInserter {
 				return;
 
 			// validate we are editing lua code (Lua_partitioning)
-			if (!validatePartitioning(document, offset, ILuaPartitions.LUA_PARTITIONING)) {
+			// bug 396513: Weird auto closing policy for long comments
+			int partitionOffset = offset == document.getLength() ? offset - 1 : offset;
+			if (!validatePartitioning(document, partitionOffset, ILuaPartitions.LUA_PARTITIONING)) {
 				return;
 			}
 
