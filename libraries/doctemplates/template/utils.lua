@@ -246,9 +246,7 @@ M.prettynametypes = {
 			for position, param in ipairs(definition.params) do
 				-- For non global function, when first parameter is 'self',
 				-- it will not be part of listed parameters
-				if position == 1 and param.name == 'self' and isfield then
-					hasfirstself = true
-				else
+				if not M.isinvokation(o) then
 					table.insert(paramlist, param.name)
 					if position ~= #definition.params then
 						table.insert(paramlist, ', ')
@@ -261,7 +259,7 @@ M.prettynametypes = {
 			else
 				-- Determine function prefix operator,
 				-- ':' if 'self' is first parameter, '.' else way
-				local operator = hasfirstself and ':' or '.'
+				local operator = M.isinvokation(o) and ':' or '.'
 	
 				-- Append function parameters
 				prettyname = string.format('%s%s%s(%s)',typename, operator, itemname, table.concat(paramlist))
@@ -281,6 +279,20 @@ M.prettynametypes = {
 	end
 }
 M.prettynametypes.internaltyperef = M.prettynametypes.primitivetyperef
+
+
+--- 
+-- Check if the given item is a function that can be invoked 
+function M.isinvokation(item)
+	local definition = item:resolvetype()
+	if definition and definition.tag == 'functiontypedef' then
+		if (#definition.params > 0) then
+			local firstparam = definition.params[1]
+			return firstparam.name == 'self' and not item.parent.name == 'globals'
+		end
+	end
+end
+
 
 ---
 -- Provide human readable overview from an API model element
