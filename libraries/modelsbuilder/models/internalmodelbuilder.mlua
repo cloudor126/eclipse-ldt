@@ -395,6 +395,11 @@ getitem = function (binder, itemname, comment2apiobj, file)
 						if not apiobj.name or apiobj.name == itemname then
 							-- use code to complete api information if it's necessary
 							completeapidocitem(apiobj, itemname, init,file,binder,comment2apiobj)
+							-- for item use code source range rather than doc source range
+							if string and string.lineinfo then
+								apiobj.sourcerange.min =  string.lineinfo.first.offset
+								apiobj.sourcerange.max = string.lineinfo.last.offset
+							end							
 							return apiobj, string					
 						end
 					elseif apiobj.tag=="recordtypedef" then
@@ -439,6 +444,11 @@ getitem = function (binder, itemname, comment2apiobj, file)
 							-- if this is a global var or if is has no parent
 							-- we do not create a new item
 							if not apiobj.parent or apiobj.parent == file  then
+								-- for item use code source range rather than doc source range
+								if currentid and currentid.lineinfo then
+									apiobj.sourcerange.min = currentid.lineinfo.first.offset
+									apiobj.sourcerange.max = currentid.lineinfo.last.offset
+								end	
 								return apiobj, currentid
 							else
 								return createitem(itemname, currentid, apiobj.type, nil)
@@ -745,7 +755,7 @@ local function searchmodule(ast,file,comment2apiobj,modulename)
 					--_type.sourcerange.min = _identifier.definition.sourcerange.min
 					--_type.sourcerange.max = _identifier.definition.sourcerange.max
 					
-					file:mergetype(_type, true)
+					file:mergetype(_type)
 					
 					-- create return if needed
 					if not file.returns[1] then

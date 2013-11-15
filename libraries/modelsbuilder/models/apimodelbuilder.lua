@@ -379,6 +379,8 @@ function M.createmoduleapi(ast,modulename)
 			_lastapiobject = apimodel._item()
 			_lastapiobject.shortdescription = parsedcomment.shortdescription
 			_lastapiobject.description = parsedcomment.description
+			_lastapiobject.sourcerange.min =  comment.lineinfo.first.offset
+			_lastapiobject.sourcerange.max = comment.lineinfo.last.offset
 		end
 		
 		--
