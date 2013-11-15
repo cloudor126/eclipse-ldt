@@ -217,7 +217,7 @@ function walker.Table(node, parent)
   -- Format only inner values across several lines
   local firstline, firstindex = walker.getfirstline(node,true)
   local lastline = walker.getlastline(node)
-  if #node > 0 or firstline < lastline then
+  if #node > 0 and firstline < lastline then
 
     -- Determine first line to format
     local firstnode = unpack(node)
