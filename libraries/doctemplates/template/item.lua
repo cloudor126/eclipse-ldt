@@ -52,7 +52,7 @@ return
 #
 #	-- Adjust parameter count if first one is 'self'
 #	local paramcount
-#	if isinvokation(_item) then
+#	if #fdef.params > 0 and isinvokable(_item) then
 #		paramcount = #fdef.params - 1
 #	else
 #		paramcount = #fdef.params
@@ -63,7 +63,7 @@ return
 		<h$(i)>Parameter$( paramcount > 1 and 's' )</h$(i)>
 		<ul>
 #		for position, param in ipairs( fdef.params ) do
-#			if not (isinvokation(_item) and position == 1) then
+#			if not (position == 1 and isinvokable(_item)) then
 				<li>
 #				local paramline = "<code><em>"
 #				if param.type then
