@@ -32,15 +32,21 @@ function M._file()
 			type.parent = self
 		end,
 		
-		mergetype =  function (self,newtype,erase)
+		mergetype =  function (self,newtype,erase,erasesourcerangefield)
 			local currenttype = self.types[newtype.name]
 			if currenttype then
 				-- merge recordtypedef
 				if currenttype.tag =="recordtypedef" and newtype.tag == "recordtypedef" then
 					-- merge fields
 					for fieldname ,field in pairs( newtype.fields) do
-						if erase or not currenttype[fieldname] then
+						local currentfield = currenttype.fields[fieldname]
+						if erase or not currentfield then
 							currenttype:addfield(field)
+						elseif erasesourcerangefield then
+							if field.sourcerange.min and field.sourcerange.max then
+							 	currentfield.sourcerange.min = field.sourcerange.min
+								currentfield.sourcerange.max = field.sourcerange.max
+							end	
 						end
 					end
 					
@@ -48,8 +54,10 @@ function M._file()
 					if erase then
 						if newtype.description or newtype.description == ""  then currenttype.description = newtype.description end
 						if newtype.shortdescription or newtype.shortdescription == ""  then currenttype.shortdescription = newtype.shortdescription end
-						if newtype.sourcerange.min then currenttype.sourcerange.min = newtype.sourcerange.min end
-						if newtype.sourcerange.max then currenttype.sourcerange.max = newtype.sourcerange.min end
+						if newtype.sourcerange.min and newtype.sourcerange.max then
+							currenttype.sourcerange.min = newtype.sourcerange.min
+							currenttype.sourcerange.max = newtype.sourcerange.max
+						end
 					end
 				-- merge functiontypedef
 				elseif currenttype.tag == "functiontypedef" and newtype.tag == "functiontypedef" then
@@ -71,8 +79,10 @@ function M._file()
 					if erase then
 						if newtype.description or newtype.description == "" then currenttype.description = newtype.description end
 						if newtype.shortdescription or newtype.shortdescription == ""  then currenttype.shortdescription = newtype.shortdescription end
-						if newtype.sourcerange.min then currenttype.sourcerange.min = newtype.sourcerange.min end
-						if newtype.sourcerange.max then currenttype.sourcerange.max = newtype.sourcerange.min end
+						if newtype.sourcerange.min and newtype.sourcerange.max then
+							currenttype.sourcerange.min = newtype.sourcerange.min
+							currenttype.sourcerange.max = newtype.sourcerange.max
+						end
 					end
 				end
 			else

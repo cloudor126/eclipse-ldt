@@ -4,7 +4,7 @@ do local _={
 		globalvars={
 
 		}
-		--[[table: 00D64CD0]],
+		--[[table: 00DD5A30]],
 		types={
 			["__#number=#string[a]__1"]={
 				shortdescription="Description here.",
@@ -18,15 +18,15 @@ do local _={
 								typename="number",
 								tag="primitivetyperef"
 							}
-						--[[table: 00D6CA20]]
+						--[[table: 009575C8]]
 						}
-						--[[table: 00D6BF08]],
+						--[[table: 0094F788]],
 						description="",
 						tag="return"
 					}
-				--[[table: 00D6C3E0]]
+				--[[table: 00DD8A50]]
 				}
-				--[[table: 00D6F2C0]],
+				--[[table: 00DDCE48]],
 				params={
 					[1]={
 						description="Description of a",
@@ -34,67 +34,42 @@ do local _={
 							typename="string",
 							tag="primitivetyperef"
 						}
-						--[[table: 00D686C8]],
+						--[[table: 00DD6C28]],
 						name="a",
 						tag="parameter"
 					}
-				--[[table: 00D6F6A8]]
+				--[[table: 00DD02B0]]
 				}
-				--[[table: 00D6F928]],
+				--[[table: 00DDB8E0]],
 				tag="functiontypedef"
 			}
-			--[[table: 00D6F7E8]],
+			--[[table: 00DDCD30]],
 			modulename={
 				fields={
 					myfunction={
 						type={
-							def={
-								shortdescription="",
-								description="",
-								name="___",
-								returns={
-
-								}
-								--[[table: 00D6DD30]],
-								params={
-									[1]={
-										description="",
-										name="a",
-										tag="parameter"
-									}
-									--[[table: 00D6DD58]],
-									[2]={
-										description="",
-										name="b",
-										tag="parameter"
-									}
-								--[[table: 00D6DD08]]
-								}
-								--[[table: 00D71160]],
-								tag="functiontypedef"
-							}
-							--[[table: 00D71228]],
-							tag="inlinetyperef"
+							typename="__#number=#string[a]__1",
+							tag="internaltyperef"
 						}
-						--[[table: 00D6C9A8]],
+						--[[table: 00DD2F60]],
 						description="",
 						parent=nil --[[ref]],
-						shortdescription="",
+						shortdescription="Description here.",
 						name="myfunction",
 						sourcerange={
 							min=178,
 							max=187
 						}
-						--[[table: 00D6FBA8]],
+						--[[table: 00DD8A28]],
 						occurrences={
 
 						}
-						--[[table: 00D6EB40]],
+						--[[table: 00DDD190]],
 						tag="item"
 					}
-				--[[table: 00D665A8]]
+				--[[table: 00DD8DE8]]
 				}
-				--[[table: 00D6BA30]],
+				--[[table: 00DD1D90]],
 				shortdescription="",
 				name="modulename",
 				parent=nil --[[ref]],
@@ -102,13 +77,13 @@ do local _={
 					min=1,
 					max=23
 				}
-				--[[table: 00D64398]],
+				--[[table: 00DD2858]],
 				description="",
 				tag="recordtypedef"
 			}
-		--[[table: 00D636A0]]
+		--[[table: 00DD6CF0]]
 		}
-		--[[table: 00D6C9D0]],
+		--[[table: 00DDBCC8]],
 		shortdescription="",
 		name="modulename",
 		returns={
@@ -118,23 +93,23 @@ do local _={
 						typename="modulename",
 						tag="internaltyperef"
 					}
-				--[[table: 00D62138]]
+				--[[table: 00DD1BD8]]
 				}
-				--[[table: 00D62D68]],
+				--[[table: 00DD1D40]],
 				description="",
 				tag="return"
 			}
-		--[[table: 00D629D0]]
+		--[[table: 00DD4F68]]
 		}
-		--[[table: 00D6CB88]],
+		--[[table: 00DDBC00]],
 		tag="file"
 	}
-	--[[table: 00D6B418]],
+	--[[table: 00DD5A08]],
 	internalcontent={
 		unknownglobalvars={
 
 		}
-		--[[table: 00D6B120]],
+		--[[table: 0094D0F0]],
 		content={
 			localvars={
 				[1]={
@@ -143,7 +118,7 @@ do local _={
 							typename="modulename",
 							tag="internaltyperef"
 						}
-						--[[table: 00D69118]],
+						--[[table: 0094AFF8]],
 						description="",
 						shortdescription="",
 						name="M",
@@ -151,57 +126,57 @@ do local _={
 							min=30,
 							max=30
 						}
-						--[[table: 00D61B20]],
+						--[[table: 00950250]],
 						occurrences={
 							[1]={
 								sourcerange={
 									min=30,
 									max=30
 								}
-								--[[table: 00D67A98]],
+								--[[table: 00957578]],
 								definition=nil --[[ref]],
 								tag="MIdentifier"
 							}
-							--[[table: 00D67980]],
+							--[[table: 009517B8]],
 							[2]={
 								sourcerange={
 									min=176,
 									max=176
 								}
-								--[[table: 00D68768]],
+								--[[table: 009535E0]],
 								definition=nil --[[ref]],
 								tag="MIdentifier"
 							}
-							--[[table: 00D67A20]],
+							--[[table: 00953F90]],
 							[3]={
 								sourcerange={
 									min=216,
 									max=216
 								}
-								--[[table: 00D6A450]],
+								--[[table: 00953A68]],
 								definition=nil --[[ref]],
 								tag="MIdentifier"
 							}
-						--[[table: 00D6B828]]
+						--[[table: 009492C0]]
 						}
-						--[[table: 00D71138]],
+						--[[table: 0094F940]],
 						tag="item"
 					}
-					--[[table: 00D6D0D8]],
+					--[[table: 0094F4B8]],
 					scope={
 						min=0,
 						max=0
 					}
-				--[[table: 00D6B030]]
+				--[[table: 00949680]]
 				}
-			--[[table: 00D66620]]
+			--[[table: 009554D0]]
 			}
-			--[[table: 00D66760]],
+			--[[table: 0094E630]],
 			sourcerange={
 				min=1,
 				max=10000
 			}
-			--[[table: 00D66580]],
+			--[[table: 00956A88]],
 			content={
 				[1]=nil --[[ref]],
 				[2]={
@@ -209,12 +184,12 @@ do local _={
 						min=176,
 						max=187
 					}
-					--[[table: 00D68060]],
+					--[[table: 00956A38]],
 					right="myfunction",
 					left=nil --[[ref]],
 					tag="MIndex"
 				}
-				--[[table: 00D6B990]],
+				--[[table: 0094B7F0]],
 				[3]={
 					localvars={
 						[1]={
@@ -226,30 +201,30 @@ do local _={
 									min=189,
 									max=189
 								}
-								--[[table: 00D626D8]],
+								--[[table: 00957BE0]],
 								occurrences={
 									[1]={
 										sourcerange={
 											min=189,
 											max=189
 										}
-										--[[table: 00D6B8F0]],
+										--[[table: 00952DC0]],
 										definition=nil --[[ref]],
 										tag="MIdentifier"
 									}
-								--[[table: 00D683D0]]
+								--[[table: 00958018]]
 								}
-								--[[table: 00D70C38]],
+								--[[table: 00948F00]],
 								tag="item"
 							}
-							--[[table: 00D6ED20]],
+							--[[table: 009511A0]],
 							scope={
 								min=0,
 								max=0
 							}
-						--[[table: 00D63308]]
+						--[[table: 0094DFF0]]
 						}
-						--[[table: 00D65F68]],
+						--[[table: 00956AD8]],
 						[2]={
 							item={
 								description="",
@@ -259,56 +234,56 @@ do local _={
 									min=191,
 									max=191
 								}
-								--[[table: 00D66120]],
+								--[[table: 0094F648]],
 								occurrences={
 									[1]={
 										sourcerange={
 											min=191,
 											max=191
 										}
-										--[[table: 00D6B9B8]],
+										--[[table: 00950CC8]],
 										definition=nil --[[ref]],
 										tag="MIdentifier"
 									}
-								--[[table: 00D6C408]]
+								--[[table: 009509D0]]
 								}
-								--[[table: 00D6EC80]],
+								--[[table: 00957CF8]],
 								tag="item"
 							}
-							--[[table: 00D685D8]],
+							--[[table: 0094EA68]],
 							scope={
 								min=0,
 								max=0
 							}
-						--[[table: 00D621D8]]
+						--[[table: 00956E48]]
 						}
-					--[[table: 00D63790]]
+					--[[table: 0094C4E8]]
 					}
-					--[[table: 00D6A590]],
+					--[[table: 00952938]],
 					sourcerange={
 						min=188,
 						max=206
 					}
-					--[[table: 00D6ABF8]],
+					--[[table: 00952960]],
 					content={
 						[1]=nil --[[ref]],
 						[2]=nil --[[ref]]
 					}
-					--[[table: 00D6B2D8]],
+					--[[table: 00953F68]],
 					tag="MBlock"
 				}
-				--[[table: 00D6A1F8]],
+				--[[table: 00950C00]],
 				[4]=nil --[[ref]]
 			}
-			--[[table: 00D66058]],
+			--[[table: 00956B50]],
 			tag="MBlock"
 		}
-		--[[table: 00D65EA0]],
+		--[[table: 0094B908]],
 		tag="MInternalContent"
 	}
---[[table: 00D6B198]]
+--[[table: 00952118]]
 }
---[[table: 00D669E0]];
+--[[table: 0094D758]];
 _.fileapi.types["__#number=#string[a]__1"].parent=_.fileapi;
 _.fileapi.types.modulename.fields.myfunction.parent=_.fileapi.types.modulename;
 _.fileapi.types.modulename.parent=_.fileapi;

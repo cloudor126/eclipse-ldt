@@ -319,8 +319,8 @@ local function completeapidoctype(apidoctype,itemname,init,file,comment2apiobj)
 		-- set the name
 		typeref.def.name = apidoctype.name
 		
-		-- merge the type
-		file:mergetype(typeref.def)
+		-- merge the type with priority to documentation except for source range
+		file:mergetype(typeref.def,false,true)
 	end
 end
 
@@ -612,7 +612,8 @@ local function searchtypefield(node,_currentitem,comment2apiobj,file)
 						-- in this case we create the new item ans add it to the type
 						local set = node.parent
 						local item, string = getitem(set,nil, comment2apiobj,file)
-						if item  and string and not type.fields[string[1]]  then
+						-- add this item to the type, only if it has no parent and if this type does not contain already this field
+						if item and not item.parent and string and not type.fields[string[1]]  then
 							type:addfield(item)
 						end										
 					end
@@ -755,7 +756,8 @@ local function searchmodule(ast,file,comment2apiobj,modulename)
 					--_type.sourcerange.min = _identifier.definition.sourcerange.min
 					--_type.sourcerange.max = _identifier.definition.sourcerange.max
 					
-					file:mergetype(_type)
+					-- merge the type with priority to documentation except for source range
+					file:mergetype(_type,false,true)
 					
 					-- create return if needed
 					if not file.returns[1] then
