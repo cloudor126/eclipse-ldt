@@ -221,10 +221,7 @@ M.prettynametypes = {
 			file = parent.parent
 		end
 		-- Get definition
-		local definition
-		if file and o.type and o.type.typename then
-			definition = file.types[ o.type.typename ]
-		end				
+		local definition = o:resolvetype (file)			
 		
 		
 		
