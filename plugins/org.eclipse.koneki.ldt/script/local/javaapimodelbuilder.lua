@@ -11,6 +11,7 @@
 --------------------------------------------------------------------------------
 local M = {}
 
+local javaexpressionbuilder = require 'javaexpressionbuilder'
 local javaapimodelfactory =  require 'javaapimodelfactory'
 
 local print = function (string) print(string) io.flush() end
@@ -76,7 +77,7 @@ function M._typeref (_type,handledexpr)
 	elseif _type.tag == "moduletyperef" then
 		return javaapimodelfactory.newmoduletyperef(_type.modulename,_type.returnposition)
 	elseif _type.tag == "exprtyperef" then
-		return javaapimodelfactory.newexprtyperef(_type.returnposition,handledexpr[_type.expression]) 
+		return javaapimodelfactory.newexprtyperef(_type.returnposition,javaexpressionbuilder._expression(_type.expression,handledexpr)) 
 	elseif _type.tag == "primitivetyperef" then
 		return javaapimodelfactory.newprimitivetyperef(_type.typename)
 	elseif _type.tag == "inlinetyperef" then
