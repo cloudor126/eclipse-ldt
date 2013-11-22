@@ -666,10 +666,11 @@ local function createvardefinitions(_internalcontent,ast,file,comment2apiobj)
 		
 		-- get or create definition
 		local _item = file.globalvars[name]
+		local binder = occurrences[1].parent
 		if not _item then
 			-- global declaration is only if the first occurence in left part of a 'Set'
-			if occurrences[1].parent and occurrences[1].parent.tag == "Set" then
-			 	_item = getitem(occurrences[1].parent, name,comment2apiobj,file)
+			if binder and binder.tag == "Set" then
+			 	_item = getitem(binder, name,comment2apiobj,file)
 			end
 			
 			-- if we find and item this is a global var declaration
@@ -685,6 +686,27 @@ local function createvardefinitions(_internalcontent,ast,file,comment2apiobj)
 				end
 				table.insert(_internalcontent.unknownglobalvars,_item)
 			end
+		else
+		  -- if the global var definition already exists, we just try to it 
+		  if binder then
+		    match binder with
+          | `Set {ids, inits} ->
+              -- manage case only if there are 1 element in the Set
+              if #ids == 1 then
+                local currentid, currentinit = ids[1],inits[1]
+                -- ignore non Ids node and bad name
+                if currentid.tag == 'Id' and currentid[1] == name then
+                  completeapidocitem(_item, name, currentinit,file,binder,comment2apiobj)
+                  
+                  if currentid and currentid.lineinfo then
+                    _item.sourcerange.min = currentid.lineinfo.first.offset
+                    _item.sourcerange.max = currentid.lineinfo.last.offset
+                  end
+                end
+              end
+          | _ ->
+        end
+		  end
 		end
 
 		-- add occurences
