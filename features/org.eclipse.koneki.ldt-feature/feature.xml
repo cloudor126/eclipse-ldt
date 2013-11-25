@@ -30,6 +30,7 @@
       <import plugin="org.eclipse.dltk.ui" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.jface.text" version="3.5.0" match="compatible"/>
       <import plugin="org.apache.commons.io"/>
+      <import plugin="org.apache.commons.lang"/>
    </requires>
 
    <plugin

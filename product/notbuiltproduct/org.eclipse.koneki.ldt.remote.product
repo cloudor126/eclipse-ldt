@@ -60,10 +60,9 @@ plugins\org.eclipse.equinox.launcher_1.1.1.R36x_v20101122_1400.jar</programArgsW
    </plugins>
 
    <features>
-      <feature id="org.eclipse.koneki.ldt.product" version="0.9.0.qualifier"/>
-      <feature id="org.eclipse.koneki.ldt.remote" version="0.9.0.qualifier"/>
+      <feature id="org.eclipse.koneki.ldt.product"/>
+      <feature id="org.eclipse.koneki.ldt.remote"/>
       <feature id="org.eclipse.rse"/>
-      <feature id="org.eclipse.rse.scp"/>
    </features>
 
    <configurations>
