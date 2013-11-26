@@ -21,7 +21,7 @@
       <page
             category="org.eclipse.koneki.ldt.ui.globalpreferencepage"
             class="org.eclipse.koneki.ldt.ui.internal.preferences.LuaUserLibraryPreferencePage"
-            id="org.eclipse.koneki.ldt.ui.userlibrarypath"
+            id="org.eclipse.dltk.lua.preferences.UserLibraryPreferencePage"
             name="%preference.page.name.userlib">
       </page>
       <page
@@ -96,8 +96,8 @@
      <extension
            point="org.eclipse.dltk.ui.buildpathContainerPage">
         <buildpathContainerPage
-              class="org.eclipse.dltk.internal.ui.internal.wizards.buildpath.UserLibraryWizardPage"
-              id="org.eclipse.koneki.ldt.ui.luauserlibrariespage"
+              class="org.eclipse.dltk.internal.ui.wizards.buildpath.UserLibraryWizardPage"
+              id="org.eclipse.dltk.lua.preferences.UserLibraryPreferencePage"
               name="Lua User Libraries"
               nature="org.eclipse.koneki.ldt.nature">
         </buildpathContainerPage>
