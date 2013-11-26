@@ -17,6 +17,7 @@ import org.eclipse.dltk.ui.preferences.IPreferenceConfigurationBlock;
 import org.eclipse.dltk.ui.preferences.OverlayPreferenceStore;
 import org.eclipse.dltk.ui.preferences.PreferencesMessages;
 import org.eclipse.koneki.ldt.ui.internal.Activator;
+import org.eclipse.swt.SWT;
 
 public class LuaEditorPreferencePage extends AbstractConfigurationBlockPreferencePage {
 
@@ -43,7 +44,10 @@ public class LuaEditorPreferencePage extends AbstractConfigurationBlockPreferenc
 						new EditorColorItem(PreferencesMessages.EditorPreferencePage_backgroundForMethodParameters,
 								PreferenceConstants.CODEASSIST_PARAMETERS_BACKGROUND),
 						new EditorColorItem(PreferencesMessages.EditorPreferencePage_foregroundForMethodParameters,
-								PreferenceConstants.CODEASSIST_PARAMETERS_FOREGROUND), };
+								PreferenceConstants.CODEASSIST_PARAMETERS_FOREGROUND),
+						new EditorColorItem(PreferencesMessages.EditorPreferencePage_sourceHoverBackgroundColor,
+								PreferenceConstants.EDITOR_SOURCE_HOVER_BACKGROUND_COLOR,
+								PreferenceConstants.EDITOR_SOURCE_HOVER_BACKGROUND_COLOR_SYSTEM_DEFAULT, SWT.COLOR_INFO_BACKGROUND), };
 			}
 		};
 	}
