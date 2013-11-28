@@ -1,8 +1,6 @@
 ---
 -- call to be process
 --
-print(
-"hello",
+local r = print("hello",
 3,
-4
-)
+4)

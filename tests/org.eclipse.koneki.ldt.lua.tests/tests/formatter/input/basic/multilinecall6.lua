@@ -1,8 +1,8 @@
 ---
 -- call to be process
 --
-print(
+local r = print(
 "hello",
-3,
-4
+upper(
+"coucou")
 )

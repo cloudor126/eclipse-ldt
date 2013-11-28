@@ -14,7 +14,17 @@
 -- semantic depth.
 --
 -- @module luaformatter
+-- 
 --------------------------------------------------------------------------------
+
+-- -----------------------------------------------------------------------------
+-- This module is still work in progress, here some point to work on:
+-- * Due to the walker some node are treated 2times. (see Call nodes)
+-- * Avoid to go forward when obiously to identation have to be done (e.g. when to parameters to a function, or a call one line line)
+-- * Get out the helper functions form the walker table.
+-- * Re-work the indent function, especially the way to restore indentation.
+-- -----------------------------------------------------------------------------
+
 local M = {}
 require 'metalua.package'
 local math = require 'math'
@@ -64,12 +74,12 @@ local function assignments(node)
   if #exprs == 0 then
     -- Regular `Local handling
     walker.indentexprlist(lhs, node)
-  elseif exprs[1].tag ~= 'Function' then
+    -- Avoid problems and format functions later.
+  elseif not (#exprs == 1 and exprs[1].tag == 'Function') then
 
-    -- Handle LHS indentation
+    -- for local, indent lhs
     if node.tag == 'Local' then
 
-      -- Avoid problems and format functions later.
       -- Else way, indent LHS and expressions like a single chunk.
       local endline = walker.getlastline(exprs)
       local startline, startindex = walker.getfirstline(lhs, true)
@@ -83,40 +93,20 @@ local function assignments(node)
 end
 
 ---
--- Indents `Invoke and `Call.
--- 
--- `Invoke and `Call have the same structure, except `Invoke as a `String node at
--- second position. That is what the _extractor_ parameter is for.
--- 
--- @param node      Node to format.
--- @param parent    Node to format parent's.
--- @param extractor Function which for a node of type `Invoke or `Call will
---    return node first parameter and its position in given node. 
-local function callable(node, parent, extractor)
-  -- When call spreads across several lines
-  local startline, startindex = walker.getfirstline(node, true)
-  local lastline = walker.getlastline(node)
+-- Indents parameters
+--
+-- @param callable  Node containing the params
+-- @param firstparam first parameter of the given callable
+local function indentparams(firstparam, lastparam, parent)
 
-  -- Work on parameters
-  local firstparam, firstparamposition = extractor(node)
-  if firstparam then
+  -- Determine parameters first line
+  local paramstartline,paramstartindex = walker.getfirstline(firstparam)
 
-    -- Determine parameters first line
-    local paramstartline,paramstartindex = walker.getfirstline(firstparam, true)
-    if startline == paramstartline then
-      paramstartline = paramstartline + 1
-    end
+  -- Determine parameters last line
+  local paramlastline = walker.getlastline(lastparam)
 
-    -- Determine parameters last line
-    local lastparam = #node == firstparamposition and firstparam or node[#node]
-    local paramlastline = walker.getlastline(lastparam)    
-    walker.indent(paramstartline, paramstartindex, paramlastline, node)
-  end
-
-  -- Indent, starting from second line
-  if startline < lastline then
-    walker.indent(startline + 1, startindex, lastline, parent)
-  end
+  -- indent
+  walker.indent(paramstartline, paramstartindex, paramlastline, parent)
 end
 
 ---
@@ -144,7 +134,7 @@ end
 --
 -- @return #int
 function walker.getlastline(node)
-  return node.lineinfo.last.line
+  return node.lineinfo.last.line , node.lineinfo.last.offset
 end
 
 function walker.indent(startline, startindex, endline, parent)
@@ -201,7 +191,7 @@ end
 -- Expressions formatters
 --------------------------------------------------------------------------------
 function walker.String(node)
-  local firstline, _ = walker.getfirstline(node)
+  local firstline, _ = walker.getfirstline(node,true)
   local lastline = walker.getlastline(node)
   for line=firstline+1, lastline do
     walker.indentation[line]=false
@@ -236,11 +226,10 @@ end
 -- Statements formatters
 --------------------------------------------------------------------------------
 function walker.Call(node, parent)
-  return callable(node, parent, function(node)
-    local id, param = unpack(node)
-    -- "2" because fist parameter it at 2nd position in a `Call
-    return param, 2
-  end)
+  local expr, firstparam = unpack(node)
+  if firstparam then
+    indentparams(firstparam, node[#node], node)
+  end
 end
 
 
@@ -265,6 +254,40 @@ function walker.Function(node)
   walker.indentexprlist(params, node)
 end
 
+function walker.Index(node,parent)
+
+  -- Bug 422778 - [ast] Missing a lineinfo attribute on one Index 
+  -- the following if is a workaround avoid a nil exception but the formatting of the current node is avoided.
+  if not node.lineinfo then
+    return
+  end
+  -- avoid indent if the index is on one line
+  local nodestartline = node.lineinfo.first.line
+  local nodeendline = node.lineinfo.last.line
+  if nodeendline == nodestartline then
+    return
+  end
+
+
+  local left, right = unpack(node)
+  -- Bug 422778 [ast] Missing a lineinfo attribute on one Index
+  -- the following line is a workaround avoid a nil exception but the formatting of the current node is avoided.
+  if left.lineinfo then
+    local leftendline, leftendoffset = walker.getlastline(left)
+    -- For Call,Set and Local nodes we want to indent to end of the parent node not only the index itself
+    if (parent[1] == node and parent.tag == 'Call') or
+      (parent[1] and #parent[1] ==  1 and parent[1][1] == node and (parent.tag == 'Set' or parent.tag == 'Local')) then
+      
+      local parentendline = walker.getlastline(parent)
+      walker.indent(leftendline, leftendoffset+1, parentendline, parent)
+    else
+      local rightendline = walker.getlastline(right)
+      walker.indent(leftendline, leftendoffset+1, rightendline, node)
+    end
+  end
+
+end
+
 function walker.If(node)
   -- Indent only conditions, chunks are already taken care of.
   local nodesize = #node
@@ -274,11 +297,18 @@ function walker.If(node)
 end
 
 function walker.Invoke(node, parent)
-  return callable(node, parent, function(node)
-    local id, str, param = unpack(node)
-    -- "3" because fist parameter it at 3rd position in an `Invoke
-    return param, 3
-  end)
+  local expr, str, firstparam = unpack(node)
+
+  --indent str
+  local exprendline, exprendoffset = walker.getlastline(expr)
+  local nodeendline = walker.getlastline(node)
+  walker.indent(exprendline, exprendoffset+1, nodeendline, node)
+
+  --indent parameters
+  if firstparam then
+    indentparams(firstparam, node[#node], str)
+  end
+
 end
 
 walker.Local = assignments
