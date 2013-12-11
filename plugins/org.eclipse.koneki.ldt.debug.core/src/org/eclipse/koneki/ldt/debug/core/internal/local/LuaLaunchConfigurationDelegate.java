@@ -10,14 +10,24 @@
  *******************************************************************************/
 package org.eclipse.koneki.ldt.debug.core.internal.local;
 
+import java.text.MessageFormat;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.variables.IStringVariableManager;
+import org.eclipse.core.variables.VariablesPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.dltk.compiler.util.Util;
+import org.eclipse.dltk.internal.launching.DLTKLaunchingPlugin;
 import org.eclipse.dltk.launching.AbstractScriptLaunchConfigurationDelegate;
 import org.eclipse.dltk.launching.IInterpreterInstall;
+import org.eclipse.dltk.launching.ScriptLaunchConfigurationConstants;
 import org.eclipse.koneki.ldt.core.LuaNature;
+import org.eclipse.koneki.ldt.debug.core.internal.LuaDebugConstants;
 
 public class LuaLaunchConfigurationDelegate extends AbstractScriptLaunchConfigurationDelegate {
 
@@ -40,5 +50,29 @@ public class LuaLaunchConfigurationDelegate extends AbstractScriptLaunchConfigur
 	public IInterpreterInstall verifyInterpreterInstall(ILaunchConfiguration configuration) throws CoreException {
 		// TODO reactivate verification
 		return getInterpreterInstall(configuration);
+	}
+
+	/**
+	 * Returns the default working directory for the given launch configuration, or <code>null</code> if none. Subclasses may override as necessary.
+	 * 
+	 * @param configuration
+	 * @return default working directory or <code>null</code> if none
+	 * @throws CoreException
+	 *             if an exception occurs computing the default working directory
+	 * 
+	 */
+	protected IPath getDefaultWorkingDirectory(ILaunchConfiguration configuration) throws CoreException {
+		if (configuration != null) {
+			try {
+				String projectName = configuration.getAttribute(ScriptLaunchConfigurationConstants.ATTR_PROJECT_NAME, Util.EMPTY_STRING);
+				String path = MessageFormat.format(LuaDebugConstants.LAUNCH_CONFIGURATION_WORKING_DIRECTORY, projectName);
+				IStringVariableManager manager = VariablesPlugin.getDefault().getStringVariableManager();
+				path = manager.performStringSubstitution(path, false);
+				return new Path(path);
+			} catch (CoreException e) {
+				DLTKLaunchingPlugin.log(e);
+			}
+		}
+		return null;
 	}
 }

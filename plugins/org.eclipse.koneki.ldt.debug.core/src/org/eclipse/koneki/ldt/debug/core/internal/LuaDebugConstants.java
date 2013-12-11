@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.koneki.ldt.debug.core.internal;
 
+import java.io.File;
+
 /**
  * Constant for attribute of Lua launch configuration
  */
@@ -71,4 +73,10 @@ public interface LuaDebugConstants {
 	String LUAC_PATTERN = WILDCARD_PATTERN + ".luac;"; //$NON-NLS-1$
 	String LUA_INIT_PATTERN = "init.lua;"; //$NON-NLS-1$
 	String LUAC_INIT_PATTERN = "init.luac;"; //$NON-NLS-1$
+
+	/**
+	 * Default working directory pattern (for Lua Application Launch configuration) <br>
+	 * {1} => projectname
+	 */
+	String LAUNCH_CONFIGURATION_WORKING_DIRECTORY = "$'{'workspace_loc'}'" + File.separator + "{0}"; //$NON-NLS-1$ //$NON-NLS-2$
 }
