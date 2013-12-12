@@ -104,18 +104,16 @@ public class LuaSourceParser extends AbstractSourceParser {
 		final String source = input.getSourceContents();
 		final String moduleName = LuaUtils.getModuleFullName(input);
 		LuaSourceRoot module = new LuaSourceRoot(source.length());
+		final OffsetFixer fixer = new OffsetFixer(source);
 
 		synchronized (LuaSourceParser.class) {
 			try {
-
 				// Build AST
 				module = astBuilder.buildAST(source, moduleName);
 
 				// Fix AST
-				final OffsetFixer fixer = new OffsetFixer(source);
 				if (module != null)
 					module.traverse(new EncodingVisitor(fixer));
-
 			}
 			// CHECKSTYLE:OFF
 			catch (final Exception e) {
@@ -143,16 +141,16 @@ public class LuaSourceParser extends AbstractSourceParser {
 							final int line = problem.getSourceLineNumber();
 							final Document document = new Document(source);
 							int endLineOffset = document.getLineOffset(line) + document.getLineLength(line) - 1;
+							problem.setSourceStart(fixer.getCharacterPosition(problem.getSourceStart()));
 							problem.setSourceEnd(endLineOffset);
 						} catch (BadLocationException e) {
 							Activator.logWarning("Unable to retrive error offset", e); //$NON-NLS-1$
 						}
+					} else {
+						// Handle encoding shifts
+						problem.setSourceStart(fixer.getCharacterPosition(problem.getSourceStart()));
+						problem.setSourceEnd(fixer.getCharacterPosition(problem.getSourceEnd()));
 					}
-
-					// Handle encoding shifts
-					final OffsetFixer fixer = new OffsetFixer(source);
-					problem.setSourceStart(fixer.getCharacterPosition(problem.getSourceStart()));
-					problem.setSourceEnd(fixer.getCharacterPosition(problem.getSourceEnd()));
 
 					// use AST in cache
 					if (input.getModelElement() != null) {
