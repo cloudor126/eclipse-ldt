@@ -19,14 +19,14 @@ import org.eclipse.dltk.ast.parser.AbstractSourceParser;
 import org.eclipse.dltk.ast.parser.IModuleDeclaration;
 import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.compiler.problem.DefaultProblem;
-import org.eclipse.dltk.compiler.problem.IProblem;
 import org.eclipse.dltk.compiler.problem.IProblemReporter;
-import org.eclipse.dltk.compiler.problem.ProblemCollector;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.ElementChangedEvent;
 import org.eclipse.dltk.core.IElementChangedListener;
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.IModelElementDelta;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.Document;
 import org.eclipse.koneki.ldt.core.LuaUtils;
 import org.eclipse.koneki.ldt.core.internal.Activator;
 import org.eclipse.koneki.ldt.core.internal.ast.models.LuaDLTKModelUtils;
@@ -101,34 +101,21 @@ public class LuaSourceParser extends AbstractSourceParser {
 	 */
 	@Override
 	public IModuleDeclaration parse(IModuleSource input, IProblemReporter reporter) {
-		LuaSourceRoot module = new LuaSourceRoot(input.getSourceContents().length());
+		final String source = input.getSourceContents();
+		final String moduleName = LuaUtils.getModuleFullName(input);
+		LuaSourceRoot module = new LuaSourceRoot(source.length());
 
 		synchronized (LuaSourceParser.class) {
 			try {
-				String moduleName = LuaUtils.getModuleFullName(input);
 
 				// Build AST
-				final String source = input.getSourceContents();
 				module = astBuilder.buildAST(source, moduleName);
 
-				/*
-				 * Handle encoding shifts
-				 */
-
-				// Compute encoding shifts
-				final OffsetFixer fixer = new OffsetFixer(source);
-
 				// Fix AST
+				final OffsetFixer fixer = new OffsetFixer(source);
 				if (module != null)
 					module.traverse(new EncodingVisitor(fixer));
 
-				// Fix problems
-				if (reporter instanceof ProblemCollector) {
-					for (final IProblem problem : ((ProblemCollector) reporter).getProblems()) {
-						problem.setSourceStart(fixer.getCharacterPosition(problem.getSourceStart()));
-						problem.setSourceEnd(fixer.getCharacterPosition(problem.getSourceEnd()));
-					}
-				}
 			}
 			// CHECKSTYLE:OFF
 			catch (final Exception e) {
@@ -136,7 +123,7 @@ public class LuaSourceParser extends AbstractSourceParser {
 				Activator.logWarning(NLS.bind("Unable to parse file {0}.", input.getFileName()), e); //$NON-NLS-1$
 				// the module is probably on error.
 				if (module == null)
-					module = new LuaSourceRoot(input.getSourceContents().length());
+					module = new LuaSourceRoot(source.length());
 				module.setProblem(1, 1, 0, 0, "This file probably contains a syntax error."); //$NON-NLS-1$
 			}
 
@@ -144,10 +131,28 @@ public class LuaSourceParser extends AbstractSourceParser {
 			if (module != null) {
 				// if module contains a syntax error
 				if (module.hasError()) {
-					// add error to repoter
+					// add error to reporter
 					final DefaultProblem problem = module.getProblem();
 					problem.setOriginatingFileName(input.getFileName());
 					reporter.reportProblem(problem);
+
+					// -- TODO ECLIPSE 411238
+					// -- we must calculate offset because DLTK does not support 'line' positionning
+					if (problem.getSourceEnd() < 0) {
+						try {
+							final int line = problem.getSourceLineNumber();
+							final Document document = new Document(source);
+							int endLineOffset = document.getLineOffset(line) + document.getLineLength(line) - 1;
+							problem.setSourceEnd(endLineOffset);
+						} catch (BadLocationException e) {
+							Activator.logWarning("Unable to retrive error offset", e); //$NON-NLS-1$
+						}
+					}
+
+					// Handle encoding shifts
+					final OffsetFixer fixer = new OffsetFixer(source);
+					problem.setSourceStart(fixer.getCharacterPosition(problem.getSourceStart()));
+					problem.setSourceEnd(fixer.getCharacterPosition(problem.getSourceEnd()));
 
 					// use AST in cache
 					if (input.getModelElement() != null) {

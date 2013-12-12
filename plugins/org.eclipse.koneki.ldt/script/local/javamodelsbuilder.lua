@@ -35,13 +35,9 @@ function M.build(source, modulename)
 	-- check for errors
 	local f, err = loadstring(source,'source_to_check')
 	if not f then
-		local line, err = string.match(err,"%[string \"source_to_check\"%]:(%d+):(.*)")
-		err = err or 'Unable to determine error'
+		local line, errmessage = string.match(err,"%[string \"source_to_check\"%]:(%d+):(.*)")
+		errmessage = errmessage or err
 		line = line and tonumber(line)-1 or 0
-		
-		-- TODO ECLIPSE 411238
-		-- we must calculate offset because DLTK does not support 'line' positionning
-		local _, endoffset = string.find(source,string.rep("[^\n]*\n",line))
 		
 		-- calculate the start of some errors
 		-- NOT USED FOR NOW
@@ -52,7 +48,7 @@ function M.build(source, modulename)
 --		else
 --			javamodelfactory.setproblem(root, line , -1, -1, endoffset, err)
 --		end
-		javamodelfactory.setproblem(root, line , -1, -1, endoffset, err)
+		javamodelfactory.setproblem(root, line , -1, -1, -1, errmessage)
 		return root
 	end
 	
