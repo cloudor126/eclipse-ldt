@@ -31,6 +31,16 @@ end
 -- Enable to retrieve "---" comments from Lua code
 function M.lua( code )
 	if not code then return nil, 'No code provided' end
+	
+	-- manage shebang
+  if code then code = code:gsub("^(#.-\n)", function (s) return string.rep(' ',string.len(s)) end) end
+  
+  -- check for errors
+  local f, err = loadstring(code,'source_to_check')
+	if not f then
+    return nil, 'Syntax error.\n' .. err
+  end
+  
 	-- Get ast from file
 	local status, ast = pcall(mlc.src_to_ast, mlc, code)
 	--
@@ -38,10 +48,6 @@ function M.lua( code )
 	--
 	if not status then
 		return nil, 'There might be a syntax error.\n' .. ast
-	end
-	local status, error = pcall(compiler.check_ast, ast)
-	if not status then
-		return nil, 'An error occurred while parsing.\n'..error
 	end
 
 	--

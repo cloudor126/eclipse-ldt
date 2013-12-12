@@ -12,7 +12,6 @@
 require 'metalua.package'
 local compiler = require 'metalua.compiler'
 local mlc = compiler.new()
-local apimodelbuilder = require 'models.apimodelbuilder'
 local M = {}
 
 --
@@ -66,21 +65,45 @@ function M.generatecommentfile(filename, code)
 	return table.concat(filecontent)..'return nil\n'
 end
 -- Create API Model module from a 'comment only' lua file
-function M.generateapimodule(filename, code)
+function M.generateapimodule(filename, code,noheuristic)
 	if not filename then return nil, 'No file name given.' end
 	if not code then return nil, 'No code provided.' end
-	local commentfile, error = M.generatecommentfile(filename, code)
-	if not commentfile then
-		return nil, 'Unable to create api module for "'..filename..'".\n'..error
-	end
-	local status, ast = pcall(mlc.src_to_ast, mlc, commentfile)
+	if type(filename) ~= "string" then return nil, 'No string for file name provided' end
+	
+	-- for non lua file get comment file 
+  if filename:gmatch('.*%.(.*)')() ~= 'lua' then
+    local err
+    code, err = M.generatecommentfile(filename, code)
+    if not code then
+      return nil, 'Unable to create api module for "'..filename..'".\n'..err
+    end
+  else
+    -- for lua file check syntax error
+    
+    -- manage shebang
+    if code then code = code:gsub("^(#.-\n)", function (s) return string.rep(' ',string.len(s)) end) end
+    
+    -- check for errors
+    local f, err = loadstring(code,'source_to_check')
+    if not f then
+      return nil, 'File'..filename..'contains syntax error.\n' .. err
+    end
+  end
+		
+	local status, ast = pcall(mlc.src_to_ast, mlc, code)
 	if not status then
 		return nil, 'Unable to compute ast for "'..filename..'".\n'..ast
 	end
-	local status, error = pcall(compiler.check_ast, ast)
-	if not status then
-		return nil, '"'..filename..'" contains an error.\n'..error
-	end
-	return apimodelbuilder.createmoduleapi(ast)
+	
+	-- Create api model
+  local apimodelbuilder = require 'models.apimodelbuilder'
+  local _file, comment2apiobj = apimodelbuilder.createmoduleapi(ast)
+
+  -- create internal model
+  if not noheuristic then
+    local internalmodelbuilder = require "models.internalmodelbuilder"
+    local _internalcontent = internalmodelbuilder.createinternalcontent(ast,_file,comment2apiobj)
+  end
+	return _file
 end
 return M

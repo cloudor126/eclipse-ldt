@@ -41,6 +41,7 @@ local help = [[luadocumentor: tool for Lua Documentation Language
 		* api: Will produce API file(s) from specified file(s) or directories.
 	-d, --dir (default docs) Define an output directory. If the given directory doesn't exist, it will be created.
 	-h, --help Display the help.
+	-n, --noheuristic Do not use code analysis, use only comments to generate documentation.
 	-s, --style (default !) The path of your own css file, if you don't want to use the default one. (usefull only for the doc format)
 	[directories|files]  Define the paths or the directories of inputs files. Only Lua or C files containing a @module tag will be considered.
 ]]
@@ -139,7 +140,7 @@ if args.format ~= 'doc' then
 	return
 end
 -- Generate html form files
-local parsedfiles, unparsed = docgenerator.generatedocforfiles(filestoparse, cssfilename)
+local parsedfiles, unparsed = docgenerator.generatedocforfiles(filestoparse, cssfilename,args.noheuristic)
 
 -- Show warnings on unparsed files
 if #unparsed > 0 then

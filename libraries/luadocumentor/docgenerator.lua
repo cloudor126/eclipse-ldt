@@ -24,7 +24,7 @@ local lddextractor = require 'lddextractor'
 local M = {}
 M.defaultsitemainpagename = 'index'
 
-function M.generatedocforfiles(filenames, cssname)
+function M.generatedocforfiles(filenames, cssname,noheuristic)
 	if not filenames then return nil, 'No files provided.' end
 	--
 	-- Generate API model elements for all files
@@ -38,7 +38,7 @@ function M.generatedocforfiles(filenames, cssname)
 		local code = file:read('*all')
 		file:close()
 		-- Get module for current file
-		local apimodule, err = lddextractor.generateapimodule(filename, code)
+		local apimodule, err = lddextractor.generateapimodule(filename, code,noheuristic)
 		
 		-- Handle modules with module name
 		if  apimodule and apimodule.name then
