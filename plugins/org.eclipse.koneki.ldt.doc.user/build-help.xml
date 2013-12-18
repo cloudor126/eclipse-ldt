@@ -29,8 +29,9 @@
 			<mediawiki-to-eclipse-help wikiBaseUrl="http://wiki.eclipse.org" validate="true"
 				failonvalidationerror="true" prependImagePrefix="images" formatoutput="true"
 				defaultAbsoluteLinkTarget="doc_external" dest="${basedir}/help" helpPrefix="help"
-				generateUnifiedToc="false" navigationimages="true">
-				<path name="Koneki/LDT/Developer_Area/User_Guides/User_Guide_1.2" title="LDT User Guide" generateToc="true" />
+				generateUnifiedToc="true" navigationimages="true">
+				<path name="Koneki/LDT/Developer_Area/User_Guides/User_Guide_1.2" title="LDT User Guide" />
+				<path name="Koneki/LDT/User_Area/TipsandTricks" title="Tips and Tricks"/>
 				<pageAppendum>
 
 					= Updating This Document =
