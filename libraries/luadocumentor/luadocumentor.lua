@@ -11,6 +11,12 @@
 --           - initial API and implementation and initial documentation
 --------------------------------------------------------------------------------
 
+-- Check interpreter version
+if _VERSION ~= "Lua 5.1" then
+	print("Luadocumentor is only compatible with Lua 5.1")
+	return
+end
+
 -- try to define the right lua path.
 -- use the debug api to find the path of luadocumentor.lua file
 local luadocumentordirpath
@@ -50,6 +56,10 @@ local lddextractor = require 'lddextractor'
 local lapp = require 'pl.lapp'
 local args = lapp( help )
 
+if not _VERSION == "Lua 5.1" then
+	print("Luadocumentor is only compatible with Lua 5.1")
+	return
+end
 
 if not args or #args < 1 then
 	print('No directory provided')

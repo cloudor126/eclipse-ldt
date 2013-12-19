@@ -95,14 +95,19 @@ function M.generateapimodule(filename, code,noheuristic)
 		return nil, 'Unable to compute ast for "'..filename..'".\n'..ast
 	end
 	
+  -- Extract module name as the filename without extension
+  local modulename
+  local matcher = string.gmatch(filename,'.*/(.*)%..*$')
+  if matcher then modulename = matcher() end
+  
 	-- Create api model
-  local apimodelbuilder = require 'models.apimodelbuilder'
-  local _file, comment2apiobj = apimodelbuilder.createmoduleapi(ast)
+  local apimodelbuilder = require 'models.apimodelbuilder' 
+  local _file, comment2apiobj = apimodelbuilder.createmoduleapi(ast, modulename)
 
-  -- create internal model
+  -- Create internal model
   if not noheuristic then
     local internalmodelbuilder = require "models.internalmodelbuilder"
-    local _internalcontent = internalmodelbuilder.createinternalcontent(ast,_file,comment2apiobj)
+    local _internalcontent = internalmodelbuilder.createinternalcontent(ast,_file,comment2apiobj, modulename)
   end
 	return _file
 end
