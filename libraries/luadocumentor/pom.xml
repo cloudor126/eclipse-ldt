@@ -13,7 +13,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<properties>
-		<luadocumentor.version>0.1.3</luadocumentor.version>
+		<luadocumentor.version>0.1.4</luadocumentor.version>
 	</properties>
 
 	<build>

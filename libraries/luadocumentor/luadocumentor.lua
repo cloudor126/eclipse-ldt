@@ -41,7 +41,7 @@ end
 
 -- This message is compliant to 'lapp', which will match options and arguments
 -- from commande line.
-local help = [[luadocumentor: tool for Lua Documentation Language
+local help = [[luadocumentor v0.1.4: tool for Lua Documentation Language
 	-f, --format (default doc) Define output format :
 		* doc: Will produce HTML documentation from specified file(s) or directories.
 		* api: Will produce API file(s) from specified file(s) or directories.
@@ -55,11 +55,6 @@ local docgenerator = require 'docgenerator'
 local lddextractor = require 'lddextractor'
 local lapp = require 'pl.lapp'
 local args = lapp( help )
-
-if not _VERSION == "Lua 5.1" then
-	print("Luadocumentor is only compatible with Lua 5.1")
-	return
-end
 
 if not args or #args < 1 then
 	print('No directory provided')
