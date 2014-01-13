@@ -31,6 +31,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
+import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchManager;
@@ -135,7 +136,10 @@ public class LuaRemoteLaunchConfigurationDelegate extends LaunchConfigurationDel
 			// kill Process if already running
 			// could happen if connection is closed and last process launch is not terminate
 			Session session = RSEUtil.getCurrentSshSession(host.getConnectorServices());
-			SshProcess.killProcess(session, remoteApplicationFolderPath);
+			for (ILaunch currentlaunch : DebugPlugin.getDefault().getLaunchManager().getLaunches()) {
+				if (currentlaunch.getLaunchConfiguration().equals(configuration))
+					currentlaunch.terminate();
+			}
 
 			// check an prepare remote folder
 			try {
@@ -207,7 +211,7 @@ public class LuaRemoteLaunchConfigurationDelegate extends LaunchConfigurationDel
 
 			// if no luapath defined at subsystem level used the default one.
 			if (luaPath == null || luaPath.isEmpty())
-				luaPath = "$LUA_PATH;"; //$NON-NLS-1$ 
+				luaPath = ";;"; //$NON-NLS-1$ 
 
 			// add default lua envvar
 			StringBuilder luaPathBuilder = new StringBuilder(luaPath);

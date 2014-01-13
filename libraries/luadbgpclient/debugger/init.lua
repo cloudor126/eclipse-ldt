@@ -9,6 +9,8 @@
 --     Sierra Wireless - initial API and implementation
 -------------------------------------------------------------------------------
 
+local DBGP_CLIENT_VERSION = "1.1.0"
+
 local debug = require "debug"
 
 -- To avoid cyclic dependency, internal state of the debugger that must be accessed 
@@ -476,10 +478,20 @@ local function init(host, port, idekey, transport, executionplatform, workingdir
 
     -- try to connect several times: if IDE launches both process and server at same time, first connect attempts may fail
     local ok, err
-    for i=1, 5 do
-        ok, err = skt:connect(host, port)
-        if ok then break end
-        transport.sleep(0.5)
+    print(string.format("Debugger v%s", DBGP_CLIENT_VERSION))
+    print(string.format("Debugger: Trying to connect to %s:%s ... ", host, port))
+    ok, err = skt:connect(host, port)
+    for i=1, 4 do
+        if ok then 
+          print("Debugger: Connection succeed.")
+          break
+        else
+          -- wait 
+          transport.sleep(0.5)
+          -- then retry.
+          print(string.format("Debugger: Retrying to connect to %s:%s ... ", host, port))
+          ok, err = skt:connect(host, port)
+        end
     end
     if err then error(string.format("Cannot connect to %s:%d : %s", host, port, err)) end
 

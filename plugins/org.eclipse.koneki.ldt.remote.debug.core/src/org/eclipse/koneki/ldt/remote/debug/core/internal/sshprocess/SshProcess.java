@@ -42,25 +42,16 @@ public class SshProcess implements IProcess {
 	private ChannelExec channelExec;
 	private StreamsProxy sshStreamProxy;
 	private String label;
-	private Session currentSession;
-	private String workingDir;
 
 	/**
 	 * Create and launch a process corresponding to the given command throw an ssh connection<br>
 	 * <b>/!\ Session must be connected !</b>
-	 * 
-	 * A .PID file will be create in the working directory for this process.(which contains the PID of this process)<br>
-	 * This file is used to be able to stop (kill) the process when needed.<br>
-	 * So, User must have the write to create file in the working directory and so 2 process must not be run at the same time in the same working
-	 * directory
 	 * 
 	 * @throws CoreException
 	 *             if exec channel can not be created, or session is down
 	 */
 	public SshProcess(Session session, ILaunch launch, String workingDirectoryPath, String command, Map<String, String> envVars) throws CoreException {
 		this.launch = launch;
-		this.currentSession = session;
-		this.workingDir = workingDirectoryPath;
 
 		// open exec channel
 		Channel channel;
@@ -78,6 +69,7 @@ public class SshProcess implements IProcess {
 		// create composed command
 		String composedCommand = createLaunchCommand(workingDirectoryPath, command, envVars);
 		channelExec.setCommand(composedCommand);
+		channelExec.setPty(true);
 	}
 
 	/**
@@ -158,36 +150,7 @@ public class SshProcess implements IProcess {
 			composedCommand.append(escapeShell(entrySet.getValue()));
 			composedCommand.append(" && "); //$NON-NLS-1$
 		}
-
-		// if a .PID file already exist, we try to kill the corresponding process
-		// and remove the old .PID file
-		// run this command in silent mode (redirect all the output stream in /dev/null)
-		composedCommand.append("("); //$NON-NLS-1$
-		composedCommand.append("cat .PID > /dev/null 2>&1"); //$NON-NLS-1$
-		composedCommand.append(" && "); //$NON-NLS-1$
-		composedCommand.append("kill `cat .PID` > /dev/null 2>&1"); //$NON-NLS-1$
-		composedCommand.append(" && "); //$NON-NLS-1$
-		composedCommand.append("rm .PID > /dev/null 2>&1"); //$NON-NLS-1$
-		composedCommand.append(")"); //$NON-NLS-1$
-		composedCommand.append("; "); //$NON-NLS-1$
-
-		// launch command in background
-		composedCommand.append("{ "); //$NON-NLS-1$
 		composedCommand.append(command);
-
-		composedCommand.append(" & }"); //$NON-NLS-1$
-		composedCommand.append(" && "); //$NON-NLS-1$
-
-		// store the PID of the last background task (so the command below)
-		composedCommand.append("echo $! > .PID"); //$NON-NLS-1$
-		composedCommand.append(" && "); //$NON-NLS-1$
-
-		// wait the end of the command execution
-		composedCommand.append("wait $!"); //$NON-NLS-1$
-		composedCommand.append(" && "); //$NON-NLS-1$
-
-		// remove the PID file
-		composedCommand.append("rm .PID"); //$NON-NLS-1$
 
 		return composedCommand.toString();
 	}
@@ -221,31 +184,9 @@ public class SshProcess implements IProcess {
 	 */
 	@Override
 	public void terminate() throws DebugException {
-		if (!isTerminated()) {
-			SshProcess.killProcess(currentSession, workingDir);
-		} else {
-			sshStreamProxy.kill();
-			fireTerminateEvent();
-		}
-	}
-
-	/**
-	 * create the kill command for the current process
-	 */
-	private static String createKillCommand(String pidContainerFolder) {
-		// TODO : should works only on linux...
-
-		StringBuilder composedCommand = new StringBuilder();
-		// add : move to the working directory
-		composedCommand.append("cd "); //$NON-NLS-1$
-		composedCommand.append(escapeShell(pidContainerFolder));
-		composedCommand.append(" && "); //$NON-NLS-1$
-
-		// kill process
-		composedCommand.append("kill `cat .PID`"); //$NON-NLS-1$
-		composedCommand.append(" && "); //$NON-NLS-1$
-		composedCommand.append(" rm .PID"); //$NON-NLS-1$
-		return composedCommand.toString();
+		channelExec.disconnect();
+		sshStreamProxy.kill();
+		fireTerminateEvent();
 	}
 
 	/**
@@ -327,45 +268,5 @@ public class SshProcess implements IProcess {
 	 */
 	protected void fireChangeEvent() {
 		fireEvent(new DebugEvent(this, DebugEvent.CHANGE));
-	}
-
-	/**
-	 * try to kill the process with the PID equal to the value of the .PID file contained in pidContainerFolder
-	 */
-	public static void killProcess(Session session, String pidContainerFolder) throws DebugException {
-		try {
-			// create a new channel
-			Channel channel = session.openChannel("exec"); //$NON-NLS-1$
-			if (!(channel instanceof ChannelExec))
-				throw new JSchException("Unable to create exec channel"); //$NON-NLS-1$
-			ChannelExec killChannel = (ChannelExec) channel;
-
-			// create kill command
-			String killCommand = createKillCommand(pidContainerFolder);
-			killChannel.setCommand(killCommand);
-
-			// execute command
-			killChannel.connect();
-
-			// wait the end of command execution
-			int timeout = 5000; // in ms
-			int period = 100; // in ms
-			int i = 0; // counter
-			while (!channel.isClosed() && i * period < timeout) {
-				try {
-					Thread.sleep(period);
-					// CHECKSTYLE:OFF
-				} catch (InterruptedException e) {
-					// nothing to do
-					// CHECKSTYLE:ON
-				} finally {
-					i++;
-				}
-			}
-			// CHECKSTYLE:OFF
-		} catch (Exception e) {
-			// CHECKSTYLE:ON
-			throw new DebugException(new Status(IStatus.ERROR, Activator.PLUGIN_ID, "An exception occurred when trying to stop the application.", e)); //$NON-NLS-1$
-		}
 	}
 }
