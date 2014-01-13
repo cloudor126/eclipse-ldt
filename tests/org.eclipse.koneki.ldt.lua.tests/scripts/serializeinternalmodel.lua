@@ -13,7 +13,7 @@
 -- Fetch libraries form same plugin
 package.path = './?.lua;../lib/?.lua;../../../libraries/metalua/?.lua;../../../libraries/modelsbuilder/?.lua;../../../libraries/luaformatter/?.lua;'
 package.mpath = '../../../libraries/metalua/?.mlua;../../../libraries/modelsbuilder/?.mlua;'
-require 'metalua.package'
+require 'metalua.loader'
 
 --
 -- Generate serialized lua Internal models files next to given file.

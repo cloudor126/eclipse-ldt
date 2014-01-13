@@ -10,7 +10,7 @@
 --           - initial API and implementation and initial documentation
 --------------------------------------------------------------------------------
 local M = {}
-require 'metalua.package'
+require 'metalua.loader'
 local compiler = require 'metalua.compiler'
 local mlc = compiler.new()
 local Q = require 'metalua.treequery'

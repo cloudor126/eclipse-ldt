@@ -10,7 +10,7 @@
 --           - initial API and implementation and initial documentation
 --------------------------------------------------------------------------------
 
-require 'metalua.package'
+require 'metalua.loader'
 local compiler = require 'metalua.compiler'
 local mlc = compiler.new()
 

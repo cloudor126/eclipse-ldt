@@ -137,7 +137,7 @@ public class LuaSourceParser extends AbstractSourceParser {
 					reporter.reportProblem(problem);
 
 					// -- TODO ECLIPSE 411238
-					// -- we must calculate offset because DLTK does not support 'line' positionning
+					// -- we must calculate offset because DLTK does not support 'line' positioning
 					if (problem.getSourceEnd() < 0) {
 						try {
 							final int line = problem.getSourceLineNumber();

@@ -12,7 +12,6 @@
 -{ extension ('match', ...) }
 
 local Q = require 'metalua.treequery'
-local bindings = require 'metalua.walk.bindings'
 
 local internalmodel = require 'models.internalmodel'
 local apimodel = require 'models.apimodel'
@@ -20,15 +19,33 @@ local apimodelbuilder = require 'models.apimodelbuilder'
 
 local M = {}
 
--- --------------------------------------
--- debug function : To delete
-local function pdown (node,parent)
-	print (tostring(parent and parent.tag or nil )..' ' .. tostring(node.tag) .. " down")
+-- Analyzes an AST and returns two tables
+-- * `locals`, which associates `Id{ } nodes which create a local variable
+--   to a list of the `Id{ } occurrence nodes of that variable;
+-- * `globals` which associates variable names to occurrences of
+--   global variables having that name.
+function bindings(ast)
+  local locals, globals = { }, { }
+  local function f(id, ...)
+    local name = id[1]
+    if Q.is_binder(id, ...) then
+      local binder = ... -- parent is the binder
+      locals[binder] = locals[binder] or { }
+      locals[binder][name]={ }
+    else
+      local _, binder = Q.get_binder(id, ...)
+      if binder then -- this is a local
+        table.insert(locals[binder][name], id)  
+     else
+        local g = globals[name]
+        if g then table.insert(g, id) else globals[name]={id} end
+      end
+    end
+  end
+  Q(ast) :filter('Id') :foreach(f)
+  return locals, globals
 end
-	
-local function pup (node, parent)
-	print (tostring(parent and parent.tag or nil) .. ' ' .. tostring(node.tag).. " up")		
-end
+
 -- --------------------------------------
 
 -- ----------------------------------------------------------

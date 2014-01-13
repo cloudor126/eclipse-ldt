@@ -11,7 +11,7 @@
 --------------------------------------------------------------------------------
 local apimodel = require "models.apimodel"
 local ldp      = require "models.ldparser"
-local walk     = require "metalua.walk"
+local Q        = require "metalua.treequery"
 
 local M = {}
 
@@ -29,7 +29,6 @@ local primitivetypes = {
 	['thread']   = true,
 	['userdata'] = true
 }
-
 
 -- get or create the typedef with the name "name"
 local function gettypedef(_file,name,kind,sourcerangemin,sourcerangemax)
@@ -434,8 +433,7 @@ function M.createmoduleapi(ast,modulename)
 			end
 		end
 	end
-	local cfg = { expr={down=parsecomment}, stat={down=parsecomment}}
-	walk.block(cfg, ast)
+	Q(ast):filter(function(x) return x.tag~=nil end):foreach(parsecomment)
 	return _file, _comment2apiobj
 end
 

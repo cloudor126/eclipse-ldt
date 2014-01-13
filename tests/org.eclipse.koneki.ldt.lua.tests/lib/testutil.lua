@@ -10,6 +10,7 @@
 -------------------------------------------------------------------------------
 -- A module containing generic function for test
 -- @module testutil
+local pp=require'metalua.pprint'
 local apimodelbuilder = require 'models.apimodelbuilder'
 local domhandler      = require 'domhandler'
 local tablecompare    = require 'tablecompare'
@@ -102,7 +103,7 @@ function M.comparehtml(generatedtable, referencetable, generatedhtml, referenceh
 	
 		-- Compute which keys differs
 		local differentkeys = tablecompare.diff(generatedtable, referencetable)
-		local differentkeysstring = table.tostring(differentkeys)
+		local differentkeysstring = pp.tostring(differentkeys, {line_max=1})
 		
 		-- Convert table in formatted string
 		local xmlformatter = require("xmlformatter")
@@ -126,8 +127,8 @@ function M.comparehtml(generatedtable, referencetable, generatedhtml, referenceh
 		local generatedhtml   = string.format('%s\nGenerated HTML\n%s\n%s', line, line, generatedhtml)
 		local referencehtml  = string.format('%s\nReference HTML\n%s\n%s', line, line, referencehtml)
 		local tablediff = string.format('%s\nTable Diff \n%s\n%s', line, line, differentkeysstring)
-		local generatedtable   = string.format('%s\nGenerated table\n%s\n%s', line, line, table.tostring(generatedtable, 1))
-		local referencetable  = string.format('%s\nReference table\n%s\n%s', line, line, table.tostring(referencetable, 1))
+		local generatedtable   = string.format('%s\nGenerated table\n%s\n%s', line, line, pp.tostring(generatedtable, {line_max=1}))
+		local referencetable  = string.format('%s\nReference table\n%s\n%s', line, line, pp.tostring(referencetable, {line_max=1}))
 		return nil, string.format('The generated HTML is not the same as the reference:\n%s\n%s\n%s\n%s\n%s\n%s',stringdiff, generatedhtml, referencehtml, tablediff, generatedtable, referencetable)
 	end
 	return true

@@ -8,7 +8,7 @@
 -- Contributors:
 --     Sierra Wireless - initial API and implementation
 --------------------------------------------------------------------------------
-require 'metalua.package'
+require 'metalua.loader'
 local apimodelbuilder = require 'models.apimodelbuilder'
 local templateengine = require 'templateengine'
 local tablecompare = require 'tablecompare'

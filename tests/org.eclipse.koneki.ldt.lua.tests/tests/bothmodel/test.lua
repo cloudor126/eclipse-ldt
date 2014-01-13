@@ -8,7 +8,8 @@
 -- Contributors:
 --     Sierra Wireless - initial API and implementation
 -------------------------------------------------------------------------------
-require 'metalua.package'
+require 'metalua.loader'
+local pp=require'metalua.pprint'
 local compiler =  require 'metalua.compiler'
 local mlc = compiler.new()
 local apimodelbuilder = require 'models.apimodelbuilder'
@@ -81,13 +82,13 @@ function M.test(luasourcepath, serializedreferencepath)
 
 		-- Compute which keys differs
 		local differentkeys = tablecompare.diff(luasourceroot, referencebothmodel)
-		local differentkeysstring = table.tostring(differentkeys)
+		local differentkeysstring = pp.tostring(differentkeys, {line_max=1})
 
 		-- Formalise first table output
 		local _ = '_'
 		local line = _:rep(80)
-		local firstout  = string.format('%s\nGenerated table\n%s\n%s', line, line, table.tostring(luasourceroot, 1))
-		local secondout = string.format('%s\nReference table\n%s\n%s', line, line, table.tostring(referencebothmodel, 1))
+		local firstout  = string.format('%s\nGenerated table\n%s\n%s', line, line, pp.tostring(luasourceroot, {line_max=1}))
+		local secondout = string.format('%s\nReference table\n%s\n%s', line, line, pp.tostring(referencebothmodel, {line_max=1}))
 		return nil, string.format('Keys which differ are:\n%s\n%s\n%s', differentkeysstring, firstout, secondout)
 
 	end

@@ -13,7 +13,7 @@
 -- Fetch libraries form current plugin
 package.path = './?.lua;../lib/?.lua;../../../libraries/metalua/?.lua;../../../libraries/modelsbuilder/?.lua;../../../libraries/luaformatter/?.lua;../../../libraries/templateengine/?.lua;../../../libraries/penlight/?.lua;../../../libraries/doctemplates/?.lua;../../../libraries/markdown/?.lua;'
 package.mpath = '../../../libraries/metalua/?.mlua;../../../libraries/modelsbuilder/?.mlua;'
-require 'metalua.package'
+require 'metalua.loader'
 
 
 local compiler = require 'metalua.compiler'

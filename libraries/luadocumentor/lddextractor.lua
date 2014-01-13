@@ -9,7 +9,7 @@
 --       Kevin KIN-FOO <kkinfoo@sierrawireless.com>
 --           - initial API and implementation and initial documentation
 --------------------------------------------------------------------------------
-require 'metalua.package'
+require 'metalua.loader'
 local compiler = require 'metalua.compiler'
 local mlc = compiler.new()
 local M = {}
@@ -78,8 +78,6 @@ function M.generateapimodule(filename, code,noheuristic)
       return nil, 'Unable to create api module for "'..filename..'".\n'..err
     end
   else
-    -- for lua file check syntax error
-    
     -- manage shebang
     if code then code = code:gsub("^(#.-\n)", function (s) return string.rep(' ',string.len(s)) end) end
     
@@ -95,16 +93,19 @@ function M.generateapimodule(filename, code,noheuristic)
 		return nil, 'Unable to compute ast for "'..filename..'".\n'..ast
 	end
 	
-	-- TODO pass module name to the model builders, but at first we need a way to find the complete module name (e.g. geometry.rectangle)
+  -- Extract module name as the filename without extension
+  local modulename
+  local matcher = string.gmatch(filename,'.*/(.*)%..*$')
+  if matcher then modulename = matcher() end
 	
 	-- Create api model
   local apimodelbuilder = require 'models.apimodelbuilder'
-  local _file, comment2apiobj = apimodelbuilder.createmoduleapi(ast)
+  local _file, comment2apiobj = apimodelbuilder.createmoduleapi(ast, modulename)
 
-  -- create internal model
+  -- Create internal model
   if not noheuristic then
     local internalmodelbuilder = require "models.internalmodelbuilder"
-    local _internalcontent = internalmodelbuilder.createinternalcontent(ast,_file,comment2apiobj)
+    local _internalcontent = internalmodelbuilder.createinternalcontent(ast,_file,comment2apiobj, modulename)
   end
 	return _file
 end

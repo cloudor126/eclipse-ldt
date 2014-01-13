@@ -72,7 +72,7 @@ public abstract class AbstractMetaLuaModule extends AbstractLuaModule {
 			final String fileNameWithoutExtension = fileName.substring(0, fileName.lastIndexOf('.'));
 			final File build = new File(folder, fileNameWithoutExtension + ".luac"); //$NON-NLS-1$
 			// Compile metalua lib
-			final StringBuffer command = new StringBuffer("require 'metalua.package'\n"); //$NON-NLS-1$
+			final StringBuffer command = new StringBuffer("require 'metalua.loader'\n"); //$NON-NLS-1$
 			command.append("local mlc = require ('metalua.compiler').new()\n"); //$NON-NLS-1$
 			command.append("local bin = mlc:srcfile_to_bytecode([["); //$NON-NLS-1$
 			command.append(regular.getPath());

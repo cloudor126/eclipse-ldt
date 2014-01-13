@@ -1,6 +1,6 @@
 #!/usr/bin/lua
 --------------------------------------------------------------------------------
---  Copyright (c) 2012 Sierra Wireless.
+--  Copyright (c) 2012-2014 Sierra Wireless.
 --  All rights reserved. This program and the accompanying materials
 --  are made available under the terms of the Eclipse Public License v1.0
 --  which accompanies this distribution, and is available at
@@ -28,7 +28,7 @@ if debugpath then
 		if luadocumentordirpath == "" then luadocumentordirpath = "./" end
 		-- change lua path and mpath to not load system version of metalua
 		package.path = luadocumentordirpath.."?.lua;"..luadocumentordirpath.."?.luac;"
-		require "metalua.package"
+		require "metalua.loader"
 		package.mpath = luadocumentordirpath.."?.mlua;"
 		-- do not change cpath to have access to lfs.
 		-- (it must be already installed)
@@ -40,7 +40,7 @@ end
 --
 
 -- This message is compliant to 'lapp', which will match options and arguments
--- from commande line.
+-- from command line.
 local help = [[luadocumentor v0.1.4: tool for Lua Documentation Language
 	-f, --format (default doc) Define output format :
 		* doc: Will produce HTML documentation from specified file(s) or directories.
@@ -156,7 +156,7 @@ end
 -- This loop is just for counting parsed files
 -- TODO: Find a more elegant way to do it
 local parsedfilescount = 0
-for _, p in pairs( parsedfiles) do
+for _, p in pairs(parsedfiles) do
 	parsedfilescount = parsedfilescount + 1
 end
 print (parsedfilescount .. ' file(s) parsed.')
