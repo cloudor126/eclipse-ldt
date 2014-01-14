@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
+import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.environment.EnvironmentManager;
 import org.eclipse.dltk.debug.ui.launchConfigurations.MainLaunchConfigurationTab;
 import org.eclipse.dltk.launching.IInterpreterInstall;
@@ -254,6 +255,11 @@ public class LuaMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 		}
 	}
 
+	@Override
+	protected boolean canSelectDebugConsoleType() {
+		return true;
+	}
+
 	private IInterpreterInstall getSelectedInterpreter() {
 		IInterpreterInstall selectedInterpreter;
 		if (alternateInterpreterButton.getSelection()) {
@@ -342,5 +348,12 @@ public class LuaMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 			}
 		}
 		return valid;
+	}
+
+	@Override
+	protected void setDefaults(ILaunchConfigurationWorkingCopy configuration, IModelElement element) {
+		super.setDefaults(configuration, element);
+		// change default value for console redirection. (use non DBGP redirection by default)
+		configuration.setAttribute(ScriptLaunchConfigurationConstants.ATTR_DEBUG_CONSOLE, false);
 	}
 }
