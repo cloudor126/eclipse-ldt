@@ -90,7 +90,7 @@ public class LuaGenericInterpreterConfigurer {
 		if (envLuaPath != null) {
 			envVars.put(LuaDebugConstants.LUA_PATH, interpreterPath + envLuaPath);
 		} else {
-			envVars.put(LuaDebugConstants.LUA_PATH, interpreterPath);
+			envVars.put(LuaDebugConstants.LUA_PATH, ";;" + interpreterPath); //$NON-NLS-1$
 		}
 		return envVars;
 	}
