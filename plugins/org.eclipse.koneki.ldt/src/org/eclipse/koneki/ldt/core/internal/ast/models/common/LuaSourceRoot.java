@@ -102,8 +102,6 @@ public class LuaSourceRoot extends ModuleDeclaration {
 		private LuaInternalContent internalContent;
 
 		public LuaFile() {
-			internalContent = new LuaInternalContent();
-			fileAPI = new LuaFileAPI();
 		}
 
 		public LuaInternalContent getInternalContent() {

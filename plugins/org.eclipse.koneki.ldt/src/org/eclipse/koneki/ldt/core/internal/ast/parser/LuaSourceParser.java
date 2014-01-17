@@ -30,7 +30,9 @@ import org.eclipse.jface.text.Document;
 import org.eclipse.koneki.ldt.core.LuaUtils;
 import org.eclipse.koneki.ldt.core.internal.Activator;
 import org.eclipse.koneki.ldt.core.internal.ast.models.LuaDLTKModelUtils;
+import org.eclipse.koneki.ldt.core.internal.ast.models.api.LuaFileAPI;
 import org.eclipse.koneki.ldt.core.internal.ast.models.common.LuaSourceRoot;
+import org.eclipse.koneki.ldt.core.internal.ast.models.file.LuaInternalContent;
 import org.eclipse.osgi.util.NLS;
 
 /**
@@ -152,12 +154,19 @@ public class LuaSourceParser extends AbstractSourceParser {
 						problem.setSourceEnd(fixer.getCharacterPosition(problem.getSourceEnd()));
 					}
 
-					// use AST in cache
+					// use AST in cache, we don't have a "well built" module (module with a fileapi and an internalcontent)
 					if (input.getModelElement() != null) {
-						final LuaSourceRoot cached = (LuaSourceRoot) cache.get(input.getModelElement());
-						if (cached != null) {
-							cached.setError(true);
-							return cached;
+						if (module.getFileapi() == null || module.getInternalContent() == null) {
+							final LuaSourceRoot cached = (LuaSourceRoot) cache.get(input.getModelElement());
+							if (cached != null) {
+								cached.setError(true);
+								return cached;
+							} else {
+								module.setLuaFileApi(new LuaFileAPI());
+								module.setInternalContent(new LuaInternalContent());
+							}
+						} else {
+							cache.put(input.getModelElement(), module);
 						}
 					}
 				} else if (input.getModelElement() != null) {

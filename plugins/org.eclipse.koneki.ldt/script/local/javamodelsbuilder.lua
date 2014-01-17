@@ -24,59 +24,126 @@ local M = {}
 ---
 -- Build Java Model from source code
 --
--- @param	source Code to parse
--- @return	LuaSourceRoot, DLTK node, root of DLTK AST
+-- @param #string source Code to parse
+-- @return  LuaSourceRoot, DLTK node, root of DLTK AST
 function M.build(source, modulename)
-	-- create root object
-	local root = javamodelfactory.newsourceroot(#source)
-	
-	-- manage shebang
-	if source then source = source:gsub("^(#.-\n)", function (s) return string.rep(' ',string.len(s)) end) end
-	-- check for errors
-	local f, err = loadstring(source,'source_to_check')
-	if not f then
-		local line, errmessage = string.match(err,"%[string \"source_to_check\"%]:(%d+):(.*)")
-		errmessage = errmessage or err
-		line = line and tonumber(line)-1 or 0
-		
-		-- calculate the start of some errors
-		-- NOT USED FOR NOW
---		 local linestart = string.match(err,"%(to close .* at line (%d+)%)") 
---		 if linestart then
---			local _, startoffset = string.find(source,string.rep("[^\n]*\n",linestart-1))
---			javamodelfactory.setproblem(root, line , -1, startoffset, endoffset, err)
---		else
---			javamodelfactory.setproblem(root, line , -1, -1, endoffset, err)
---		end
-		javamodelfactory.setproblem(root, line , -1, -1, -1, errmessage)
-		return root
-	end
-	
-	
-	-- if no errors, check AST
-	local ast = mlc:src_to_ast( source )
-	
-	-- Create api model
-	local apimodelbuilder = require 'models.apimodelbuilder'
-	local _file, comment2apiobj = apimodelbuilder.createmoduleapi(ast,modulename)
+  -- create root object
+  local root = javamodelfactory.newsourceroot(#source)
 
-	-- create internal model
-	local internalmodelbuilder = require "models.internalmodelbuilder"
-	local _internalcontent = internalmodelbuilder.createinternalcontent(ast,_file,comment2apiobj,modulename)
+  -- TODO clean perf profiling
+  -- local s = os.clock()
 
-	-- Converting api model to java
-	local javaapimodelbuilder = require 'javaapimodelbuilder'
-	local jfile, handledexpr = javaapimodelbuilder._file(_file)
+  -- manage shebang
+  if source then source = source:gsub("^(#.-\n)", function (s) return string.rep(' ',string.len(s)) end) end
 
-	-- Converting internal model to java
-	local javainternalmodelbuilder = require 'javainternalmodelbuilder'
-	local jinternalcontent = javainternalmodelbuilder._internalcontent(_internalcontent,_file, handledexpr)
+  -- check for errors
+  local f, err = loadstring(source,'source_to_check')
+  if not f then
+    local lineindex, errmessage = string.match(err,"%[string \"source_to_check\"%]:(%d+):(.*)")
+    errmessage = errmessage or err
+    lineindex = lineindex and tonumber(lineindex) or 1
+    javamodelfactory.setproblem(root,lineindex-1 , -1, -1, -1, errmessage)
 
-	-- Append information from documentation
-	javamodelfactory.addcontent(root,jfile,jinternalcontent)
+    -- -------------------------------------------------
+    -- EXPERIMENTAL CODE : we try to remove faulty code
+    -- -------------------------------------------------
+    if source then
+      -- define function that replace all character of a given line in space characters
+      local function cleanline (source, linetoclean)
+        local iscleaned = false
+        if linetoclean == 1 then
+          -- manage first line
+          source = source:gsub('^(.-)\n',function (firstline)
+            iscleaned = true
+            return string.rep(' ',string.len(firstline)) .. "\n"
+          end)
+        elseif linetoclean > 1 then
+          -- manage other case
+          source = source:gsub('^('..string.rep(".-\n",linetoclean-1)..')(.-)\n',function (start,faultyline)
+            iscleaned = true
+            return start..string.rep(' ',string.len(faultyline)) .. "\n"
+          end)
+        end
+        return source, iscleaned
+      end
 
-	local handledcomments={}
-	return root
+      if lineindex == 1 then
+        -- FIRST LINE CASE : error is on line 1, just clean this line and check for errors
+        source = cleanline(source,1)
+        f, _ = loadstring(source,'source_to_check')
+      else
+        -- OTHER CASES: first, cleaning ...
+        local iscleaned = false
+        -- if something is not closed we try to remove the line where it is opened.
+        local linestart = string.match(err,"%(to close .* at line (%d+)%)")
+        if linestart then
+          source, iscleaned  = cleanline(source,tonumber(linestart))
+        elseif lineindex > 1 then
+          -- in other case, we try to remove the "real" code line before the error
+          -- so, we start by finding the "real" line:
+          local realcodelineindex = nil
+          for i=lineindex-1,1,-1  do
+            -- we go from the line just before the error to the first line, searching a "real" code line.
+            -- (no empty line or single comment line, we do not manage multiline comment)
+            local codeline = source:match('^'..string.rep(".-\n",i-1)..'(.-)\n')
+            if codeline and not codeline:find('^%s*$') and not codeline:find('^%s*%-%-.*$')   then
+              realcodelineindex = i
+              break
+            end
+          end
+          if realcodelineindex then
+            source,iscleaned = cleanline(source,realcodelineindex)
+          end
+        end
+        -- after cleaning, recheck hoping there are no errors.
+        if iscleaned then
+          f, _ = loadstring(source,'source_to_check')
+          -- if it fail, we try to remove the line in error
+          if not f then
+            source = cleanline(source,lineindex)
+            f, _ = loadstring(source,'source_to_check')
+          end
+        end
+      end
+      -- TODO clean perf profiling
+      -- local e = os.clock()
+      -- print ('error time', (e*1000-s*1000))
+    end
+    -- ------------------------------------------------
+    -- END OF EXPERIMENTAL CODE
+    -- -------------------------------------------------
+  end
+
+  if not f then return root end
+
+  -- if no errors, check AST
+  local ast = mlc:src_to_ast( source )
+
+  -- Create api model
+  local apimodelbuilder = require 'models.apimodelbuilder'
+  local _file, comment2apiobj = apimodelbuilder.createmoduleapi(ast,modulename)
+
+  -- create internal model
+  local internalmodelbuilder = require "models.internalmodelbuilder"
+  local _internalcontent = internalmodelbuilder.createinternalcontent(ast,_file,comment2apiobj,modulename)
+
+  -- Converting api model to java
+  local javaapimodelbuilder = require 'javaapimodelbuilder'
+  local jfile, handledexpr = javaapimodelbuilder._file(_file)
+
+  -- Converting internal model to java
+  local javainternalmodelbuilder = require 'javainternalmodelbuilder'
+  local jinternalcontent = javainternalmodelbuilder._internalcontent(_internalcontent,_file, handledexpr)
+
+  -- Append information from documentation
+  javamodelfactory.addcontent(root,jfile,jinternalcontent)
+
+  local handledcomments={}
+
+  -- TODO clean perf profiling
+  -- local e = os.clock()
+  -- print ('global time', type(e), type(s),(e*1000-s*1000))
+  return root
 end
 
 return M
