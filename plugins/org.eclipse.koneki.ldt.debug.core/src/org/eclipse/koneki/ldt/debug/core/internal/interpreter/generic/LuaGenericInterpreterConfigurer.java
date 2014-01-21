@@ -50,7 +50,7 @@ public class LuaGenericInterpreterConfigurer {
 		// get launch conf env var
 		@SuppressWarnings("unchecked")
 		final Map<String, String> configEnvs = launch.getLaunchConfiguration().getAttribute(ILaunchManager.ATTR_ENVIRONMENT_VARIABLES,
-				(Map<?, ?>) null);
+				(Map<String, String>) null);
 		EnvironmentVariable[] interEnvs = interpreterinstall.getEnvironmentVariables();
 		// add var defined at interpreter level only if it was not defined at launch conf level
 		if (interEnvs != null) {
