@@ -51,31 +51,35 @@ function M.build(source, modulename)
       -- define function that replace all character of a given line in space characters
       local function cleanline (source, linetoclean)
       	local cleanedsource
+      	local iscleaned = false
         if linetoclean == 1 then
           -- manage first line
           cleanedsource = source:gsub('^(.-)\n',function (firstline)
+         	  iscleaned = true
             return string.rep(' ',string.len(firstline)) .. "\n"
           end)
         elseif linetoclean > 1 then
           -- manage other case
-          cleanedsource = source:gsub('^('..string.rep(".-\n",linetoclean-1)..')(.-)\n',function (start,faultyline)
+            cleanedsource = source:gsub('^('..string.rep(".-\n",linetoclean-1)..')(.-)\n',function (start,faultyline)
+            iscleaned = true
             return start..string.rep(' ',string.len(faultyline)) .. "\n"
           end)
         end
-        return cleanedsource
+        return cleanedsource, iscleaned
       end
 	
 			local cleanedsource
+     	local iscleaned = false
       if lineindex == 1 then
         -- FIRST LINE CASE : error is on line 1, just clean this line and check for errors
-        cleanedsource = cleanline(source,1)
+        cleanedsource, iscleaned = cleanline(source,1)
         f, _ = loadstring(cleanedsource,'source_to_check')
       else
         -- OTHER CASES: first, cleaning ...
         -- if something is not closed we try to remove the line where it is opened.
         local linestart = string.match(err,"%(to close .* at line (%d+)%)")
         if linestart then
-          cleanedsource = cleanline(source,tonumber(linestart))
+          cleanedsource, iscleaned = cleanline(source,tonumber(linestart))
         elseif lineindex > 1 then
           -- in other case, we try to remove the "real" code line before the error
           -- so, we start by finding the "real" line:
@@ -90,23 +94,26 @@ function M.build(source, modulename)
             end
           end
           if realcodelineindex then
-            cleanedsource = cleanline(source,realcodelineindex)
+            cleanedsource, iscleaned = cleanline(source,realcodelineindex)
           end
         end
-        -- after cleaning, recheck hoping there are no errors.
-        if cleanedsource then
-          f, _ = loadstring(cleanedsource,'source_to_check')
-          -- if it fail, we try to remove the line in error
-          if not f then
-            cleanedsource = cleanline(source,lineindex)
-            f, _ = loadstring(cleanedsource,'source_to_check')
-          end
-        end
+      
+	      -- after cleaning, recheck hoping there are no errors.
+	      if iscleaned then
+	        f, _ = loadstring(cleanedsource,'source_to_check')
+	        -- if it fail, we try to remove the line in error
+	        if not f then
+	          cleanedsource = cleanline(source,lineindex)
+	          f, _ = loadstring(cleanedsource,'source_to_check')
+	        end
+	      end
       end
       
-      -- take to build the ast cleaned source if any
-			source = cleanedsource or source
-      
+      -- take cleaned source as source
+      if f then
+      	source = cleanedsource
+      end
+	      
       -- TODO clean perf profiling
       -- local e = os.clock()
       -- print ('error time', (e*1000-s*1000))     
