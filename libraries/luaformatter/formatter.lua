@@ -13,7 +13,7 @@
 -- Uses Metalua capabilities to indent code and provide source code offset
 -- semantic depth.
 --
--- @module luaformatter
+-- @module formatter
 -- 
 --------------------------------------------------------------------------------
 
@@ -410,7 +410,7 @@ end
 --------------------------------------------------------------------------------
 -- Indent Lua Source Code.
 --
--- @function [parent=#luaformatter] indentcode
+-- @function [parent=#formatter] indentcode
 -- @param source source code to format
 -- @param delimiter line delimiter to use
 -- @param indenttable true if you want to indent in table

@@ -8,7 +8,7 @@
 -- Contributors:
 --     Sierra Wireless - initial API and implementation
 --------------------------------------------------------------------------------
-local formatter =  require 'luaformatter'
+local formatter =  require 'formatter'
 local string =     require 'string'
 local javaassert = java.require("org.junit.Assert")
 

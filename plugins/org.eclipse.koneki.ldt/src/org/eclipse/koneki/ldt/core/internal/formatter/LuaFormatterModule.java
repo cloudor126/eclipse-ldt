@@ -29,7 +29,7 @@ import com.naef.jnlua.LuaState;
  */
 public final class LuaFormatterModule extends AbstractMetaLuaModule {
 	public static final String FORMATTER_PATH = "/script/external"; //$NON-NLS-1$
-	public static final String FORMATTER_LIB_NAME = "luaformatter"; //$NON-NLS-1$
+	public static final String FORMATTER_LIB_NAME = "formatter"; //$NON-NLS-1$
 	public static final String INDENTATION_FUNTION = "indentcode"; //$NON-NLS-1$
 
 	private LuaState lua = null;
