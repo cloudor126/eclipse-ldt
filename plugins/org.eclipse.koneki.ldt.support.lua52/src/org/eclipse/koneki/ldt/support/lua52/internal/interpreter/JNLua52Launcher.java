@@ -109,19 +109,15 @@ public class JNLua52Launcher {
 			}
 
 			// load arguments
-			l.newTable(scriptArg.size() + args.length + 1, 0);
-			// add script argument
-			for (int i = 0; i < scriptArg.size(); i++) {
-				l.pushString(scriptArg.get(i));
-				l.rawSet(-2, i + 1);
-			}
+			l.newTable(args.length + 1, 0);
 			// add interpreter
+			int interpreterIndex = scriptArg.size() - args.length;
 			l.pushString("jnlua"); //$NON-NLS-1$
-			l.rawSet(-2, -args.length);
-			// add interpreter arguments
+			l.rawSet(-2, interpreterIndex);
+			// add arguments
 			for (int i = 0; i < args.length; i++) {
 				l.pushString(args[i]);
-				l.rawSet(-2, i - args.length + 1);
+				l.rawSet(-2, interpreterIndex + i + 1);
 			}
 			// add interpreter
 			l.setGlobal("arg"); //$NON-NLS-1$
