@@ -114,7 +114,7 @@ function M._recordtypedef(name)
 		description      = "",             -- string
 		fields           = {},              -- map from fieldname to field
 		sourcerange      = {min=0,max=0},
-
+    supertype        = nil,            -- supertype of the type def (inheritance), should be a recordtypedef ref
 		-- FUNCTIONS
 		addfield = function (self,field)
 			self.fields[field.name] = field

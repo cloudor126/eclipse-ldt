@@ -142,6 +142,20 @@ local modifiersparser = gg.sequence({
 })
 
 -- ----------------------------------------------------
+-- parse a extends tag
+-- ----------------------------------------------------
+local extendsparsers = {
+  -- full parser
+  gg.sequence({
+    builder = function (result)
+      raiserror(result)
+      return {type = result[1]}
+    end,
+    '@','extends', typerefparser
+  }),
+}
+
+-- ----------------------------------------------------
 -- parse a return tag
 -- ----------------------------------------------------
 local returnparsers = {
@@ -398,7 +412,8 @@ local function initparser()
 		["type"]     = typeparsers,
 		["field"]    = fieldparsers,
 		["function"] = functionparsers,
-		["param"]    = paramparsers
+		["param"]    = paramparsers,
+		["extends"]    = extendsparsers
 	}
 
 	-- create lexer used for parsing

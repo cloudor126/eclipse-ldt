@@ -299,6 +299,12 @@ function M.createmoduleapi(ast,modulename)
 						if _item then _recordtypedef:addfield(_item) end
 					end
 				end
+				
+				-- manage extends (inheritance)
+				if regulartags["extends"] and regulartags["extends"][1] and  regulartags["extends"][1].type then
+				   local _supertype = regulartags["extends"][1].type
+				   if _supertype then _recordtypedef.supertype = createtyperef(_supertype) end 
+        end
 			elseif regulartags["field"] then
 				local dt_field = regulartags["field"][1]
 				

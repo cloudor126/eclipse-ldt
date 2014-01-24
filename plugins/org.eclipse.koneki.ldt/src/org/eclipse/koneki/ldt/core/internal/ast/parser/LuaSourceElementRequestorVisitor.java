@@ -185,6 +185,10 @@ public class LuaSourceElementRequestorVisitor extends SourceElementRequestVisito
 			typeinfo.nameSourceStart = type.sourceStart();
 			typeinfo.nameSourceEnd = type.sourceEnd() - 1;
 
+			if (type.getSupertype() != null) {
+				typeinfo.superclasses = new String[] { type.getSupertype().toReadableString() };
+			}
+
 			// calculate modifiers
 			int modifiers = 0; // define kind modifier
 			// define visibility

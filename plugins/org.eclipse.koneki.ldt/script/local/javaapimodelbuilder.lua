@@ -127,7 +127,8 @@ function M._typedef(_typedef,notemplate, handledexpr)
 		jtypedef = javaapimodelfactory.newrecordtypedef(_typedef.name,
 		    description,
 			_typedef.sourcerange.min - 1,
-			_typedef.sourcerange.max
+			_typedef.sourcerange.max,
+			M._typeref(_typedef.supertype)
 		)
 
 		-- Appending fields

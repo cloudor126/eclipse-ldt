@@ -22,6 +22,7 @@ public class RecordTypeDef extends TypeDef {
 	private String name;
 	private String documentation;
 	private HashMap<String, Item> fields = new HashMap<String, Item>();
+	private TypeRef supertype;
 
 	public RecordTypeDef() {
 
@@ -68,5 +69,13 @@ public class RecordTypeDef extends TypeDef {
 
 	public String toReadableString() {
 		return "#" + name; //$NON-NLS-1$
+	}
+
+	public TypeRef getSupertype() {
+		return supertype;
+	}
+
+	public void setSupertype(TypeRef supertype) {
+		this.supertype = supertype;
 	}
 }

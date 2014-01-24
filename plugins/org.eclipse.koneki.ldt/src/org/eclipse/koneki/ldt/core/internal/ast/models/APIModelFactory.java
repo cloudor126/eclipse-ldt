@@ -270,12 +270,15 @@ public final class APIModelFactory {
 				String documentation = l.checkString(2);
 				int sourceRangeMin = l.checkInteger(3);
 				int sourceRangeMax = l.checkInteger(4);
+				TypeRef supertype = l.checkJavaObject(5, TypeRef.class);
 
 				RecordTypeDef record = new RecordTypeDef();
 				record.setName(name);
 				record.setDocumentation(documentation);
 				record.setStart(sourceRangeMin);
 				record.setEnd(sourceRangeMax);
+				if (supertype != null)
+					record.setSupertype(supertype);
 
 				l.pushJavaObject(record);
 
