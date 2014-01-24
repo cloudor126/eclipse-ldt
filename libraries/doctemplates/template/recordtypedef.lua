@@ -11,6 +11,12 @@
 --------------------------------------------------------------------------------
 return [[#
 # --
+# -- Inheritance
+# --
+#if _recordtypedef.supertype then
+  <h$(i)> Extends $( fulllinkto(_recordtypedef.supertype)) </h$(i)>
+#end
+# --
 # -- Descriptions
 # --
 #if _recordtypedef.shortdescription and #_recordtypedef.shortdescription > 0 then
