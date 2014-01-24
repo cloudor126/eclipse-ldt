@@ -47,5 +47,12 @@
 	name="@return"
 	description="%return.description"
 	autoinsert="true">@return #${type} ${description}</template>
+	
+<template
+	context="LuaDocumentorTemplateContextType"
+	id="org.eclipse.koneki.ldt.ui.templates.luadocumentor.extends"
+	name="@extends"
+	description="%extends.description"
+	autoinsert="true">@extends ${module}#${type} </template>
 
 </templates>
