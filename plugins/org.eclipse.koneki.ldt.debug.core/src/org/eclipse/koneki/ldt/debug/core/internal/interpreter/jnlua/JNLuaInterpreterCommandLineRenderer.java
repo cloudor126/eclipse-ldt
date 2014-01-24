@@ -118,9 +118,11 @@ public abstract class JNLuaInterpreterCommandLineRenderer {
 				for (final String library : split) {
 					try {
 						final URL entry = fragment.getEntry(library);
-						final URL libraryURL = FileLocator.toFileURL(entry);
-						final String libraryPath = new Path(libraryURL.getFile()).removeLastSegments(1).toOSString();
-						libraryPaths.add(libraryPath);
+						if (entry != null) {
+							final URL libraryURL = FileLocator.toFileURL(entry);
+							final String libraryPath = new Path(libraryURL.getFile()).removeLastSegments(1).toOSString();
+							libraryPaths.add(libraryPath);
+						}
 					} catch (IOException e) {
 						throw new RuntimeException("Unable to set java.library.path.", e); //$NON-NLS-1$
 					}
