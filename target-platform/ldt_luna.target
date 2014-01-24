@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?pde version="3.8"?><target name="Lua Development Tools - Luna" sequenceNumber="42">
+<locations>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.platform.sdk" version="4.4.0.I20131212-1600"/>
+<unit id="org.eclipse.rse.feature.group" version="3.5.0.201312161920"/>
+<repository location="http://download.eclipse.org/releases/luna"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.wst.jsdt.feature.feature.group" version="1.6.0.v201311011616-7H7FFkcFC7sResUlhdflaz0"/>
+<unit id="org.eclipse.jdt.feature.group" version="3.10.0.v20131212-1600"/>
+<repository location="http://download.eclipse.org/releases/luna"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.junit" version="4.11.0.v201303080030"/>
+<unit id="org.apache.commons.io" version="2.0.1.v201105210651"/>
+<unit id="org.apache.commons.math" version="2.1.0.v201105210652"/>
+<unit id="org.apache.commons.lang.source" version="2.6.0.v201205030909"/>
+<unit id="org.junit.source" version="4.11.0.v201303080030"/>
+<unit id="org.apache.commons.collections.source" version="3.2.0.v2013030210310"/>
+<unit id="org.apache.commons.compress.source" version="1.4.1.v201301140946"/>
+<unit id="org.apache.commons.collections" version="3.2.0.v2013030210310"/>
+<unit id="org.apache.commons.lang" version="2.6.0.v201205030909"/>
+<unit id="org.apache.commons.compress" version="1.4.1.v201301140946"/>
+<unit id="org.apache.commons.math.source" version="2.1.0.v201105210652"/>
+<unit id="org.apache.commons.io.source" version="2.0.1.v201105210651"/>
+<repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20130827064939/repository"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.dltk.core.index.sdk.feature.group" version="5.0.0.201306060709"/>
+<unit id="org.eclipse.dltk.rse.sdk.feature.group" version="5.0.0.201306060709"/>
+<unit id="org.eclipse.dltk.xotcl.sdk.feature.group" version="5.0.0.201306060709"/>
+<unit id="org.eclipse.dltk.javascript.sdk.feature.group" version="5.0.0.201306060709"/>
+<unit id="org.eclipse.dltk.ruby.sdk.feature.group" version="5.0.0.201306060709"/>
+<unit id="org.eclipse.dltk.core.sdk.feature.group" version="5.0.0.201306060709"/>
+<unit id="org.eclipse.dltk.mylyn.sdk.feature.group" version="5.0.0.201306060709"/>
+<unit id="org.eclipse.dltk.itcl.sdk.feature.group" version="5.0.0.201306060709"/>
+<unit id="org.eclipse.dltk.python.sdk.feature.group" version="5.0.0.201306060709"/>
+<unit id="org.eclipse.dltk.tcl.sdk.feature.group" version="5.0.0.201306060709"/>
+<repository location="http://download.eclipse.org/technology/dltk/updates-dev/5.0"/>
+</location>
+</locations>
+</target>
