@@ -14,8 +14,10 @@ package org.eclipse.koneki.ldt.ui.internal.editor.completion;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.dltk.codeassist.ScriptCompletionEngine;
@@ -38,6 +40,7 @@ import org.eclipse.koneki.ldt.core.internal.ast.models.api.FunctionTypeDef;
 import org.eclipse.koneki.ldt.core.internal.ast.models.api.Item;
 import org.eclipse.koneki.ldt.core.internal.ast.models.api.Parameter;
 import org.eclipse.koneki.ldt.core.internal.ast.models.api.RecordTypeDef;
+import org.eclipse.koneki.ldt.core.internal.ast.models.api.TypeRef;
 import org.eclipse.koneki.ldt.core.internal.ast.models.common.LuaSourceRoot;
 import org.eclipse.koneki.ldt.core.internal.ast.models.file.Identifier;
 import org.eclipse.koneki.ldt.core.internal.ast.models.file.Index;
@@ -134,7 +137,7 @@ public class LuaCompletionEngine extends ScriptCompletionEngine {
 
 			// find all field we start by the right part
 			String right = ((Index) luaExpression).getRight();
-			addFields(resolveType, right, position);
+			addFields(resolveType, right, position, new HashSet<TypeResolution>());
 		} else if (luaExpression instanceof Invoke) {
 			// manage incomplete Invoke
 			// ----------------------------
@@ -147,7 +150,7 @@ public class LuaCompletionEngine extends ScriptCompletionEngine {
 			String right = ((Invoke) luaExpression).getFunctionName();
 			// we do not manage complete invoke
 			if (luaExpression.isIncomplete())
-				addInvocableFields(resolveType, right, position);
+				addInvocableFields(resolveType, right, position, new HashSet<TypeResolution>());
 		}
 		// we do not complete call for now
 		requestor.endReporting();
@@ -219,7 +222,7 @@ public class LuaCompletionEngine extends ScriptCompletionEngine {
 
 	}
 
-	private void addFields(TypeResolution recordTypeResolution, String fieldName, int position) {
+	private void addFields(TypeResolution recordTypeResolution, String fieldName, int position, Set<TypeResolution> cache) {
 		if (recordTypeResolution == null)
 			return;
 
@@ -235,10 +238,20 @@ public class LuaCompletionEngine extends ScriptCompletionEngine {
 					createMemberProposal(LuaASTModelUtils.getIMember(currentSourceModule, item), position - fieldName.length(), position, false);
 				}
 			}
+			// manage super-type fields
+			// cache is used to avoid cycle
+			cache.add(recordTypeResolution);
+			TypeRef supertype = currentRecordTypeDef.getSupertype();
+			if (supertype != null) {
+				TypeResolution superTypeResolution = LuaASTUtils.resolveType(currentSourceModule, supertype);
+				if (!cache.contains(superTypeResolution)) {
+					addFields(superTypeResolution, fieldName, position, cache);
+				}
+			}
 		}
 	}
 
-	private void addInvocableFields(TypeResolution recordTypeResolution, String fieldName, int position) {
+	private void addInvocableFields(TypeResolution recordTypeResolution, String fieldName, int position, Set<TypeResolution> cache) {
 		if (recordTypeResolution == null)
 			return;
 
@@ -276,6 +289,17 @@ public class LuaCompletionEngine extends ScriptCompletionEngine {
 					final TypeResolution parameterTypeResolution = LuaASTUtils.resolveType(currentSourceModule, firstParamter.getType());
 					if (recordTypeResolution.equals(parameterTypeResolution))
 						createMemberProposal(LuaASTModelUtils.getIMember(currentSourceModule, item), position - fieldName.length(), position, true);
+				}
+			}
+
+			// manage super-type invokable fields
+			// cache is used to avoid cycle
+			cache.add(recordTypeResolution);
+			TypeRef supertype = currentRecordTypeDef.getSupertype();
+			if (supertype != null) {
+				TypeResolution superTypeResolution = LuaASTUtils.resolveType(currentSourceModule, supertype);
+				if (!cache.contains(superTypeResolution)) {
+					addInvocableFields(superTypeResolution, fieldName, position, cache);
 				}
 			}
 		}
