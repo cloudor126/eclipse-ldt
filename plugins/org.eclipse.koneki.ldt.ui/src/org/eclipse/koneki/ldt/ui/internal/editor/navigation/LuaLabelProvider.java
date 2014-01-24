@@ -11,6 +11,7 @@
 package org.eclipse.koneki.ldt.ui.internal.editor.navigation;
 
 import org.eclipse.dltk.core.IMember;
+import org.eclipse.dltk.core.IType;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.koneki.ldt.core.internal.ast.models.LuaDLTKModelUtils;
@@ -22,6 +23,25 @@ public class LuaLabelProvider extends LabelProvider {
 
 	@Override
 	public String getText(final Object element) {
+		final IMember member = element instanceof IMember ? (IMember) element : null;
+		if (member == null)
+			return null;
+		try {
+			// Special icon for private type
+			if (member.exists()) {
+				if (LuaDLTKModelUtils.isType(member)) {
+					IType type = (IType) member;
+					if (type.getSuperClasses() != null && type.getSuperClasses().length >= 1) {
+						return type.getElementName() + " -> " + type.getSuperClasses()[0]; //$NON-NLS-1$
+					} else {
+						return type.getElementName();
+					}
+				}
+			}
+		} catch (ModelException e) {
+			Activator.logError(Messages.LuaCompletionProvidersFlags, e);
+		}
+		// DLTK default behavior
 		return null;
 	}
 
