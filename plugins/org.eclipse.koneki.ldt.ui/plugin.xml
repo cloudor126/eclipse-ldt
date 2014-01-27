@@ -486,4 +486,14 @@
             nature="org.eclipse.koneki.ldt.nature">
       </hover>
    </extension>
+   <extension
+         point="org.eclipse.ui.decorators">
+      <decorator
+            class="org.eclipse.koneki.ldt.ui.internal.DocLuaDecorator"
+            id="org.eclipse.koneki.ldt.ui.docluadecorator"
+            label="%decorator.label.doclua"
+            lightweight="true"
+            state="true">
+      </decorator>
+   </extension>
 </plugin>

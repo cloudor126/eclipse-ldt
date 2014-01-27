@@ -60,6 +60,8 @@ public final class LuaUtils {
 		String moduleName = module.getElementName();
 		if (moduleName.endsWith(".lua")) { //$NON-NLS-1$
 			moduleName = moduleName.replaceFirst("\\.lua$", ""); //$NON-NLS-1$//$NON-NLS-2$
+		} else if (moduleName.endsWith(".doclua")) { //$NON-NLS-1$
+			moduleName = moduleName.replaceFirst("\\.doclua$", ""); //$NON-NLS-1$//$NON-NLS-2$
 		}
 		return moduleName;
 	}

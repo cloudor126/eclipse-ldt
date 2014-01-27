@@ -31,4 +31,6 @@ public interface ImageConstants {
 
 	String TEMPLATE_LUADOC = "icons/obj16/template_luadoc.png"; //$NON-NLS-1$
 	String NEW_FILE = "icons/obj16/lua_file_plus.png"; //$NON-NLS-1$
+
+	String DOCLUA_OVERLAY = "icons/ovr16/doclua.png"; //$NON-NLS-1$
 }
