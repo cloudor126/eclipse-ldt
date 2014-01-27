@@ -29,7 +29,7 @@ public class LuaLabelProvider extends LabelProvider {
 		try {
 			// Special icon for private type
 			if (member.exists()) {
-				if (LuaDLTKModelUtils.isType(member)) {
+				if (LuaDLTKModelUtils.isType(member) || LuaDLTKModelUtils.isModule(member)) {
 					IType type = (IType) member;
 					if (type.getSuperClasses() != null && type.getSuperClasses().length >= 1) {
 						return type.getElementName() + " -> " + type.getSuperClasses()[0]; //$NON-NLS-1$

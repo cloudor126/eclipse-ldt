@@ -32,18 +32,18 @@ local primitivetypes = {
 
 -- get or create the typedef with the name "name"
 local function gettypedef(_file,name,kind,sourcerangemin,sourcerangemax)
-	local kind = kind or "recordtypedef" 
+	local kind = kind or "recordtypedef"
 	local _typedef = _file.types[name]
 	if _typedef then
 		if _typedef.tag == kind then return _typedef end
 	else
 		if kind == "recordtypedef" and name ~= "global" then
 			local _recordtypedef = apimodel._recordtypedef(name)
-			
+
 			-- define sourcerange
 			_recordtypedef.sourcerange.min = sourcerangemin
 			_recordtypedef.sourcerange.max = sourcerangemax
-			
+
 			-- add to file if a name is defined
 			if _recordtypedef.name then _file:addtype(_recordtypedef) end
 			return _recordtypedef
@@ -125,10 +125,10 @@ end
 -- create a param from the param doc_tag
 local function createparam(dt_param,_file,sourcerangemin,sourcerangemax)
 	if not dt_param.name then return nil end
-	
+
 	local _parameter = apimodel._parameter(dt_param.name)
 	_parameter.description = dt_param.description
-	
+
 	-- manage typeref
 	local dt_typeref = dt_param.type
 	if dt_typeref then
@@ -168,7 +168,7 @@ local function generatefunctiontypeid()
 	return i
 end
 
--- generate a function type name 
+-- generate a function type name
 local function generatefunctiontypename(_functiontypedef)
 	local name = {"__"}
 	if _functiontypedef.returns and _functiontypedef.returns[1] then
@@ -219,21 +219,21 @@ function M.createmoduleapi(ast,modulename)
 	resetfunctiontypeidgenerator()
 
 	local _file = apimodel._file()
-	
+
 	local _comment2apiobj = {}
-	
+
 	local function handlecomment(comment)
-	
+
 		-- Extract information from tagged comments
 		local parsedcomment = ldp.parse(comment[1])
 		if not parsedcomment then return nil end
-		
+
 		-- Get tags from the languages
 		local regulartags = parsedcomment.tags
-		
+
 		-- Will contain last API object generated from comments
 		local _lastapiobject
-		
+
 		-- if comment is an ld comment
 		if regulartags then
 			-- manage "module" comment
@@ -248,7 +248,7 @@ function M.createmoduleapi(ast,modulename)
 
 				local sourcerangemin = comment.lineinfo.first.offset
 				local sourcerangemax = comment.lineinfo.last.offset
-				
+
 				-- manage returns
 				if regulartags ["return"] then
 					for _, dt_return in ipairs(regulartags ["return"]) do
@@ -261,16 +261,28 @@ function M.createmoduleapi(ast,modulename)
 					-- create internal type ref
 					local _typeref = apimodel._internaltyperef()
 					_typeref.typename = _file.name
-					
+
 					-- create return
 					local _return = apimodel._return()
 					table.insert(_return.types,_typeref)
-					
+
 					-- add return
 					table.insert(_file.returns,_return)
-					
+
 					--create recordtypedef is not define
-					gettypedef(_file,_typeref.typename,"recordtypedef",sourcerangemin,sourcerangemax)
+					local moduletypedef = gettypedef(_file,_typeref.typename,"recordtypedef",sourcerangemin,sourcerangemax)
+
+					-- manage extends (inheritance)
+					if moduletypedef
+						and moduletypedef.tag == "recordtypedef"
+						and regulartags["extends"]
+						and regulartags["extends"][1]
+						and  regulartags["extends"][1].type then
+
+						local _supertype = regulartags["extends"][1].type
+						
+						if _supertype then moduletypedef.supertype = createtyperef(_supertype) end
+					end
 				end
 				-- manage "type" comment
 			elseif regulartags["type"] and regulartags["type"][1].name ~= "global" then
@@ -280,11 +292,11 @@ function M.createmoduleapi(ast,modulename)
 				local sourcerangemax = comment.lineinfo.last.offset
 				local _recordtypedef = gettypedef (_file, dt_type.name ,"recordtypedef",sourcerangemin,sourcerangemax)
 				_lastapiobject = _recordtypedef
-				
+
 				-- re-set sourcerange in case the type was created before the type tag
 				_recordtypedef.sourcerange.min = sourcerangemin
 				_recordtypedef.sourcerange.max = sourcerangemax
-				
+
 				-- manage description
 				_recordtypedef.shortdescription = parsedcomment.shortdescription
 				_recordtypedef.description = parsedcomment.description
@@ -299,15 +311,15 @@ function M.createmoduleapi(ast,modulename)
 						if _item then _recordtypedef:addfield(_item) end
 					end
 				end
-				
+
 				-- manage extends (inheritance)
 				if regulartags["extends"] and regulartags["extends"][1] and  regulartags["extends"][1].type then
-				   local _supertype = regulartags["extends"][1].type
-				   if _supertype then _recordtypedef.supertype = createtyperef(_supertype) end 
-        end
+					local _supertype = regulartags["extends"][1].type
+					if _supertype then _recordtypedef.supertype = createtyperef(_supertype) end
+				end
 			elseif regulartags["field"] then
 				local dt_field = regulartags["field"][1]
-				
+
 				-- create item
 				local sourcerangemin = comment.lineinfo.first.offset
 				local sourcerangemax = comment.lineinfo.last.offset
@@ -315,7 +327,7 @@ function M.createmoduleapi(ast,modulename)
 				_item.shortdescription = parsedcomment.shortdescription
 				_item.description = parsedcomment.description
 				_lastapiobject = _item
-				
+
 				-- define sourcerange
 				_item.sourcerange.min = sourcerangemin
 				_item.sourcerange.max = sourcerangemax
@@ -378,7 +390,7 @@ function M.createmoduleapi(ast,modulename)
 				M.additemtoparent(_file,_item,scope,sourcerangemin,sourcerangemax)
 			end
 		end
-		
+
 		-- when we could not know which type of api object it is, we suppose this is an item
 		if not _lastapiobject then
 			_lastapiobject = apimodel._item()
@@ -387,7 +399,7 @@ function M.createmoduleapi(ast,modulename)
 			_lastapiobject.sourcerange.min =  comment.lineinfo.first.offset
 			_lastapiobject.sourcerange.max = comment.lineinfo.last.offset
 		end
-		
+
 		--
 		-- Store user defined tags
 		--
@@ -395,7 +407,7 @@ function M.createmoduleapi(ast,modulename)
 		if thirdtags  then
 			-- Define a storage index for user defined tags on current API element
 			if not _lastapiobject.metadata then _lastapiobject.metadata = {} end
-			
+
 			-- Loop over user defined tags
 			for usertag, taglist in pairs(thirdtags) do
 				if not _lastapiobject.metadata[ usertag ] then
@@ -408,9 +420,9 @@ function M.createmoduleapi(ast,modulename)
 				end
 			end
 		end
-		
+
 		-- if we create an api object linked it to
-		_comment2apiobj[comment] =_lastapiobject 
+		_comment2apiobj[comment] =_lastapiobject
 	end
 
 	local function parsecomment(node, parent, ...)
@@ -446,17 +458,17 @@ end
 
 function M.extractlocaltype ( commentblock,_file)
 	if not commentblock then return nil end
-	
+
 	local stringcomment = commentblock[1]
-	
+
 	local parsedtag = ldp.parseinlinecomment(stringcomment)
 	if parsedtag then
 		local sourcerangemin = commentblock.lineinfo.first.offset
 		local sourcerangemax = commentblock.lineinfo.last.offset
-		
+
 		return createtyperef(parsedtag,_file,sourcerangemin,sourcerangemax), parsedtag.description
 	end
-	
+
 	return nil, stringcomment
 end
 
