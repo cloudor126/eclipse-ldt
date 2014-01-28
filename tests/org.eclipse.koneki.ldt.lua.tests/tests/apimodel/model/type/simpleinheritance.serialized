@@ -1,0 +1,74 @@
+do local _={
+	description="",
+	globalvars={
+
+	}
+	--[[table: 0x1e51c00]],
+	types={
+		typename={
+			supertype={
+				typename="type",
+				modulename="anothermodule",
+				tag="externaltyperef"
+			}
+			--[[table: 0x1b91bc0]],
+			description="",
+			parent=nil --[[ref]],
+			name="typename",
+			fields={
+
+			}
+			--[[table: 0x1b91d10]],
+			sourcerange={
+				min=25,
+				max=77
+			}
+			--[[table: 0x1b91d60]],
+			shortdescription="",
+			tag="recordtypedef"
+		}
+		--[[table: 0x1b91b70]],
+		modulename={
+			name="modulename",
+			fields={
+
+			}
+			--[[table: 0x1f0d5d0]],
+			description="",
+			shortdescription="",
+			parent=nil --[[ref]],
+			sourcerange={
+				min=1,
+				max=23
+			}
+			--[[table: 0x1f0d620]],
+			tag="recordtypedef"
+		}
+	--[[table: 0x1f0d430]]
+	}
+	--[[table: 0x1e51bb0]],
+	shortdescription="",
+	name="modulename",
+	returns={
+		[1]={
+			types={
+				[1]={
+					typename="modulename",
+					tag="internaltyperef"
+				}
+			--[[table: 0x1f0d290]]
+			}
+			--[[table: 0x1f0d3e0]],
+			description="",
+			tag="return"
+		}
+	--[[table: 0x1f0d2e0]]
+	}
+	--[[table: 0x1c0f970]],
+	tag="file"
+}
+--[[table: 0x1e518d0]];
+_.types.typename.parent=_;
+_.types.modulename.parent=_;
+return _;
+end
