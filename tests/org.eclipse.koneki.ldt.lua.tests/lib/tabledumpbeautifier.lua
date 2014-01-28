@@ -8,10 +8,10 @@
 -- Contributors:
 --     Sierra Wireless - initial API and implementation
 -------------------------------------------------------------------------------
-local luaformatter = require 'luaformatter'
+local formatter = require 'formatter'
 local compiler = require 'metalua.compiler'
 local mlc = compiler.new()
-require 'metalua.walk'
+local Q = require 'metalua.treequery'
 local M = {}
 local cache
 local function buildcache(str)
@@ -25,16 +25,11 @@ local function buildcache(str)
 
 	-- Cache string nodes
 	cache = {}
-	local walker = {
-		expr = {
-			down = function(node)
-				if node.tag == 'String' then
-					table.insert(cache, node)
-				end
-			end
-		}
-	}
-	walk.block(walker, ast)
+  Q(ast):filter('String') :foreach(function(node)
+    if node.tag == 'String' then
+      table.insert(cache, node)
+    end
+  end)
 	return true
 end
 local function mustbeignored(offset)
@@ -109,6 +104,6 @@ function M.prettify(serializedtablestring)
 	end
 
 	-- Format resulting code
-	return luaformatter.indentcode(serializedtablestring, '\n', true, '\t')
+	return formatter.indentcode(serializedtablestring, '\n', true, '\t')
 end
 return M
