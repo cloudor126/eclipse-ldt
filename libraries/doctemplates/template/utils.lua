@@ -174,6 +174,7 @@ end
 -- Provide a handling function for all supported pretty name types
 --                                 primitivetyperef => #typename
 --                                  internaltyperef => #typename
+--                                  inlinetyperef => #def.typename
 --                                  externaltyperef => modulename#typename
 --                                     file(module) => modulename
 --                                            index => index
@@ -191,6 +192,7 @@ end
 M.prettynametypes = {
 	primitivetyperef = function(o) return string.format('#%s', o.typename) end,
 	externaltyperef = function(o) return string.format('%s#%s', o.modulename, o.typename) end,
+	inlinetyperef = function(o) return o.def and o.def and o.def.tag == "recordtypedef" and o.def.name and string.format('#%s',o.def.name) or nil end,
 	index = function(o) return "index" end,
 	file = function(o) return o.name end,
 	recordtypedef = function(o) return o.name end,

@@ -23,6 +23,7 @@ import org.eclipse.dltk.compiler.SourceElementRequestVisitor;
 import org.eclipse.koneki.ldt.core.internal.ast.models.LuaASTUtils;
 import org.eclipse.koneki.ldt.core.internal.ast.models.api.ExternalTypeRef;
 import org.eclipse.koneki.ldt.core.internal.ast.models.api.FunctionTypeDef;
+import org.eclipse.koneki.ldt.core.internal.ast.models.api.InlineTypeRef;
 import org.eclipse.koneki.ldt.core.internal.ast.models.api.InternalTypeRef;
 import org.eclipse.koneki.ldt.core.internal.ast.models.api.Item;
 import org.eclipse.koneki.ldt.core.internal.ast.models.api.LuaFileAPI;
@@ -159,7 +160,8 @@ public class LuaSourceElementRequestorVisitor extends SourceElementRequestVisito
 			fieldinfo.modifiers = modifiers;
 
 			// calculate type
-			if (item.getType() instanceof PrimitiveTypeRef || item.getType() instanceof InternalTypeRef || item.getType() instanceof ExternalTypeRef)
+			if (item.getType() instanceof PrimitiveTypeRef || item.getType() instanceof InternalTypeRef || item.getType() instanceof ExternalTypeRef
+					|| item.getType() instanceof InlineTypeRef)
 				fieldinfo.type = item.getType().toReadableString();
 
 			// store field info

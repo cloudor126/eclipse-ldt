@@ -32,7 +32,12 @@ public class InlineTypeRef extends TypeRef {
 	 */
 	@Override
 	public String toReadableString() {
-		return "_inline_type_"; //$NON-NLS-1$
+		if (definition instanceof RecordTypeDef)
+			return "#table"; //$NON-NLS-1$
+		else if (definition instanceof FunctionTypeDef)
+			return "#function"; //$NON-NLS-1$
+		else
+			return null;
 	}
 
 }

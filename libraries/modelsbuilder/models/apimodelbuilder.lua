@@ -25,7 +25,6 @@ local primitivetypes = {
 	['nil']      = true,
 	['number']   = true,
 	['string']   = true,
-	['table']    = true,
 	['thread']   = true,
 	['userdata'] = true
 }
@@ -68,8 +67,11 @@ local function createtyperef(dt_typeref,_file,sourcerangemin,sourcerangemax)
 			_typeref.modulename = dt_typeref.module
 			_typeref.typename = dt_typeref.type
 		else
-			if primitivetypes[dt_typeref.type] then
-				-- manage primitive type
+			if dt_typeref.type == "table" then
+				-- manage special table type
+				_typeref = apimodel._inlinetyperef(apimodel._recordtypedef("table"))
+			elseif primitivetypes[dt_typeref.type] then
+			  -- manage primitive types
 				_typeref = apimodel._primitivetyperef()
 				_typeref.typename = dt_typeref.type
 			else

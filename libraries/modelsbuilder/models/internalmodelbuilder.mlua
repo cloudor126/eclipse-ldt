@@ -297,7 +297,7 @@ local function createtype(node,position,comment2apiobj,file)
 			 	return typeref
 		| `Table {...} ->
 				-- create recordtypedef  from code
-				local _recordtypedef = apimodel._recordtypedef("___") -- no name for inline type
+				local _recordtypedef = apimodel._recordtypedef("table")
 				-- for each element of the table
 				for i=1,select("#", ...) do
         			local pair = select(i, ...)
