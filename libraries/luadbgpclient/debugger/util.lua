@@ -140,8 +140,12 @@ if _VERSION == "Lua 5.1" then
 
     -- load a piece of code alog with its environment
     function M.loadin(code, env)
-        local f = loadstring(code)
+      local f,err = loadstring(code) 
+      if not f then
+        return nil, err
+      else
         return f and setfenv(f, env)
+      end
     end
     
     -- table that maps [gs]et environment to index
