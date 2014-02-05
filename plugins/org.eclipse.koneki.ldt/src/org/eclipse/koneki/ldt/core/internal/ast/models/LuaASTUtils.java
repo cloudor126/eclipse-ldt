@@ -14,8 +14,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -221,18 +223,11 @@ public final class LuaASTUtils {
 				return null;
 			return resolveType(definition.getModule(), definition.getItem().getType());
 		} else if (expr instanceof Index) {
-			Index index = ((Index) expr);
-			// resolve left part of the index
-			LuaExpression left = index.getLeft();
-			TypeResolution resolvedLeftType = resolveType(sourceModule, left);
-			if (resolvedLeftType != null && resolvedLeftType.getTypeDef() instanceof RecordTypeDef) {
-				RecordTypeDef recordtype = (RecordTypeDef) resolvedLeftType.getTypeDef();
-				Item item = recordtype.getFields().get(index.getRight());
-				if (item != null && item.getType() != null) {
-					return resolveType(resolvedLeftType.getModule(), item.getType());
-				}
-			}
-			return null;
+			Definition definition = getDefinition(sourceModule, expr);
+			// resolve the type of the definition
+			if (definition == null || definition.getItem() == null || definition.getItem().getType() == null)
+				return null;
+			return resolveType(definition.getModule(), definition.getItem().getType());
 		} else if (expr instanceof Call) {
 			Call call = ((Call) expr);
 			// resolve the function which is called
@@ -248,22 +243,17 @@ public final class LuaASTUtils {
 			}
 			return null;
 		} else if (expr instanceof Invoke) {
-			Invoke invoke = ((Invoke) expr);
-			// resolve the function which is called
-			TypeResolution resolvedRecordType = resolveType(sourceModule, invoke.getRecord());
-			if (resolvedRecordType != null && resolvedRecordType.getTypeDef() instanceof RecordTypeDef) {
-				RecordTypeDef recordtype = (RecordTypeDef) resolvedRecordType.getTypeDef();
-				Item item = recordtype.getFields().get(invoke.getFunctionName());
-				if (item != null && item.getType() != null) {
-					TypeResolution resolvedFunctionType = resolveType(resolvedRecordType.getModule(), item.getType());
-					if (resolvedFunctionType != null && resolvedFunctionType.getTypeDef() instanceof FunctionTypeDef) {
-						FunctionTypeDef functiontype = (FunctionTypeDef) resolvedFunctionType.getTypeDef();
-						if (functiontype.getReturns().size() > 0) {
-							List<TypeRef> types = functiontype.getReturns().get(0).getTypes();
-							if (types.size() >= returnposition) {
-								return resolveType(resolvedFunctionType.getModule(), types.get(returnposition - 1));
-							}
-						}
+			Definition definition = getDefinition(sourceModule, expr);
+			if (definition == null || definition.getItem() == null || definition.getItem().getType() == null)
+				return null;
+
+			TypeResolution resolvedFunctionType = resolveType(definition.getModule(), definition.getItem().getType());
+			if (resolvedFunctionType != null && resolvedFunctionType.getTypeDef() instanceof FunctionTypeDef) {
+				FunctionTypeDef functiontype = (FunctionTypeDef) resolvedFunctionType.getTypeDef();
+				if (functiontype.getReturns().size() > 0) {
+					List<TypeRef> types = functiontype.getReturns().get(0).getTypes();
+					if (types.size() >= returnposition) {
+						return resolveType(resolvedFunctionType.getModule(), types.get(returnposition - 1));
 					}
 				}
 			}
@@ -419,6 +409,31 @@ public final class LuaASTUtils {
 
 	}
 
+	public static Definition getDefinition(ISourceModule sourceModule, RecordTypeDef recordTypeDef, String fieldname) {
+		return getDefinition(new TypeResolution(sourceModule, recordTypeDef), fieldname, new HashSet<TypeResolution>());
+	}
+
+	private static Definition getDefinition(TypeResolution recordTypeResolution, String fieldname, Set<TypeResolution> cache) {
+		// search field with the given field name
+		RecordTypeDef recordtypedef = (RecordTypeDef) recordTypeResolution.getTypeDef();
+		Item item = recordtypedef.getFields().get(fieldname);
+		if (item != null)
+			return new Definition(recordTypeResolution.getModule(), item);
+
+		// if not found we search in hierarchy
+		// manage super-type fields
+		// cache is used to avoid cycle
+		cache.add(recordTypeResolution);
+		TypeRef supertype = recordtypedef.getSupertype();
+		if (supertype != null) {
+			TypeResolution superTypeResolution = LuaASTUtils.resolveType(recordTypeResolution.getModule(), supertype);
+			if (!cache.contains(superTypeResolution)) {
+				return getDefinition(superTypeResolution, fieldname, cache);
+			}
+		}
+		return null;
+	}
+
 	public static Definition getDefinition(ISourceModule sourceModule, LuaExpression luaExpression) {
 		if (luaExpression instanceof Identifier) {
 			Identifier identifier = (Identifier) luaExpression;
@@ -455,8 +470,7 @@ public final class LuaASTUtils {
 			TypeResolution resolveType = LuaASTUtils.resolveType(sourceModule, index.getLeft());
 			if (resolveType != null && resolveType.getTypeDef() instanceof RecordTypeDef) {
 				RecordTypeDef typeDef = (RecordTypeDef) resolveType.getTypeDef();
-				Item definition = typeDef.getFields().get(index.getRight());
-				return new Definition(resolveType.getModule(), definition);
+				return getDefinition(resolveType.getModule(), typeDef, index.getRight());
 			}
 
 		} else if (luaExpression instanceof Invoke) {
@@ -464,8 +478,7 @@ public final class LuaASTUtils {
 			TypeResolution resolveType = LuaASTUtils.resolveType(sourceModule, invoke.getRecord());
 			if (resolveType != null && resolveType.getTypeDef() instanceof RecordTypeDef) {
 				RecordTypeDef typeDef = (RecordTypeDef) resolveType.getTypeDef();
-				Item definition = typeDef.getFields().get(invoke.getFunctionName());
-				return new Definition(resolveType.getModule(), definition);
+				return getDefinition(resolveType.getModule(), typeDef, invoke.getFunctionName());
 			}
 		} else if (luaExpression instanceof Call) {
 			Call call = (Call) luaExpression;
