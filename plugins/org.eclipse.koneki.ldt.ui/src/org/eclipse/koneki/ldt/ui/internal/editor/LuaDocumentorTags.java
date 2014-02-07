@@ -20,13 +20,15 @@ public final class LuaDocumentorTags {
 	public static final String RETURN = "@return"; //$NON-NLS-1$
 	public static final String USAGE = "@usage"; //$NON-NLS-1$
 	public static final String EXTENDS = "@extends"; //$NON-NLS-1$
+	public static final String LIST = "@list"; //$NON-NLS-1$
+	public static final String MAP = "@map"; //$NON-NLS-1$
 
 	private LuaDocumentorTags() {
 		// private constructor
 	}
 
 	public static String[] getTags() {
-		return new String[] { MODULE, FUNCTION, PARAM, FIELD, TYPE, RETURN, USAGE, EXTENDS };
+		return new String[] { MODULE, FUNCTION, PARAM, FIELD, TYPE, RETURN, USAGE, EXTENDS, LIST, MAP };
 	}
 
 }

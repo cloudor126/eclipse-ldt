@@ -1,0 +1,119 @@
+do local _={
+	description="",
+	globalvars={
+
+	}
+	--[[table: 0x2004650]],
+	types={
+		modulename={
+			description="",
+			parent=nil --[[ref]],
+			shortdescription="",
+			name="modulename",
+			sourcerange={
+				min=1,
+				max=23
+			}
+			--[[table: 0x1fbe8c0]],
+			fields={
+				fieldname={
+					type={
+						def={
+							description="",
+							structurekind="list",
+							defaultvaluetyperef={
+								def={
+									description="",
+									structurekind="map",
+									defaultvaluetyperef={
+										typename="string",
+										tag="primitivetyperef"
+									}
+									--[[table: 0x1f2edd0]],
+									defaultkeytyperef={
+										typename="number",
+										tag="primitivetyperef"
+									}
+									--[[table: 0x1f2ee80]],
+									shortdescription="",
+									name="map",
+									sourcerange={
+										min=0,
+										max=0
+									}
+									--[[table: 0x1e29f40]],
+									fields={
+
+									}
+									--[[table: 0x1e29ef0]],
+									tag="recordtypedef"
+								}
+								--[[table: 0x1f2ed20]],
+								tag="inlinetyperef"
+							}
+							--[[table: 0x1f2ef30]],
+							shortdescription="",
+							name="list",
+							sourcerange={
+								min=0,
+								max=0
+							}
+							--[[table: 0x1f2ec70]],
+							fields={
+
+							}
+							--[[table: 0x1f2ec20]],
+							tag="recordtypedef"
+						}
+						--[[table: 0x1f6c3e0]],
+						tag="inlinetyperef"
+					}
+					--[[table: 0x1f8f990]],
+					description="",
+					parent=nil --[[ref]],
+					shortdescription="",
+					name="fieldname",
+					sourcerange={
+						min=25,
+						max=97
+					}
+					--[[table: 0x1f6c390]],
+					occurrences={
+
+					}
+					--[[table: 0x2000c00]],
+					tag="item"
+				}
+			--[[table: 0x2000920]]
+			}
+			--[[table: 0x1d2c0e0]],
+			tag="recordtypedef"
+		}
+	--[[table: 0x1fbe870]]
+	}
+	--[[table: 0x2004600]],
+	shortdescription="",
+	name="modulename",
+	returns={
+		[1]={
+			types={
+				[1]={
+					typename="modulename",
+					tag="internaltyperef"
+				}
+			--[[table: 0x2015e60]]
+			}
+			--[[table: 0x1fbe820]],
+			description="",
+			tag="return"
+		}
+	--[[table: 0x1fbe720]]
+	}
+	--[[table: 0x20046a0]],
+	tag="file"
+}
+--[[table: 0x20045b0]];
+_.types.modulename.parent=_;
+_.types.modulename.fields.fieldname.parent=_.types.modulename;
+return _;
+end

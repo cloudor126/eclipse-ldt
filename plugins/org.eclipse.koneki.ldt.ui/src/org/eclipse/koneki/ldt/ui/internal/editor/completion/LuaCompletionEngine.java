@@ -77,6 +77,7 @@ public class LuaCompletionEngine extends ScriptCompletionEngine {
 		}
 
 		Document document = new Document(sourceContent);
+		Activator.getDefault().getTextTools().setupDocumentPartitioner(document);
 		LuaHeuristicScanner luaHeuristicScanner = new LuaHeuristicScanner(document);
 		// manage incomplete keyword
 		int previousToken = luaHeuristicScanner.previousToken(position - 1, LuaHeuristicScanner.UNBOUND);
@@ -223,7 +224,7 @@ public class LuaCompletionEngine extends ScriptCompletionEngine {
 	}
 
 	private void addFields(TypeResolution recordTypeResolution, String fieldName, int position, Set<TypeResolution> cache) {
-		if (recordTypeResolution == null)
+		if (recordTypeResolution == null || fieldName == null)
 			return;
 
 		if (recordTypeResolution.getTypeDef() instanceof RecordTypeDef) {

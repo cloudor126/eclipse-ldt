@@ -179,11 +179,17 @@ local function createexpr(expr,_block)
 				local _identifier = internalmodel._identifier()
 				idto_identifier[expr]= _identifier
 				_expr =	_identifier
-		| `Index { innerexpr, `String{fieldname} } ->
+		| `Index { innerexpr, rightpart } ->
 				if not expr.lineinfo then	return nil end
 				-- create index
 				local _expression = createexpr(innerexpr,_block)
-				if _expression then _expr =	internalmodel._index(_expression,fieldname) end
+				if _expression then
+				  if rightpart and rightpart.tag=='String' then
+				    _expr =	internalmodel._index(_expression,rightpart[1])
+				  else
+				    _expr = internalmodel._index(_expression,nil)
+				  end
+				end
 		| `Call{innerexpr, ...} ->
 				if not expr.lineinfo then	return nil end
 				-- create call 

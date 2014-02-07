@@ -128,7 +128,9 @@ function M._typedef(_typedef,notemplate, handledexpr)
 		    description,
 			_typedef.sourcerange.min - 1,
 			_typedef.sourcerange.max,
-			M._typeref(_typedef.supertype)
+			M._typeref(_typedef.supertype),
+			M._typeref(_typedef.defaultkeytyperef),
+			M._typeref(_typedef.defaultvaluetyperef)
 		)
 
 		-- Appending fields

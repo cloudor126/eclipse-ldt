@@ -1,0 +1,1 @@
+local rabbit --#list<#string>

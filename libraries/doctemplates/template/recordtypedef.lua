@@ -25,6 +25,27 @@ return [[#
 #if _recordtypedef.description and #_recordtypedef.description > 0 then
 	$( format( _recordtypedef.description ) )
 #end
+# --
+# -- Structure
+# --
+#if _recordtypedef.structurekind then
+#  local structureLine
+#  if _recordtypedef.structurekind == "map" then
+#    structureLine = {
+#      '<code><em>', prettyname(_recordtypedef), '</em></code>',
+#      ' is a map of <code><em>', fulllinkto(_recordtypedef.defaultkeytyperef),'</em></code>',
+#      ' to <code><em>', fulllinkto(_recordtypedef.defaultvaluetyperef) , '</em></code>. ',
+#       _recordtypedef.structuredescription }
+#  elseif _recordtypedef.structurekind == "list" then
+#    structureLine = {
+#      '<code><em>', prettyname(_recordtypedef), '</em></code>',
+#      ' is a list of <code><em>', fulllinkto(_recordtypedef.defaultvaluetyperef),'</em></code>. ',
+#       _recordtypedef.structuredescription }
+#  end
+#  if structureLine then
+     $(format(table.concat(structureLine)))
+#  end
+#end
 #--
 #-- Describe usage
 #--

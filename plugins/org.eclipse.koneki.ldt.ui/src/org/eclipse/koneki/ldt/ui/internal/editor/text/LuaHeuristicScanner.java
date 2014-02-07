@@ -294,12 +294,16 @@ public class LuaHeuristicScanner {
 		if (pos == NOT_FOUND)
 			return LuaSymbols.TOKEN_EOF;
 
-		fPos++;
-
 		// first, detect string
-		if (getPartition(pos).getType().equals(ILuaPartitions.LUA_STRING)) {
+		ITypedRegion partition = getPartition(pos);
+		if (partition.getType().equals(ILuaPartitions.LUA_STRING) || partition.getType().equals(ILuaPartitions.LUA_SINGLE_QUOTE_STRING)
+				|| partition.getType().equals(ILuaPartitions.LUA_MULTI_LINE_STRING)) {
+			fPos += partition.getLength();
 			return LuaSymbols.TOKEN_STRING;
+
 		}
+
+		fPos++;
 
 		// detect key char
 		switch (fChar) {
@@ -389,12 +393,16 @@ public class LuaHeuristicScanner {
 		if (pos == NOT_FOUND)
 			return LuaSymbols.TOKEN_EOF;
 
-		fPos--;
-
 		// first, detect string
-		if (getPartition(pos).getType().equals(ILuaPartitions.LUA_STRING)) {
+		ITypedRegion partition = getPartition(pos);
+		if (partition.getType().equals(ILuaPartitions.LUA_STRING) || partition.getType().equals(ILuaPartitions.LUA_SINGLE_QUOTE_STRING)
+				|| partition.getType().equals(ILuaPartitions.LUA_MULTI_LINE_STRING)) {
+			fPos -= partition.getLength();
 			return LuaSymbols.TOKEN_STRING;
+
 		}
+
+		fPos--;
 
 		// detect key char
 		switch (fChar) {
@@ -772,7 +780,9 @@ public class LuaHeuristicScanner {
 	 *         <code>false</code> otherwise
 	 */
 	public boolean isAcceptedPartition(ITypedRegion partition) {
-		return IDocument.DEFAULT_CONTENT_TYPE.equals(partition.getType()) || ILuaPartitions.LUA_STRING.equals(partition.getType());
+		return IDocument.DEFAULT_CONTENT_TYPE.equals(partition.getType()) || ILuaPartitions.LUA_STRING.equals(partition.getType())
+				|| ILuaPartitions.LUA_SINGLE_QUOTE_STRING.equals(partition.getType())
+				|| ILuaPartitions.LUA_MULTI_LINE_STRING.equals(partition.getType());
 
 	}
 
@@ -883,6 +893,7 @@ public class LuaHeuristicScanner {
 		try {
 
 			final int tokenStuffBetweenParentheses = -2000;
+			final int tokenStuffBetweenSquareBracket = -2001;
 
 			// find begin of expression
 			// ----------------------------------
@@ -897,6 +908,12 @@ public class LuaHeuristicScanner {
 				} else {
 					previousToken = tokenStuffBetweenParentheses;
 				}
+			} else if (previousToken == LuaSymbols.TOKEN_RBRACKET) {
+				if (!eatBackwardBetweenSepartor(position, UNBOUND, LuaSymbols.TOKEN_LBRACKET, LuaSymbols.TOKEN_RBRACKET)) {
+					return null;
+				} else {
+					previousToken = tokenStuffBetweenSquareBracket;
+				}
 			}
 			position = getPosition();
 
@@ -908,6 +925,7 @@ public class LuaHeuristicScanner {
 				case LuaSymbols.TOKEN_COLON:
 				case LuaSymbols.TOKEN_DOT:
 				case tokenStuffBetweenParentheses:
+				case tokenStuffBetweenSquareBracket:
 					// manage case where there are 2 dots
 					if (previousToken == LuaSymbols.TOKEN_DOT && currenttoken == LuaSymbols.TOKEN_DOT) {
 						position = position + 1;
@@ -916,7 +934,8 @@ public class LuaHeuristicScanner {
 					}
 
 					// before dot and colon or left parent, we must found '(...)' or an identifier
-					if (currenttoken != LuaSymbols.TOKEN_RPAREN && currenttoken != LuaSymbols.TOKEN_IDENT)
+					if (currenttoken != LuaSymbols.TOKEN_RPAREN && currenttoken != LuaSymbols.TOKEN_IDENT
+							&& currenttoken != LuaSymbols.TOKEN_RBRACKET)
 						return null;
 
 					if (currenttoken == LuaSymbols.TOKEN_RPAREN) {
@@ -925,6 +944,13 @@ public class LuaHeuristicScanner {
 							return null;
 						} else {
 							previousToken = tokenStuffBetweenParentheses;
+						}
+					} else if (currenttoken == LuaSymbols.TOKEN_RBRACKET) {
+						// case : stuff between parentheses
+						if (!eatBackwardBetweenSepartor(position, UNBOUND, LuaSymbols.TOKEN_LBRACKET, LuaSymbols.TOKEN_RBRACKET)) {
+							return null;
+						} else {
+							previousToken = tokenStuffBetweenSquareBracket;
 						}
 					} else {
 						// case : identifier
@@ -973,8 +999,37 @@ public class LuaHeuristicScanner {
 				case LuaSymbols.TOKEN_EOF:
 					stop = true;
 					break;
+				case LuaSymbols.TOKEN_LBRACKET:
+					// create index
+					Index squareIndex = new Index();
+					squareIndex.setLeft(exp);
+
+					// if this is a string we try to find the right value of the index.
+					int contentbegin = getPosition();
+					nextToken = nextToken(getPosition(), start);
+					if (nextToken == LuaSymbols.TOKEN_STRING) {
+						String fieldname = fDocument.get(contentbegin, getPosition() - contentbegin).trim();
+						if (fieldname != null) {
+							if (fieldname.startsWith("\"") && fieldname.endsWith("\"")) {//$NON-NLS-1$//$NON-NLS-2$
+								fieldname = fieldname.replaceAll("^\"(.*)\"$", "$1"); //$NON-NLS-1$//$NON-NLS-2$
+							} else if (fieldname.startsWith("'") && fieldname.endsWith("'")) {//$NON-NLS-1$//$NON-NLS-2$
+								fieldname = fieldname.replaceAll("^'(.*)'$", "$1"); //$NON-NLS-1$//$NON-NLS-2$
+							} else {
+								fieldname = null;
+							}
+							squareIndex.setRight(fieldname);
+						}
+					}
+
+					// eat bracket
+					eatForwardBetweenSepartor(position, start, LuaSymbols.TOKEN_LBRACKET, LuaSymbols.TOKEN_RBRACKET);
+
+					// update loop variable
+					exp = squareIndex;
+					position = getPosition();
+					break;
 				case LuaSymbols.TOKEN_DOT:
-					// manage index
+					// manage dot index
 					position = getPosition();
 					nextToken = nextToken(getPosition(), start);
 

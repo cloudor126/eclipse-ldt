@@ -107,7 +107,7 @@ public final class InternalModelFactory {
 				int sourceRangeMin = l.checkInteger(1);
 				int sourceRangeMax = l.checkInteger(2);
 				LuaExpression left = l.checkJavaObject(3, LuaExpression.class);
-				String right = l.checkString(4);
+				String right = l.checkString(4, null);
 
 				Index index = new Index();
 				index.setStart(sourceRangeMin);

@@ -215,6 +215,37 @@ public final class LuaASTUtils {
 		return resolveType(sourceModule, expr, 1);
 	}
 
+	public static TypeResolution getDefaultIndexType(ISourceModule sourceModule, RecordTypeDef recordTypeDef) {
+		return getDefaultIndexType(new TypeResolution(sourceModule, recordTypeDef), new HashSet<TypeResolution>());
+	}
+
+	public static TypeResolution getDefaultIndexType(TypeResolution recordTypeResolution) {
+		return getDefaultIndexType(recordTypeResolution, new HashSet<TypeResolution>());
+	}
+
+	private static TypeResolution getDefaultIndexType(TypeResolution recordTypeResolution, Set<TypeResolution> cache) {
+		if (recordTypeResolution.getTypeDef() instanceof RecordTypeDef) {
+			// search the default index
+			RecordTypeDef recordTypeDef = (RecordTypeDef) recordTypeResolution.getTypeDef();
+			TypeRef defaultIndex = recordTypeDef.getDefaultvaluetyperef();
+			if (defaultIndex != null)
+				return resolveType(recordTypeResolution.getModule(), defaultIndex);
+
+			// if not found we search in hierarchy
+			// manage super-type fields
+			// cache is used to avoid cycle
+			cache.add(recordTypeResolution);
+			TypeRef supertype = recordTypeDef.getSupertype();
+			if (supertype != null) {
+				TypeResolution superTypeResolution = LuaASTUtils.resolveType(recordTypeResolution.getModule(), supertype);
+				if (!cache.contains(superTypeResolution)) {
+					return getDefaultIndexType(superTypeResolution, cache);
+				}
+			}
+		}
+		return null;
+	}
+
 	public static TypeResolution resolveType(ISourceModule sourceModule, LuaExpression expr, int returnposition) {
 		if (expr instanceof Identifier) {
 			Definition definition = getDefinition(sourceModule, expr);
@@ -224,10 +255,13 @@ public final class LuaASTUtils {
 			return resolveType(definition.getModule(), definition.getItem().getType());
 		} else if (expr instanceof Index) {
 			Definition definition = getDefinition(sourceModule, expr);
-			// resolve the type of the definition
-			if (definition == null || definition.getItem() == null || definition.getItem().getType() == null)
-				return null;
-			return resolveType(definition.getModule(), definition.getItem().getType());
+			if (definition != null && definition.getItem() != null && definition.getItem().getType() != null) {
+				// resolve the type of the definition
+				return resolveType(definition.getModule(), definition.getItem().getType());
+			}
+			// if not found we search the defaultindex
+			TypeResolution resolveType = resolveType(sourceModule, ((Index) expr).getLeft());
+			return getDefaultIndexType(resolveType);
 		} else if (expr instanceof Call) {
 			Call call = ((Call) expr);
 			// resolve the function which is called
@@ -414,21 +448,23 @@ public final class LuaASTUtils {
 	}
 
 	private static Definition getDefinition(TypeResolution recordTypeResolution, String fieldname, Set<TypeResolution> cache) {
-		// search field with the given field name
-		RecordTypeDef recordtypedef = (RecordTypeDef) recordTypeResolution.getTypeDef();
-		Item item = recordtypedef.getFields().get(fieldname);
-		if (item != null)
-			return new Definition(recordTypeResolution.getModule(), item);
+		if (recordTypeResolution.getTypeDef() instanceof RecordTypeDef) {
+			// search field with the given field name
+			RecordTypeDef recordtypedef = (RecordTypeDef) recordTypeResolution.getTypeDef();
+			Item item = recordtypedef.getFields().get(fieldname);
+			if (item != null)
+				return new Definition(recordTypeResolution.getModule(), item);
 
-		// if not found we search in hierarchy
-		// manage super-type fields
-		// cache is used to avoid cycle
-		cache.add(recordTypeResolution);
-		TypeRef supertype = recordtypedef.getSupertype();
-		if (supertype != null) {
-			TypeResolution superTypeResolution = LuaASTUtils.resolveType(recordTypeResolution.getModule(), supertype);
-			if (!cache.contains(superTypeResolution)) {
-				return getDefinition(superTypeResolution, fieldname, cache);
+			// if not found we search in hierarchy
+			// manage super-type fields
+			// cache is used to avoid cycle
+			cache.add(recordTypeResolution);
+			TypeRef supertype = recordtypedef.getSupertype();
+			if (supertype != null) {
+				TypeResolution superTypeResolution = LuaASTUtils.resolveType(recordTypeResolution.getModule(), supertype);
+				if (!cache.contains(superTypeResolution)) {
+					return getDefinition(superTypeResolution, fieldname, cache);
+				}
 			}
 		}
 		return null;

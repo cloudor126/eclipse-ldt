@@ -1,0 +1,1 @@
+local rabbit -- #map<#number,#list<#string>>

@@ -192,7 +192,21 @@ end
 M.prettynametypes = {
 	primitivetyperef = function(o) return string.format('#%s', o.typename) end,
 	externaltyperef = function(o) return string.format('%s#%s', o.modulename, o.typename) end,
-	inlinetyperef = function(o) return o.def and o.def and o.def.tag == "recordtypedef" and o.def.name and string.format('#%s',o.def.name) or nil end,
+	inlinetyperef = function(o)
+	  if not(o.def and o.def.tag == "recordtypedef" and o.def.name) then
+	    return nil
+	  end
+	  if o.def.name == "list" then
+	    local valuetypename = M.prettyname(o.def.defaultvaluetyperef)
+	  	return valuetypename and string.format('#list&lt;%s&gt;', valuetypename) or nil
+	  elseif o.def.name == "map" then
+	    local keytypename = M.prettyname(o.def.defaultkeytyperef)
+	    local valuetypename = M.prettyname(o.def.defaultvaluetyperef)
+      return keytypename and valuetypename and string.format('#map&lt;%s,%s&gt;', keytypename, valuetypename) or nil
+    else 
+      return string.format('#%s',o.def.name)
+	  end
+	end,
 	index = function(o) return "index" end,
 	file = function(o) return o.name end,
 	recordtypedef = function(o) return o.name end,

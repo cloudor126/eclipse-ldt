@@ -1,0 +1,80 @@
+do local _={
+	description="",
+	globalvars={
+
+	}
+	--[[table: 0x13058d0]],
+	types={
+		typename={
+			description="Type long description.",
+			structurekind="map",
+			parent=nil --[[ref]],
+			defaultvaluetyperef={
+				typename="string",
+				tag="primitivetyperef"
+			}
+			--[[table: 0x1525790]],
+			defaultkeytyperef={
+				typename="string",
+				tag="primitivetyperef"
+			}
+			--[[table: 0x15256e0]],
+			shortdescription="Type short description.",
+			name="typename",
+			structuredescription="Map description.",
+			sourcerange={
+				min=25,
+				max=142
+			}
+			--[[table: 0x15255d0]],
+			fields={
+
+			}
+			--[[table: 0x1525580]],
+			tag="recordtypedef"
+		}
+		--[[table: 0x1399f70]],
+		modulename={
+			description="",
+			parent=nil --[[ref]],
+			shortdescription="",
+			name="modulename",
+			sourcerange={
+				min=1,
+				max=23
+			}
+			--[[table: 0x11b9980]],
+			fields={
+
+			}
+			--[[table: 0x11b9930]],
+			tag="recordtypedef"
+		}
+	--[[table: 0x11b9650]]
+	}
+	--[[table: 0x1305880]],
+	shortdescription="",
+	name="modulename",
+	returns={
+		[1]={
+			types={
+				[1]={
+					typename="modulename",
+					tag="internaltyperef"
+				}
+			--[[table: 0x1047db0]]
+			}
+			--[[table: 0x1047f00]],
+			description="",
+			tag="return"
+		}
+	--[[table: 0x1047e00]]
+	}
+	--[[table: 0x1305920]],
+	tag="file"
+}
+--[[table: 0x13055a0]];
+_.types.typename.parent=_;
+_.types.modulename.parent=_;
+return _;
+end

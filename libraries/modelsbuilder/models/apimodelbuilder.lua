@@ -26,7 +26,11 @@ local primitivetypes = {
 	['number']   = true,
 	['string']   = true,
 	['thread']   = true,
-	['userdata'] = true
+	['userdata'] = true,
+	['list']     = true,
+	['map']      = true,
+	['any']      = true
+	
 }
 
 -- get or create the typedef with the name "name"
@@ -59,7 +63,7 @@ end
 
 -- create a typeref from the typref doc_tag
 local function createtyperef(dt_typeref,_file,sourcerangemin,sourcerangemax)
-	local _typeref
+  local _typeref
 	if dt_typeref.tag == "typeref" then
 		if dt_typeref.module then
 			-- manage external type
@@ -70,6 +74,16 @@ local function createtyperef(dt_typeref,_file,sourcerangemin,sourcerangemax)
 			if dt_typeref.type == "table" then
 				-- manage special table type
 				_typeref = apimodel._inlinetyperef(apimodel._recordtypedef("table"))
+			elseif dt_typeref.type == "list" or dt_typeref.type == "map" then
+			  -- manage structures
+			  local structuretypedef = apimodel._recordtypedef(dt_typeref)
+        structuretypedef.defaultvaluetyperef = createtyperef(dt_typeref.valuetype)
+  			if dt_typeref.type == "map" then
+          structuretypedef.defaultkeytyperef = createtyperef(dt_typeref.keytype)
+        end
+        structuretypedef.structurekind = dt_typeref.type
+        structuretypedef.name = dt_typeref.type
+        _typeref = apimodel._inlinetyperef(structuretypedef)
 			elseif primitivetypes[dt_typeref.type] then
 			  -- manage primitive types
 				_typeref = apimodel._primitivetyperef()
@@ -272,18 +286,30 @@ function M.createmoduleapi(ast,modulename)
 					table.insert(_file.returns,_return)
 
 					--create recordtypedef is not define
-					local moduletypedef = gettypedef(_file,_typeref.typename,"recordtypedef",sourcerangemin,sourcerangemax)
+					local _moduletypedef = gettypedef(_file,_typeref.typename,"recordtypedef",sourcerangemin,sourcerangemax)
 
-					-- manage extends (inheritance)
-					if moduletypedef
-						and moduletypedef.tag == "recordtypedef"
-						and regulartags["extends"]
-						and regulartags["extends"][1]
-						and  regulartags["extends"][1].type then
-
-						local _supertype = regulartags["extends"][1].type
-						
-						if _supertype then moduletypedef.supertype = createtyperef(_supertype) end
+					-- manage extends (inheritance) and structure tags
+					if _moduletypedef and _moduletypedef.tag == "recordtypedef" then
+						if regulartags["extends"]	and regulartags["extends"][1] then
+  						local supertype = regulartags["extends"][1].type
+	     				if supertype then _moduletypedef.supertype = createtyperef(supertype) end
+	     			elseif regulartags["map"] and regulartags["map"][1] then
+	     			  local keytype = regulartags["map"][1].keytype
+	     			  local valuetype = regulartags["map"][1].valuetype
+              if keytype and valuetype then
+                _moduletypedef.defaultkeytyperef = createtyperef(keytype)
+                _moduletypedef.defaultvaluetyperef = createtyperef(valuetype)
+                _moduletypedef.structurekind = "map"
+                _moduletypedef.structuredescription = regulartags["map"][1].description
+              end
+					  elseif regulartags["list"] and regulartags["list"][1] then
+              local type = regulartags["list"][1].type
+              if type then 
+                _moduletypedef.defaultvaluetyperef = createtyperef(type)
+                _moduletypedef.structurekind = "list"
+                _moduletypedef.structuredescription = regulartags["list"][1].description
+              end
+            end
 					end
 				end
 				-- manage "type" comment
@@ -315,10 +341,29 @@ function M.createmoduleapi(ast,modulename)
 				end
 
 				-- manage extends (inheritance)
-				if regulartags["extends"] and regulartags["extends"][1] and  regulartags["extends"][1].type then
-					local _supertype = regulartags["extends"][1].type
-					if _supertype then _recordtypedef.supertype = createtyperef(_supertype) end
+				if regulartags["extends"] and regulartags["extends"][1] then
+					local supertype = regulartags["extends"][1].type
+					if supertype then _recordtypedef.supertype = createtyperef(supertype) end
 				end
+				
+				-- manage structure tag
+				if regulartags["map"] and regulartags["map"][1] then
+          local keytype = regulartags["map"][1].keytype
+          local valuetype = regulartags["map"][1].valuetype
+          if keytype and valuetype then
+            _recordtypedef.defaultkeytyperef = createtyperef(keytype)
+            _recordtypedef.defaultvaluetyperef = createtyperef(valuetype)
+            _recordtypedef.structurekind = "map"
+            _recordtypedef.structuredescription = regulartags["map"][1].description
+          end
+        elseif regulartags["list"] and regulartags["list"][1] then
+          local type = regulartags["list"][1].type
+          if type then 
+            _recordtypedef.defaultvaluetyperef = createtyperef(type)
+            _recordtypedef.structurekind = "list"
+            _recordtypedef.structuredescription = regulartags["list"][1].description
+          end
+        end
 			elseif regulartags["field"] then
 				local dt_field = regulartags["field"][1]
 

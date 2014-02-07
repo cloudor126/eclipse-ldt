@@ -108,13 +108,17 @@ end
 function M._recordtypedef(name)
 	local recordtype = {
 		-- FIELDS
-		tag              = "recordtypedef",
-		name             = name,            -- string (mandatory)
-		shortdescription = "",             -- string
-		description      = "",             -- string
-		fields           = {},              -- map from fieldname to field
-		sourcerange      = {min=0,max=0},
-    supertype        = nil,            -- supertype of the type def (inheritance), should be a recordtypedef ref
+		tag                = "recordtypedef",
+		name               = name,      -- string (mandatory)
+		shortdescription   = "",        -- string
+		description        = "",        -- string
+		fields             = {},        -- map from fieldname to field
+		sourcerange        = {min=0,max=0},
+    supertype          = nil,       -- supertype of the type def (inheritance), should be a recordtypedef ref
+    defaultkeytyperef  = nil,       -- the default typeref of key
+    defaultvaluetyperef= nil,       -- the default typeref of value
+    structurekind        = nil,     -- kind of structure of the type: could be nil, "map" or "list"
+    structuredescription = nil,     -- description of the structure
 		-- FUNCTIONS
 		addfield = function (self,field)
 			self.fields[field.name] = field

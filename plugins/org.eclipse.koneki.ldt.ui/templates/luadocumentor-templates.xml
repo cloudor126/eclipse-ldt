@@ -54,5 +54,19 @@
 	name="@extends"
 	description="%extends.description"
 	autoinsert="true">@extends ${module}#${type} </template>
+	
+<template
+	context="LuaDocumentorTemplateContextType"
+	id="org.eclipse.koneki.ldt.ui.templates.luadocumentor.list"
+	name="@list"
+	description="%list.description"
+	autoinsert="true">@list &lt;#${type}&gt; ${description}</template>
+	
+<template
+	context="LuaDocumentorTemplateContextType"
+	id="org.eclipse.koneki.ldt.ui.templates.luadocumentor.map"
+	name="@map"
+	description="%map.description"
+	autoinsert="true">@map &lt;#${keytype},#${valuetype}&gt; ${description}</template>
 
 </templates>

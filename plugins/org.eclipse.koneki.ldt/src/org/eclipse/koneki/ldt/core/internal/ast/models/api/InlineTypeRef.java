@@ -32,12 +32,19 @@ public class InlineTypeRef extends TypeRef {
 	 */
 	@Override
 	public String toReadableString() {
-		if (definition instanceof RecordTypeDef)
-			return "#table"; //$NON-NLS-1$
-		else if (definition instanceof FunctionTypeDef)
+		if (definition instanceof RecordTypeDef) {
+			RecordTypeDef recordTypeDef = (RecordTypeDef) definition;
+			if (recordTypeDef.getName().equals("list")) //$NON-NLS-1$
+				return String.format("#list<%s>", recordTypeDef.getDefaultvaluetyperef().toReadableString()); //$NON-NLS-1$
+			else if (recordTypeDef.getName().equals("map")) //$NON-NLS-1$
+				return String
+						.format("#map<%s,%s>", recordTypeDef.getDefaultkeytyperef().toReadableString(), recordTypeDef.getDefaultvaluetyperef().toReadableString()); //$NON-NLS-1$
+			else
+				return "#table"; //$NON-NLS-1$
+		} else if (definition instanceof FunctionTypeDef) {
 			return "#function"; //$NON-NLS-1$
-		else
+		} else {
 			return null;
+		}
 	}
-
 }

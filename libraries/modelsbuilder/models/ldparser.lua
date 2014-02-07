@@ -85,23 +85,32 @@ local modulenameparser = gg.list({
 -- parse a typename  (id.)?id
 -- return a table {name, lineinfo)
 -- ----------------------------------------------------
-local typenameparser= modulenameparser
+local typenameparser = modulenameparser
 
 -- ----------------------------------------------------
 -- parse an internaltype ref
--- return a table {name, lineinfo)
 -- ----------------------------------------------------
 local internaltyperefparser = gg.sequence({
-	builder =	function(result)
-		raiserror(result)
-		return {tag = "typeref",type=result[1].name}
-	end,
-	"#", typenameparser
+  builder = function(result)
+    raiserror(result)
+    return {tag = "typeref",type=result[1].name}
+  end,
+  "#", typenameparser
 })
 
 -- ----------------------------------------------------
--- parse en external type ref
--- return a table {name, lineinfo)
+-- parse an internal typeref, without the first #
+-- ----------------------------------------------------
+local sharplessinternaltyperefparser = gg.sequence({
+  builder = function(result)
+    raiserror(result)
+    return {tag = "typeref",type=result[1].name}
+  end,
+  typenameparser
+})
+
+-- ----------------------------------------------------
+-- parse an external type ref
 -- ----------------------------------------------------
 local externaltyperefparser = gg.sequence({
 	builder =	function(result)
@@ -111,14 +120,59 @@ local externaltyperefparser = gg.sequence({
 	modulenameparser,"#", typenameparser
 })
 
+-- ----------------------------------------------------
+-- enable recursive use of typeref parser
+-- ----------------------------------------------------
+local typerefparser,_typerefparser
+typerefparser = function (...) return _typerefparser(...) end
+
+-- ----------------------------------------------------
+-- parse a structure type, without the first #
+-- ----------------------------------------------------
+local sharplesslisttyperefparser = gg.sequence({
+	builder =	function(result)
+		raiserror(result)
+		return {tag = "typeref", type="list", valuetype=result[1]}
+	end,
+	"list","<", typerefparser, ">"
+})
+
+-- ----------------------------------------------------
+-- parse a map type, without the first #
+-- ----------------------------------------------------
+local sharplessmaptyperefparser = gg.sequence({
+	builder =	function(result)
+		raiserror(result)
+		return {tag = "typeref", type="map", keytype=result[1], valuetype=result[2]}
+	end,
+	"map","<", typerefparser, ",", typerefparser, ">"
+})
+
+-- ----------------------------------------------------
+-- parse typeref stating with a #
+-- The need to use the following parser is because the multisequence parser
+-- works only if the given parsers doesn't start with the same keyword (here '#').
+-- ----------------------------------------------------
+local sharptyperefparser = gg.sequence({
+  builder = function(result)
+    raiserror(result)
+    return result[1]
+  end,
+  "#",
+  gg.multisequence({
+    sharplesslisttyperefparser,
+    sharplessmaptyperefparser,
+    sharplessinternaltyperefparser
+  })
+})
 
 -- ----------------------------------------------------
 -- parse a typeref
--- return a table {name, lineinfo)
 -- ----------------------------------------------------
-local typerefparser =	gg.multisequence{
-	internaltyperefparser,
-	externaltyperefparser}
+_typerefparser =	gg.multisequence({
+  sharptyperefparser,
+	externaltyperefparser
+})
 
 -- ----------------------------------------------------
 -- parse a list of typeref
@@ -140,6 +194,34 @@ local modifiersparser = gg.sequence({
 	end,
 	"[", idparser ,  "=" , internaltyperefparser , "]"
 })
+
+-- ----------------------------------------------------
+-- parse a list tag
+-- ----------------------------------------------------
+local listparsers = {
+  -- full parser
+  gg.sequence({
+    builder = function (result)
+      raiserror(result)
+      return {type = result[1]}
+    end,
+    '@','list','<',typerefparser,'>'
+  }),
+}
+
+-- ----------------------------------------------------
+-- parse a map tag
+-- ----------------------------------------------------
+local mapparsers = {
+  -- full parser
+  gg.sequence({
+    builder = function (result)
+      raiserror(result)
+      return {keytype = result[1],valuetype = result[2]}
+    end,
+    '@','map','<',typerefparser,',',typerefparser,'>'
+  }),
+}
 
 -- ----------------------------------------------------
 -- parse a extends tag
@@ -413,7 +495,9 @@ local function initparser()
 		["field"]    = fieldparsers,
 		["function"] = functionparsers,
 		["param"]    = paramparsers,
-		["extends"]    = extendsparsers
+		["extends"]  = extendsparsers,
+		["list"]     = listparsers,
+		["map"]      = mapparsers
 	}
 
 	-- create lexer used for parsing
