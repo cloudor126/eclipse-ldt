@@ -1,2 +1,2 @@
-    -- ident the first line
+    -- indent the first line
 return nil
