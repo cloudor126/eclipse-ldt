@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 Sierra Wireless and others.
+ * Copyright (c) 2011, 2014 Sierra Wireless and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
+import org.eclipse.koneki.ldt.core.internal.formatter.LuaFormatterException;
 import org.eclipse.koneki.ldt.core.internal.formatter.LuaFormatterModule;
 import org.eclipse.koneki.ldt.ui.internal.Activator;
 import org.eclipse.swt.widgets.Display;
@@ -35,7 +36,7 @@ public class LuaFormatter extends AbstractScriptFormatter {
 	private final String tabulation;
 	private final boolean formatTableValues;
 
-	private final static LuaFormatterModule formatLuaModule = new LuaFormatterModule();
+	private static final LuaFormatterModule LUA_FORMAT_MODULE = new LuaFormatterModule();
 
 	protected LuaFormatter(final String lineDelimiter, final Map<String, String> preferences) {
 		super(preferences);
@@ -78,13 +79,20 @@ public class LuaFormatter extends AbstractScriptFormatter {
 		 * Format given source code
 		 */
 		final String formatted;
-		// With mixed white spaces
-		if (tabPolicy == TabStyle.MIXED) {
-			formatted = formatLuaModule.indent(source, delimiter, formatTableValues, tabSize, indentationSize);
-		} else {
-			// With one type of tabulation
-			formatted = formatLuaModule.indent(source, delimiter, formatTableValues, tabulation);
+		try {
+			// With mixed white spaces
+			if (tabPolicy == TabStyle.MIXED) {
+				formatted = LUA_FORMAT_MODULE.indent(source, delimiter, formatTableValues, tabSize, indentationSize);
+			} else {
+				// With one type of tabulation
+				formatted = LUA_FORMAT_MODULE.indent(source, delimiter, formatTableValues, tabulation);
+			}
+		} catch (final LuaFormatterException e) {
+			// TODO Show this to user
+			throw new FormatterException(e);
+
 		}
+
 		if (length < source.length()) {
 			final Document doc = new Document(source);
 			try {
@@ -115,7 +123,7 @@ public class LuaFormatter extends AbstractScriptFormatter {
 				}
 				final int selectionStartOffset = doc.getLineOffset(startLine);
 				return new ReplaceEdit(selectionStartOffset, lengthToReplace, code.toString());
-			} catch (BadLocationException e) {
+			} catch (final BadLocationException e) {
 				MessageDialog.openError(Display.getDefault().getActiveShell(), Messages.LuaFormatterErrorWhileFormattingTitle,
 						Messages.LuaFormatterUnableToFormatSelection);
 				Activator.logError(Messages.LuaFormatterUnableToFormatSelection, e);

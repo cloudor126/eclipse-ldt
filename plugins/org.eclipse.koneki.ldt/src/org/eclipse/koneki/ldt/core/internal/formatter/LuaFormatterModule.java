@@ -50,7 +50,8 @@ public final class LuaFormatterModule extends AbstractMetaLuaModule {
 	 *            String used as tabulation, it could be one or several white space character like <code>' '</code> of <code>'\t'</code>
 	 * @return Indented Lua source code
 	 */
-	public String indent(final String source, final String delimiter, final boolean indentInTable, final String tabulation) {
+	public String indent(final String source, final String delimiter, final boolean indentInTable, final String tabulation)
+			throws LuaFormatterException {
 		// Load function
 		if (lua == null)
 			lua = loadLuaModule();
@@ -62,14 +63,16 @@ public final class LuaFormatterModule extends AbstractMetaLuaModule {
 		lua.pushBoolean(indentInTable);
 		lua.pushString(tabulation);
 		try {
-			lua.call(4, 1);
+			lua.call(4, 2);
 		} catch (final LuaRuntimeException e) {
 			Activator.logWarning(Messages.LuaSourceFormatIndentationError, e);
 			return source;
 		}
-		final String formattedCode = lua.toString(-1);
-		// lua.close();
-		return formattedCode;
+
+		// Error check
+		if (lua.isNil(-2))
+			throw new LuaFormatterException(lua.toString(-1));
+		return lua.toString(-2);
 	}
 
 	/**
@@ -88,7 +91,8 @@ public final class LuaFormatterModule extends AbstractMetaLuaModule {
 	 * @return indented Lua source code
 	 * @see #indent(String, String, String, int)
 	 */
-	public String indent(final String source, final String delimiter, final boolean indentInTable, final int tabSize, final int indentationSize) {
+	public String indent(final String source, final String delimiter, final boolean indentInTable, final int tabSize, final int indentationSize)
+			throws LuaFormatterException {
 		if (lua == null)
 			lua = loadLuaModule();
 		pushLuaModule(lua);
@@ -99,14 +103,15 @@ public final class LuaFormatterModule extends AbstractMetaLuaModule {
 		lua.pushInteger(tabSize);
 		lua.pushInteger(indentationSize);
 		try {
-			lua.call(5, 1);
+			lua.call(5, 2);
 		} catch (final LuaRuntimeException e) {
 			Activator.logWarning(Messages.LuaSourceFormatIndentationError, e);
 			return source;
 		}
-		final String formattedCode = lua.toString(-1);
-		// lua.close();
-		return formattedCode;
+		// Error check
+		if (lua.isNil(-2))
+			throw new LuaFormatterException(lua.toString(-1));
+		return lua.toString(-2);
 	}
 
 	/**
