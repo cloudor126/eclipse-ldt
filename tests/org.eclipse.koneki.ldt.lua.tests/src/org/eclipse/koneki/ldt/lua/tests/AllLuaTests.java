@@ -19,6 +19,7 @@ import org.eclipse.koneki.ldt.lua.tests.internal.ast.models.api.APIModelToHTMLTe
 import org.eclipse.koneki.ldt.lua.tests.internal.ast.models.both.BothModelTestSuite;
 import org.eclipse.koneki.ldt.lua.tests.internal.ast.models.internal.InternalModelTestSuite;
 import org.eclipse.koneki.ldt.lua.tests.internal.formatter.FourSpacesFormatterTestSuite;
+import org.eclipse.koneki.ldt.lua.tests.internal.formatter.LineEndingTestSuite;
 import org.eclipse.koneki.ldt.lua.tests.internal.formatter.MixedFormatterTestSuite;
 import org.eclipse.koneki.ldt.lua.tests.internal.formatter.TabFormatterTestSuite;
 import org.eclipse.koneki.ldt.lua.tests.internal.template.engine.JDMTemplateEngineTestSuite;
@@ -34,6 +35,7 @@ public class AllLuaTests extends TestCase {
 		suite.addTest(new TabFormatterTestSuite(ignore));
 		suite.addTest(new FourSpacesFormatterTestSuite(ignore));
 		suite.addTest(new MixedFormatterTestSuite(ignore));
+		suite.addTest(new LineEndingTestSuite(ignore));
 		suite.addTest(new InternalModelTestSuite(ignore));
 		suite.addTest(new TemplateEngineTestSuite(ignore));
 		suite.addTest(new JDMTemplateEngineTestSuite(ignore));
