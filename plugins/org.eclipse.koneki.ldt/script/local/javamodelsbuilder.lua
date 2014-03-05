@@ -30,9 +30,6 @@ function M.build(source, modulename)
   -- create root object
   local root = javamodelfactory.newsourceroot(#source)
 
-  -- TODO clean perf profiling
-  -- local s = os.clock()
-
   -- manage shebang
   if source then source = source:gsub("^(#.-\n)", function (s) return string.rep(' ',string.len(s)) end) end
 
@@ -47,39 +44,46 @@ function M.build(source, modulename)
     -- -------------------------------------------------
     -- EXPERIMENTAL CODE : we try to remove faulty code
     -- -------------------------------------------------
-    if source then
+    local nbline = select(2, source:gsub('\n', '\n'))+1
+    if source and nbline > 1 then
       -- define function that replace all character of a given line in space characters
-      local function cleanline (source, linetoclean)
-      	local cleanedsource
-      	local iscleaned = false
-        if linetoclean == 1 then
+      local function cleanline (source, linetoclean,nbline)
+        local cleanedsource
+        local iscleaned = false
+        if linetoclean == nbline then
+           -- manage last line
+           cleanedsource = source:gsub('([^\n]-)$',function (lastline)
+            iscleaned = true
+            return string.rep(' ',string.len(lastline)) 
+          end)
+        elseif linetoclean == 1 then
           -- manage first line
           cleanedsource = source:gsub('^(.-)\n',function (firstline)
-         	  iscleaned = true
-            return string.rep(' ',string.len(firstline)) .. "\n"
+            iscleaned = true
+            return string.rep(' ',string.len(firstline)).."\n"
           end)
         elseif linetoclean > 1 then
           -- manage other case
-            cleanedsource = source:gsub('^('..string.rep(".-\n",linetoclean-1)..')(.-)\n',function (start,faultyline)
+          cleanedsource = source:gsub('^('..string.rep(".-\n",linetoclean-1)..')(.-)\n',function (start,faultyline)
             iscleaned = true
             return start..string.rep(' ',string.len(faultyline)) .. "\n"
           end)
         end
         return cleanedsource, iscleaned
       end
-	
-			local cleanedsource
-     	local iscleaned = false
+  
+      local cleanedsource
+      local iscleaned = false
       if lineindex == 1 then
         -- FIRST LINE CASE : error is on line 1, just clean this line and check for errors
-        cleanedsource, iscleaned = cleanline(source,1)
+        cleanedsource, iscleaned = cleanline(source,1,nbline)
         f, _ = loadstring(cleanedsource,'source_to_check')
       else
         -- OTHER CASES: first, cleaning ...
         -- if something is not closed we try to remove the line where it is opened.
         local linestart = string.match(err,"%(to close .* at line (%d+)%)")
         if linestart then
-          cleanedsource, iscleaned = cleanline(source,tonumber(linestart))
+          cleanedsource, iscleaned = cleanline(source,tonumber(linestart),nbline)
         elseif lineindex > 1 then
           -- in other case, we try to remove the "real" code line before the error
           -- so, we start by finding the "real" line:
@@ -94,34 +98,30 @@ function M.build(source, modulename)
             end
           end
           if realcodelineindex then
-            cleanedsource, iscleaned = cleanline(source,realcodelineindex)
+            cleanedsource, iscleaned = cleanline(source,realcodelineindex,nbline)
           end
         end
-      
-	      -- after cleaning, recheck hoping there are no errors.
-	      if iscleaned then
-	        f, _ = loadstring(cleanedsource,'source_to_check')
-	        -- if it fail, we try to remove the line in error
-	        if not f then
-	          cleanedsource = cleanline(source,lineindex)
-	          f, _ = loadstring(cleanedsource,'source_to_check')
-	        end
-	      end
+  
+        -- after cleaning, recheck hoping there are no errors.
+        if iscleaned then
+          f, _ = loadstring(cleanedsource,'source_to_check')
+          -- if it fail, we try to remove the line in error
+          if not f then
+            cleanedsource = cleanline(source,lineindex,nbline)
+            f, _ = loadstring(cleanedsource,'source_to_check')
+          end
+        end
       end
-      
+  
       -- take cleaned source as source
       if f then
-      	source = cleanedsource
+        source = cleanedsource
       end
-	      
-      -- TODO clean perf profiling
-      -- local e = os.clock()
-      -- print ('error time', (e*1000-s*1000))     
     end
     -- ------------------------------------------------
     -- END OF EXPERIMENTAL CODE
     -- -------------------------------------------------
-  end
+    end
 
   if not f then return root end
 
