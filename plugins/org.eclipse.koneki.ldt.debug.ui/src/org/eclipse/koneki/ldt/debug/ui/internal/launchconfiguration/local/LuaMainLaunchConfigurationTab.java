@@ -10,9 +10,6 @@
  *******************************************************************************/
 package org.eclipse.koneki.ldt.debug.ui.internal.launchconfiguration.local;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -22,10 +19,8 @@ import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.environment.EnvironmentManager;
 import org.eclipse.dltk.debug.ui.launchConfigurations.MainLaunchConfigurationTab;
 import org.eclipse.dltk.launching.IInterpreterInstall;
-import org.eclipse.dltk.launching.IInterpreterInstallType;
 import org.eclipse.dltk.launching.ScriptLaunchConfigurationConstants;
 import org.eclipse.dltk.launching.ScriptRuntime;
-import org.eclipse.dltk.launching.ScriptRuntime.DefaultInterpreterEntry;
 import org.eclipse.dltk.ui.DLTKUILanguageManager;
 import org.eclipse.dltk.ui.IDLTKUILanguageToolkit;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -38,7 +33,9 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.koneki.ldt.core.LuaNature;
-import org.eclipse.koneki.ldt.debug.core.internal.interpreter.generic.LuaGenericInterpreterUtil;
+import org.eclipse.koneki.ldt.core.LuaUtils;
+import org.eclipse.koneki.ldt.core.internal.buildpath.LuaExecutionEnvironmentBuildpathUtil;
+import org.eclipse.koneki.ldt.debug.core.interpreter.LuaInterpreterUtil;
 import org.eclipse.koneki.ldt.debug.ui.internal.Activator;
 import org.eclipse.koneki.ldt.debug.ui.internal.launchconfiguration.local.tab.Messages;
 import org.eclipse.koneki.ldt.ui.SWTUtil;
@@ -196,7 +193,7 @@ public class LuaMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 	private void refreshInterpretersInformation() {
 		// refresh default interpreter
 		String interpreterName = null;
-		IInterpreterInstall defaultInterpreter = getDefaultInterpreter();
+		IInterpreterInstall defaultInterpreter = LuaInterpreterUtil.getDefaultInterpreter();
 		if (defaultInterpreter != null) {
 			interpreterName = defaultInterpreter.getName();
 		}
@@ -207,7 +204,7 @@ public class LuaMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 			defaultInterpreterLabel.setText(Messages.LuaInterpreterTabUndefinedInterpreterName);
 
 		// refresh interpreter list
-		interpretersViewer.setInput(getInstalledInterpreters());
+		interpretersViewer.setInput(LuaInterpreterUtil.getInterpreters());
 	}
 
 	private void refreshUISelection() {
@@ -218,7 +215,7 @@ public class LuaMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 	private void refreshScriptField() {
 		// refresh script selection UI
 		IInterpreterInstall selectedInterpreter = getSelectedInterpreter();
-		boolean interpreterHandlesFilesAsArgument = LuaGenericInterpreterUtil.interpreterHandlesFilesAsArgument(selectedInterpreter);
+		boolean interpreterHandlesFilesAsArgument = LuaInterpreterUtil.interpreterHandlesFilesAsArgument(selectedInterpreter);
 		setEnableScriptField(interpreterHandlesFilesAsArgument);
 	}
 
@@ -265,7 +262,7 @@ public class LuaMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 		if (alternateInterpreterButton.getSelection()) {
 			selectedInterpreter = getSelectedAlternateInterpreter();
 		} else {
-			selectedInterpreter = getDefaultInterpreter();
+			selectedInterpreter = LuaInterpreterUtil.getDefaultInterpreter();
 		}
 		return selectedInterpreter;
 	}
@@ -281,40 +278,13 @@ public class LuaMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 		return null;
 	}
 
-	private IInterpreterInstall getDefaultInterpreter() {
-		// get environment
-		final String id = EnvironmentManager.getLocalEnvironment().getId();
-
-		// refresh default interpreter
-		return ScriptRuntime.getDefaultInterpreterInstall(new DefaultInterpreterEntry(getNatureID(), id));
-	}
-
-	private List<IInterpreterInstall> getInstalledInterpreters() {
-		final String id = EnvironmentManager.getLocalEnvironment().getId();
-
-		final IInterpreterInstallType[] types = ScriptRuntime.getInterpreterInstallTypes(getNatureID());
-		final ArrayList<IInterpreterInstall> interpreters = new ArrayList<IInterpreterInstall>();
-
-		for (int i = 0; i < types.length; i++) {
-			IInterpreterInstallType type = types[i];
-			IInterpreterInstall[] installs = type.getInterpreterInstalls();
-			for (int j = 0; j < installs.length; j++) {
-				final IInterpreterInstall install = installs[j];
-				if (id.equals(install.getEnvironmentId())) {
-					interpreters.add(install);
-				}
-			}
-		}
-		return interpreters;
-	}
-
 	/**
 	 * @see org.eclipse.dltk.debug.ui.launchConfigurations.MainLaunchConfigurationTab#validateScript()
 	 */
 	@Override
 	protected boolean validateScript() {
 		IInterpreterInstall selectedInterpreter = getSelectedInterpreter();
-		boolean interpreterHandlesFilesAsArgument = LuaGenericInterpreterUtil.interpreterHandlesFilesAsArgument(selectedInterpreter);
+		boolean interpreterHandlesFilesAsArgument = LuaInterpreterUtil.interpreterHandlesFilesAsArgument(selectedInterpreter);
 		if (interpreterHandlesFilesAsArgument)
 			return super.validateScript();
 		else
@@ -326,11 +296,12 @@ public class LuaMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 	 */
 	@Override
 	public boolean isValid(final ILaunchConfiguration launchConfig) {
+		setWarningMessage(null);
 		final boolean valid = super.isValid(launchConfig);
 
 		if (valid) {
 			if (defaultInterpreterButton.getSelection()) {
-				final IInterpreterInstall defaultInterpreter = getDefaultInterpreter();
+				final IInterpreterInstall defaultInterpreter = LuaInterpreterUtil.getDefaultInterpreter();
 				if (defaultInterpreter == null) {
 					setErrorMessage(Messages.LuaInterpreterTabComboBlockNoDefaultInterpreter);
 					return false;
@@ -344,6 +315,17 @@ public class LuaMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 						setErrorMessage(Messages.LuaInterpreterTabComboBlockNoInterpreter);
 						return false;
 					}
+				}
+			}
+
+			// check Execution Environment/ Interpreter compatibility
+			IInterpreterInstall selectedInterpreter = getSelectedInterpreter();
+			if (selectedInterpreter != null) {
+				IPath eePath = LuaUtils.getLuaExecutionEnvironmentPath(getProject());
+				String eeid = LuaExecutionEnvironmentBuildpathUtil.getEEID(eePath);
+				String eeVersion = LuaExecutionEnvironmentBuildpathUtil.getEEVersion(eePath);
+				if (!LuaInterpreterUtil.isExecutionEnvironmentCompatible(selectedInterpreter, eeid, eeVersion)) {
+					setWarningMessage(Messages.LuaInterpreterTabComboBlockIncompatibleInterpreter);
 				}
 			}
 		}

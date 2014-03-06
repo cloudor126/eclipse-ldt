@@ -11,9 +11,9 @@
 package org.eclipse.koneki.ldt.support.lua52.internal.interpreter;
 
 import org.eclipse.dltk.launching.IInterpreterInstall;
-import org.eclipse.koneki.ldt.debug.core.internal.interpreter.jnlua.JNLuaInterpreterInstallType;
+import org.eclipse.koneki.ldt.debug.core.internal.interpreter.jnlua.AbstractJNLuaInterpreterInstallType;
 
-public class JNLua52InterpreterInstallType extends JNLuaInterpreterInstallType {
+public class JNLua52InterpreterInstallType extends AbstractJNLuaInterpreterInstallType {
 
 	@Override
 	public String getName() {
@@ -25,4 +25,13 @@ public class JNLua52InterpreterInstallType extends JNLuaInterpreterInstallType {
 		return new JNLua52InterpreterInstall(this, id);
 	}
 
+	@Override
+	public String getDefaultEEName() {
+		return "lua"; //$NON-NLS-1$
+	}
+
+	@Override
+	public String getDefaultEEVersion() {
+		return "5.2"; //$NON-NLS-1$
+	}
 }

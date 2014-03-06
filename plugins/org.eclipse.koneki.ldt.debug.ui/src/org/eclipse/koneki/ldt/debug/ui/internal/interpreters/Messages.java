@@ -20,6 +20,7 @@ public class Messages extends NLS {
 	public static String AddLuaInterpreterDialog_WhatAreCapabilitiesLabel;
 	public static String AddLuaInterpreterDialog_FilesAsArguments;
 	public static String AddLuaInterpreterDialog_InterpreterNotConfigurable;
+	public static String AddLuaInterpreterDialog_linkExecutionEnvironment;
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);

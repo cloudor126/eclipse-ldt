@@ -24,6 +24,8 @@ import org.eclipse.emf.ecore.EObject;
  * <ul>
  *   <li>{@link org.eclipse.koneki.ldt.debug.core.internal.model.interpreter.Info#isExecuteOptionCapable <em>Execute Option Capable</em>}</li>
  *   <li>{@link org.eclipse.koneki.ldt.debug.core.internal.model.interpreter.Info#isFileAsArgumentsCapable <em>File As Arguments Capable</em>}</li>
+ *   <li>{@link org.eclipse.koneki.ldt.debug.core.internal.model.interpreter.Info#getLinkedExecutionEnvironmentName <em>Linked Execution Environment Name</em>}</li>
+ *   <li>{@link org.eclipse.koneki.ldt.debug.core.internal.model.interpreter.Info#getLinkedExecutionEnvironmentVersion <em>Linked Execution Environment Version</em>}</li>
  * </ul>
  * </p>
  *
@@ -85,5 +87,57 @@ public interface Info extends EObject {
 	 * @generated
 	 */
 	void setFileAsArgumentsCapable(boolean value);
+
+	/**
+	 * Returns the value of the '<em><b>Linked Execution Environment Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Linked Execution Environment Name</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Linked Execution Environment Name</em>' attribute.
+	 * @see #setLinkedExecutionEnvironmentName(String)
+	 * @see org.eclipse.koneki.ldt.debug.core.internal.model.interpreter.InterpreterPackage#getInfo_LinkedExecutionEnvironmentName()
+	 * @model
+	 * @generated
+	 */
+	String getLinkedExecutionEnvironmentName();
+
+	/**
+	 * Sets the value of the '{@link org.eclipse.koneki.ldt.debug.core.internal.model.interpreter.Info#getLinkedExecutionEnvironmentName <em>Linked Execution Environment Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Linked Execution Environment Name</em>' attribute.
+	 * @see #getLinkedExecutionEnvironmentName()
+	 * @generated
+	 */
+	void setLinkedExecutionEnvironmentName(String value);
+
+	/**
+	 * Returns the value of the '<em><b>Linked Execution Environment Version</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Linked Execution Environment Version</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Linked Execution Environment Version</em>' attribute.
+	 * @see #setLinkedExecutionEnvironmentVersion(String)
+	 * @see org.eclipse.koneki.ldt.debug.core.internal.model.interpreter.InterpreterPackage#getInfo_LinkedExecutionEnvironmentVersion()
+	 * @model
+	 * @generated
+	 */
+	String getLinkedExecutionEnvironmentVersion();
+
+	/**
+	 * Sets the value of the '{@link org.eclipse.koneki.ldt.debug.core.internal.model.interpreter.Info#getLinkedExecutionEnvironmentVersion <em>Linked Execution Environment Version</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Linked Execution Environment Version</em>' attribute.
+	 * @see #getLinkedExecutionEnvironmentVersion()
+	 * @generated
+	 */
+	void setLinkedExecutionEnvironmentVersion(String value);
 
 } // Info

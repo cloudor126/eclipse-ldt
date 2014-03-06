@@ -20,6 +20,7 @@ public final class Messages extends NLS {
 	public static String LuaEnvironmentTabNewVariableDialogValue;
 	public static String LuaInterpreterTabComboBlockAlternateInterpreterLabel;
 	public static String LuaInterpreterTabComboBlockDefaultInterpreterLabel;
+	public static String LuaInterpreterTabComboBlockIncompatibleInterpreter;
 	public static String LuaInterpreterTabComboBlockManageInterpretersButton;
 	public static String LuaInterpreterTabComboBlockNoDefaultInterpreter;
 	public static String LuaInterpreterTabComboBlockNoInterpreter;

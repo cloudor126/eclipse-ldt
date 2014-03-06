@@ -17,6 +17,7 @@ import java.util.List;
 import org.eclipse.dltk.launching.ExecutionArguments;
 import org.eclipse.dltk.launching.IInterpreterInstall;
 import org.eclipse.dltk.launching.InterpreterConfig;
+import org.eclipse.koneki.ldt.debug.core.interpreter.LuaInterpreterUtil;
 
 public class LuaGenericInterpreterCommandLineRenderer {
 
@@ -47,7 +48,7 @@ public class LuaGenericInterpreterCommandLineRenderer {
 		items.addAll(config.getInterpreterArgs());
 
 		// Precise script and argument only when interpreter handles script as arguments
-		if (LuaGenericInterpreterUtil.interpreterHandlesFilesAsArgument(install)) {
+		if (LuaInterpreterUtil.interpreterHandlesFilesAsArgument(install)) {
 			items.add(install.getEnvironment().convertPathToString(config.getScriptFilePath()));
 			items.addAll(config.getScriptArgs());
 		}

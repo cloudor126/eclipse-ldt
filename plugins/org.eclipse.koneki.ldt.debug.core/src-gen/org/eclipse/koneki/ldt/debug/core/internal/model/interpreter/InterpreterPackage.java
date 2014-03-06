@@ -93,13 +93,31 @@ public interface InterpreterPackage extends EPackage {
 	int INFO__FILE_AS_ARGUMENTS_CAPABLE = 1;
 
 	/**
+	 * The feature id for the '<em><b>Linked Execution Environment Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INFO__LINKED_EXECUTION_ENVIRONMENT_NAME = 2;
+
+	/**
+	 * The feature id for the '<em><b>Linked Execution Environment Version</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INFO__LINKED_EXECUTION_ENVIRONMENT_VERSION = 3;
+
+	/**
 	 * The number of structural features of the '<em>Info</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int INFO_FEATURE_COUNT = 2;
+	int INFO_FEATURE_COUNT = 4;
 
 
 	/**
@@ -133,6 +151,28 @@ public interface InterpreterPackage extends EPackage {
 	 * @generated
 	 */
 	EAttribute getInfo_FileAsArgumentsCapable();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.koneki.ldt.debug.core.internal.model.interpreter.Info#getLinkedExecutionEnvironmentName <em>Linked Execution Environment Name</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Linked Execution Environment Name</em>'.
+	 * @see org.eclipse.koneki.ldt.debug.core.internal.model.interpreter.Info#getLinkedExecutionEnvironmentName()
+	 * @see #getInfo()
+	 * @generated
+	 */
+	EAttribute getInfo_LinkedExecutionEnvironmentName();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.koneki.ldt.debug.core.internal.model.interpreter.Info#getLinkedExecutionEnvironmentVersion <em>Linked Execution Environment Version</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Linked Execution Environment Version</em>'.
+	 * @see org.eclipse.koneki.ldt.debug.core.internal.model.interpreter.Info#getLinkedExecutionEnvironmentVersion()
+	 * @see #getInfo()
+	 * @generated
+	 */
+	EAttribute getInfo_LinkedExecutionEnvironmentVersion();
 
 	/**
 	 * Returns the factory that creates the instances of the model.
@@ -181,6 +221,22 @@ public interface InterpreterPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute INFO__FILE_AS_ARGUMENTS_CAPABLE = eINSTANCE.getInfo_FileAsArgumentsCapable();
+
+		/**
+		 * The meta object literal for the '<em><b>Linked Execution Environment Name</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute INFO__LINKED_EXECUTION_ENVIRONMENT_NAME = eINSTANCE.getInfo_LinkedExecutionEnvironmentName();
+
+		/**
+		 * The meta object literal for the '<em><b>Linked Execution Environment Version</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute INFO__LINKED_EXECUTION_ENVIRONMENT_VERSION = eINSTANCE.getInfo_LinkedExecutionEnvironmentVersion();
 
 	}
 

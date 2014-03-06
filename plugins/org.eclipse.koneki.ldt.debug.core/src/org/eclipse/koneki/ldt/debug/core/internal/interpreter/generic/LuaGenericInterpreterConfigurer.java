@@ -36,6 +36,7 @@ import org.eclipse.koneki.ldt.core.IProjectSourceRootFolderVisitor2;
 import org.eclipse.koneki.ldt.core.LuaUtils;
 import org.eclipse.koneki.ldt.core.LuaUtils.ProjectFragmentFilter;
 import org.eclipse.koneki.ldt.debug.core.internal.LuaDebugConstants;
+import org.eclipse.koneki.ldt.debug.core.interpreter.LuaInterpreterUtil;
 
 public class LuaGenericInterpreterConfigurer {
 
@@ -68,7 +69,7 @@ public class LuaGenericInterpreterConfigurer {
 
 		// Flatten commands and add commands to execute as interpreter argument if possible
 		final List<String> commandList = addCommands(launch, config);
-		if (!commandList.isEmpty() && LuaGenericInterpreterUtil.interpreterHandlesExecuteOption(interpreterinstall)) {
+		if (!commandList.isEmpty() && LuaInterpreterUtil.interpreterHandlesExecuteOption(interpreterinstall)) {
 			final StringBuilder commands = new StringBuilder();
 			for (final String cmd : commandList) {
 				commands.append(cmd);

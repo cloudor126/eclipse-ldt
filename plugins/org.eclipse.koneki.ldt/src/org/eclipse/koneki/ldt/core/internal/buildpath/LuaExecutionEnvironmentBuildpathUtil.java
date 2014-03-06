@@ -91,6 +91,9 @@ public final class LuaExecutionEnvironmentBuildpathUtil {
 	}
 
 	public static boolean isValidExecutionEnvironmentBuildPath(final IPath eePath) {
+		if (eePath == null)
+			return false;
+
 		final String[] segments = eePath.segments();
 		return (segments.length == 3) && LuaExecutionEnvironmentConstants.CONTAINER_PATH_START.equals(segments[0]);
 	}

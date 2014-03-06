@@ -75,6 +75,10 @@
              class="org.eclipse.koneki.ldt.debug.core.internal.interpreter.generic.LuaGenericInterpreterInstallType"
              id="org.eclipse.koneki.ldt.debug.core.LuaGenericInterpreterInstallType">
        </interpreterInstallType>
+       <interpreterInstallType
+             class="org.eclipse.koneki.ldt.debug.core.internal.interpreter.luajit.LuaJITInterpreterInstallType"
+             id="org.eclipse.koneki.ldt.debug.core.LuaJITInterpreterInstallType">
+       </interpreterInstallType>
     </extension>
  <extension
        point="org.eclipse.emf.ecore.generated_package">

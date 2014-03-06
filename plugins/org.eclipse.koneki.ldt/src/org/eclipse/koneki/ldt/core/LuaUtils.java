@@ -563,4 +563,22 @@ public final class LuaUtils {
 		return false;
 	}
 
+	/**
+	 * @since 1.2
+	 */
+	public static IPath getLuaExecutionEnvironmentPath(IScriptProject project) {
+		try {
+			IBuildpathEntry[] rawBuildpath = project.getRawBuildpath();
+			for (IBuildpathEntry bpe : rawBuildpath) {
+				IPath path = bpe.getPath();
+				if (LuaExecutionEnvironmentBuildpathUtil.isLuaExecutionEnvironmentContainer(path)) {
+					return path;
+				}
+			}
+		} catch (ModelException e) {
+			Activator.logWarning(
+					String.format("Unexcepted error when getting Lua Execution environement for project %s", project.getElementName()), e); //$NON-NLS-1$
+		}
+		return null;
+	}
 }

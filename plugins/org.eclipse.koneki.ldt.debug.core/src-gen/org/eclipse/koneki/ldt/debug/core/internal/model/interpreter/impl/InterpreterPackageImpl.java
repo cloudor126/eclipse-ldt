@@ -129,6 +129,24 @@ public class InterpreterPackageImpl extends EPackageImpl implements InterpreterP
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EAttribute getInfo_LinkedExecutionEnvironmentName() {
+		return (EAttribute)infoEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getInfo_LinkedExecutionEnvironmentVersion() {
+		return (EAttribute)infoEClass.getEStructuralFeatures().get(3);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public InterpreterFactory getInterpreterFactory() {
 		return (InterpreterFactory)getEFactoryInstance();
 	}
@@ -155,6 +173,8 @@ public class InterpreterPackageImpl extends EPackageImpl implements InterpreterP
 		infoEClass = createEClass(INFO);
 		createEAttribute(infoEClass, INFO__EXECUTE_OPTION_CAPABLE);
 		createEAttribute(infoEClass, INFO__FILE_AS_ARGUMENTS_CAPABLE);
+		createEAttribute(infoEClass, INFO__LINKED_EXECUTION_ENVIRONMENT_NAME);
+		createEAttribute(infoEClass, INFO__LINKED_EXECUTION_ENVIRONMENT_VERSION);
 	}
 
 	/**
@@ -190,6 +210,8 @@ public class InterpreterPackageImpl extends EPackageImpl implements InterpreterP
 		initEClass(infoEClass, Info.class, "Info", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getInfo_ExecuteOptionCapable(), ecorePackage.getEBoolean(), "executeOptionCapable", "true", 1, 1, Info.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getInfo_FileAsArgumentsCapable(), ecorePackage.getEBoolean(), "fileAsArgumentsCapable", "true", 0, 1, Info.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getInfo_LinkedExecutionEnvironmentName(), ecorePackage.getEString(), "linkedExecutionEnvironmentName", null, 0, 1, Info.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getInfo_LinkedExecutionEnvironmentVersion(), ecorePackage.getEString(), "linkedExecutionEnvironmentVersion", null, 0, 1, Info.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		// Create resource
 		createResource(eNS_URI);

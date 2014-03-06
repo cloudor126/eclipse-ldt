@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 Sierra Wireless and others.
+ * Copyright (c) 2014 Sierra Wireless and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,14 +8,14 @@
  * Contributors:
  *     Sierra Wireless - initial API and implementation
  *******************************************************************************/
-package org.eclipse.koneki.ldt.debug.core.internal.interpreter.generic;
+package org.eclipse.koneki.ldt.debug.core.internal.interpreter.luajit;
 
 import org.eclipse.dltk.launching.IInterpreterInstallType;
 import org.eclipse.koneki.ldt.debug.core.interpreter.AbstractLuaInterpreterInstall;
 
-public class LuaGenericInterpreterInstall extends AbstractLuaInterpreterInstall {
+public class LuaJITInterpreterInstall extends AbstractLuaInterpreterInstall {
 
-	public LuaGenericInterpreterInstall(final IInterpreterInstallType type, final String id) {
+	public LuaJITInterpreterInstall(final IInterpreterInstallType type, final String id) {
 		super(type, id);
 	}
 }

@@ -24,6 +24,10 @@
             class="org.eclipse.koneki.ldt.support.lua51.internal.interpreter.JNLua51InterpreterInstallType"
             id="org.eclipse.koneki.ldt.support.lua51.JNLua51InterpreterInstallType">
       </interpreterInstallType>
+      <interpreterInstallType
+            class="org.eclipse.koneki.ldt.support.lua51.internal.interpreter.Lua51InterpreterInstallType"
+            id="org.eclipse.koneki.ldt.support.lua51.Lua51InterpreterInstallType">
+      </interpreterInstallType>
    </extension>
    <extension
          point="org.eclipse.dltk.launching.interpreterInstalls">

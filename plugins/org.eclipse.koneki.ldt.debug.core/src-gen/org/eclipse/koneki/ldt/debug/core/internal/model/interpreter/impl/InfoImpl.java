@@ -31,6 +31,8 @@ import org.eclipse.koneki.ldt.debug.core.internal.model.interpreter.InterpreterP
  * <ul>
  *   <li>{@link org.eclipse.koneki.ldt.debug.core.internal.model.interpreter.impl.InfoImpl#isExecuteOptionCapable <em>Execute Option Capable</em>}</li>
  *   <li>{@link org.eclipse.koneki.ldt.debug.core.internal.model.interpreter.impl.InfoImpl#isFileAsArgumentsCapable <em>File As Arguments Capable</em>}</li>
+ *   <li>{@link org.eclipse.koneki.ldt.debug.core.internal.model.interpreter.impl.InfoImpl#getLinkedExecutionEnvironmentName <em>Linked Execution Environment Name</em>}</li>
+ *   <li>{@link org.eclipse.koneki.ldt.debug.core.internal.model.interpreter.impl.InfoImpl#getLinkedExecutionEnvironmentVersion <em>Linked Execution Environment Version</em>}</li>
  * </ul>
  * </p>
  *
@@ -76,6 +78,46 @@ public class InfoImpl extends EObjectImpl implements Info {
 	 * @ordered
 	 */
 	protected boolean fileAsArgumentsCapable = FILE_AS_ARGUMENTS_CAPABLE_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #getLinkedExecutionEnvironmentName() <em>Linked Execution Environment Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getLinkedExecutionEnvironmentName()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String LINKED_EXECUTION_ENVIRONMENT_NAME_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getLinkedExecutionEnvironmentName() <em>Linked Execution Environment Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getLinkedExecutionEnvironmentName()
+	 * @generated
+	 * @ordered
+	 */
+	protected String linkedExecutionEnvironmentName = LINKED_EXECUTION_ENVIRONMENT_NAME_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #getLinkedExecutionEnvironmentVersion() <em>Linked Execution Environment Version</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getLinkedExecutionEnvironmentVersion()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String LINKED_EXECUTION_ENVIRONMENT_VERSION_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getLinkedExecutionEnvironmentVersion() <em>Linked Execution Environment Version</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getLinkedExecutionEnvironmentVersion()
+	 * @generated
+	 * @ordered
+	 */
+	protected String linkedExecutionEnvironmentVersion = LINKED_EXECUTION_ENVIRONMENT_VERSION_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -143,6 +185,48 @@ public class InfoImpl extends EObjectImpl implements Info {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public String getLinkedExecutionEnvironmentName() {
+		return linkedExecutionEnvironmentName;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setLinkedExecutionEnvironmentName(String newLinkedExecutionEnvironmentName) {
+		String oldLinkedExecutionEnvironmentName = linkedExecutionEnvironmentName;
+		linkedExecutionEnvironmentName = newLinkedExecutionEnvironmentName;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, InterpreterPackage.INFO__LINKED_EXECUTION_ENVIRONMENT_NAME, oldLinkedExecutionEnvironmentName, linkedExecutionEnvironmentName));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public String getLinkedExecutionEnvironmentVersion() {
+		return linkedExecutionEnvironmentVersion;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setLinkedExecutionEnvironmentVersion(String newLinkedExecutionEnvironmentVersion) {
+		String oldLinkedExecutionEnvironmentVersion = linkedExecutionEnvironmentVersion;
+		linkedExecutionEnvironmentVersion = newLinkedExecutionEnvironmentVersion;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, InterpreterPackage.INFO__LINKED_EXECUTION_ENVIRONMENT_VERSION, oldLinkedExecutionEnvironmentVersion, linkedExecutionEnvironmentVersion));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
@@ -150,6 +234,10 @@ public class InfoImpl extends EObjectImpl implements Info {
 				return isExecuteOptionCapable();
 			case InterpreterPackage.INFO__FILE_AS_ARGUMENTS_CAPABLE:
 				return isFileAsArgumentsCapable();
+			case InterpreterPackage.INFO__LINKED_EXECUTION_ENVIRONMENT_NAME:
+				return getLinkedExecutionEnvironmentName();
+			case InterpreterPackage.INFO__LINKED_EXECUTION_ENVIRONMENT_VERSION:
+				return getLinkedExecutionEnvironmentVersion();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -167,6 +255,12 @@ public class InfoImpl extends EObjectImpl implements Info {
 				return;
 			case InterpreterPackage.INFO__FILE_AS_ARGUMENTS_CAPABLE:
 				setFileAsArgumentsCapable((Boolean)newValue);
+				return;
+			case InterpreterPackage.INFO__LINKED_EXECUTION_ENVIRONMENT_NAME:
+				setLinkedExecutionEnvironmentName((String)newValue);
+				return;
+			case InterpreterPackage.INFO__LINKED_EXECUTION_ENVIRONMENT_VERSION:
+				setLinkedExecutionEnvironmentVersion((String)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -186,6 +280,12 @@ public class InfoImpl extends EObjectImpl implements Info {
 			case InterpreterPackage.INFO__FILE_AS_ARGUMENTS_CAPABLE:
 				setFileAsArgumentsCapable(FILE_AS_ARGUMENTS_CAPABLE_EDEFAULT);
 				return;
+			case InterpreterPackage.INFO__LINKED_EXECUTION_ENVIRONMENT_NAME:
+				setLinkedExecutionEnvironmentName(LINKED_EXECUTION_ENVIRONMENT_NAME_EDEFAULT);
+				return;
+			case InterpreterPackage.INFO__LINKED_EXECUTION_ENVIRONMENT_VERSION:
+				setLinkedExecutionEnvironmentVersion(LINKED_EXECUTION_ENVIRONMENT_VERSION_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -202,6 +302,10 @@ public class InfoImpl extends EObjectImpl implements Info {
 				return executeOptionCapable != EXECUTE_OPTION_CAPABLE_EDEFAULT;
 			case InterpreterPackage.INFO__FILE_AS_ARGUMENTS_CAPABLE:
 				return fileAsArgumentsCapable != FILE_AS_ARGUMENTS_CAPABLE_EDEFAULT;
+			case InterpreterPackage.INFO__LINKED_EXECUTION_ENVIRONMENT_NAME:
+				return LINKED_EXECUTION_ENVIRONMENT_NAME_EDEFAULT == null ? linkedExecutionEnvironmentName != null : !LINKED_EXECUTION_ENVIRONMENT_NAME_EDEFAULT.equals(linkedExecutionEnvironmentName);
+			case InterpreterPackage.INFO__LINKED_EXECUTION_ENVIRONMENT_VERSION:
+				return LINKED_EXECUTION_ENVIRONMENT_VERSION_EDEFAULT == null ? linkedExecutionEnvironmentVersion != null : !LINKED_EXECUTION_ENVIRONMENT_VERSION_EDEFAULT.equals(linkedExecutionEnvironmentVersion);
 		}
 		return super.eIsSet(featureID);
 	}
@@ -220,6 +324,10 @@ public class InfoImpl extends EObjectImpl implements Info {
 		result.append(executeOptionCapable);
 		result.append(", fileAsArgumentsCapable: ");
 		result.append(fileAsArgumentsCapable);
+		result.append(", linkedExecutionEnvironmentName: ");
+		result.append(linkedExecutionEnvironmentName);
+		result.append(", linkedExecutionEnvironmentVersion: ");
+		result.append(linkedExecutionEnvironmentVersion);
 		result.append(')');
 		return result.toString();
 	}

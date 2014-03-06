@@ -37,7 +37,7 @@ public class InterpreterFactoryImpl extends EFactoryImpl implements InterpreterF
 	 */
 	public static InterpreterFactory init() {
 		try {
-			InterpreterFactory theInterpreterFactory = (InterpreterFactory)EPackage.Registry.INSTANCE.getEFactory("http://eclipse.org/koneki"); 
+			InterpreterFactory theInterpreterFactory = (InterpreterFactory)EPackage.Registry.INSTANCE.getEFactory(InterpreterPackage.eNS_URI);
 			if (theInterpreterFactory != null) {
 				return theInterpreterFactory;
 			}

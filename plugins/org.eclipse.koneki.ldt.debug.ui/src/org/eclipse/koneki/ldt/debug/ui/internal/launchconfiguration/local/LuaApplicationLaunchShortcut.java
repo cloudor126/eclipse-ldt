@@ -20,6 +20,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -40,14 +41,18 @@ import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.internal.core.ProjectFragment;
 import org.eclipse.dltk.internal.debug.ui.launcher.AbstractScriptLaunchShortcut;
+import org.eclipse.dltk.launching.IInterpreterInstall;
 import org.eclipse.dltk.launching.LaunchingMessages;
 import org.eclipse.dltk.launching.ScriptLaunchConfigurationConstants;
+import org.eclipse.dltk.launching.ScriptRuntime;
 import org.eclipse.dltk.launching.process.ScriptRuntimeProcessFactory;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.koneki.ldt.core.LuaConstants;
 import org.eclipse.koneki.ldt.core.LuaNature;
 import org.eclipse.koneki.ldt.core.LuaUtils;
+import org.eclipse.koneki.ldt.core.internal.buildpath.LuaExecutionEnvironmentBuildpathUtil;
 import org.eclipse.koneki.ldt.debug.core.internal.LuaDebugConstants;
+import org.eclipse.koneki.ldt.debug.core.interpreter.LuaInterpreterUtil;
 import org.eclipse.koneki.ldt.debug.ui.internal.Activator;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.PlatformUI;
@@ -154,12 +159,58 @@ public class LuaApplicationLaunchShortcut extends AbstractScriptLaunchShortcut {
 			wc.setAttribute(ScriptLaunchConfigurationConstants.ATTR_MAIN_SCRIPT_NAME, script.getProjectRelativePath().toPortableString());
 			wc.setAttribute(DebugPlugin.ATTR_PROCESS_FACTORY_ID, ScriptRuntimeProcessFactory.PROCESS_FACTORY_ID);
 
+			// Manage interpreters.
+			IInterpreterInstall guessInterpreter = findBestInterpreter(script);
+			if (guessInterpreter != null) {
+				IPath interpreterContainerPath = ScriptRuntime.newInterpreterContainerPath(guessInterpreter);
+				if (interpreterContainerPath != null)
+					wc.setAttribute(ScriptLaunchConfigurationConstants.ATTR_CONTAINER_PATH, interpreterContainerPath.toPortableString());
+			}
+
 			wc.setMappedResources(new IResource[] { script });
 			config = wc.doSave();
 		} catch (CoreException e) {
 			Activator.logError("Unable to create a launch configuration from a LaunchShortcut", e); //$NON-NLS-1$
 		}
 		return config;
+	}
+
+	public IInterpreterInstall findBestInterpreter(IFile script) {
+		IProject project = script.getProject();
+		if (project == null)
+			return null;
+
+		IScriptProject scriptProject = DLTKCore.create(project);
+		if (scriptProject == null || !LuaUtils.isLuaProject(project))
+			return null;
+
+		IPath eePath = LuaUtils.getLuaExecutionEnvironmentPath(scriptProject);
+		if (eePath == null)
+			return null;
+
+		String eeid = LuaExecutionEnvironmentBuildpathUtil.getEEID(eePath);
+		String eeVersion = LuaExecutionEnvironmentBuildpathUtil.getEEVersion(eePath);
+		if (eeid == null || eeVersion == null)
+			return null;
+
+		// if this project has an execution environment
+		// check if the default one is compatible
+		IInterpreterInstall defaultInterpreterInstall = LuaInterpreterUtil.getDefaultInterpreter();
+		if (defaultInterpreterInstall != null && LuaInterpreterUtil.isExecutionEnvironmentCompatible(defaultInterpreterInstall, eeid, eeVersion))
+			return defaultInterpreterInstall;
+
+		// else check with other interpreters
+		IInterpreterInstall embeddedinterpreter = null;
+		for (IInterpreterInstall interpreter : LuaInterpreterUtil.getInterpreters()) {
+			if (LuaInterpreterUtil.isExecutionEnvironmentCompatible(interpreter, eeid, eeVersion)) {
+				// we give priority to non embedded interpreter
+				if (LuaInterpreterUtil.isEmbedded(interpreter))
+					embeddedinterpreter = interpreter;
+				else
+					return interpreter;
+			}
+		}
+		return embeddedinterpreter;
 	}
 
 	public ILaunchConfiguration createLaunchConfiguration(IParent sourcecontainer) {
