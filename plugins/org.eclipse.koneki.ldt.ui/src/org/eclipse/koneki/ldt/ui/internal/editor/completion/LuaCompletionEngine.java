@@ -184,9 +184,9 @@ public class LuaCompletionEngine extends ScriptCompletionEngine {
 
 			// for each global var, get the corresponding model element and create the proposal
 			for (Definition definition : othersglobalvars) {
-				IMember member = LuaASTModelUtils.getIMember(definition.getModule(), definition.getItem());
-				if (member != null)
-					createMemberProposal(member, cursorPosition - start.length(), cursorPosition, false, 25);
+				List<IMember> members = LuaASTModelUtils.getIMembers(definition.getModule(), definition.getItem());
+				if (members != null)
+					createMemberProposal(members, cursorPosition - start.length(), cursorPosition, false, 25);
 			}
 		}
 
@@ -216,9 +216,9 @@ public class LuaCompletionEngine extends ScriptCompletionEngine {
 		// find all local vars and create corresponding proposal
 		Collection<Item> localVars = LuaASTUtils.getLocalVars(luaSourceRoot, cursorPosition - start.length(), start);
 		for (Item var : localVars) {
-			IMember member = LuaASTModelUtils.getIMember(sourceModule, var);
-			if (member != null)
-				createMemberProposal(member, cursorPosition - start.length(), cursorPosition);
+			List<IMember> members = LuaASTModelUtils.getIMembers(sourceModule, var);
+			if (members != null)
+				createMemberProposal(members, cursorPosition - start.length(), cursorPosition);
 		}
 
 	}
@@ -236,7 +236,7 @@ public class LuaCompletionEngine extends ScriptCompletionEngine {
 				final boolean goodStart = item.getName().toLowerCase().startsWith(fieldName.toLowerCase());
 				final boolean nostart = fieldName.isEmpty();
 				if (goodStart || nostart) {
-					createMemberProposal(LuaASTModelUtils.getIMember(currentSourceModule, item), position - fieldName.length(), position, false);
+					createMemberProposal(LuaASTModelUtils.getIMembers(currentSourceModule, item), position - fieldName.length(), position, false);
 				}
 			}
 			// manage super-type fields
@@ -284,12 +284,12 @@ public class LuaCompletionEngine extends ScriptCompletionEngine {
 					// invocation is ok if :
 					// first parameter is named self
 					if ("self".equals(firstParamter.getName()) && firstParamter.getType() == null) //$NON-NLS-1$
-						createMemberProposal(LuaASTModelUtils.getIMember(currentSourceModule, item), position - fieldName.length(), position, true);
+						createMemberProposal(LuaASTModelUtils.getIMembers(currentSourceModule, item), position - fieldName.length(), position, true);
 					// or
 					// if the first parameter is of the same type as the type on which it is invoked : it's ok !
 					final TypeResolution parameterTypeResolution = LuaASTUtils.resolveType(currentSourceModule, firstParamter.getType());
 					if (recordTypeResolution.equals(parameterTypeResolution))
-						createMemberProposal(LuaASTModelUtils.getIMember(currentSourceModule, item), position - fieldName.length(), position, true);
+						createMemberProposal(LuaASTModelUtils.getIMembers(currentSourceModule, item), position - fieldName.length(), position, true);
 				}
 			}
 
@@ -313,6 +313,24 @@ public class LuaCompletionEngine extends ScriptCompletionEngine {
 		proposal.setCompletion(keyword);
 		proposal.setReplaceRange(startIndex, endIndex);
 		this.requestor.accept(proposal);
+	}
+
+	private void createMemberProposal(List<IMember> members, int startIndex, int endIndex) {
+		for (IMember member : members) {
+			createMemberProposal(member, startIndex, endIndex);
+		}
+	}
+
+	private void createMemberProposal(List<IMember> members, int startIndex, int endIndex, boolean invocation) {
+		for (IMember member : members) {
+			createMemberProposal(member, startIndex, endIndex, invocation);
+		}
+	}
+
+	private void createMemberProposal(List<IMember> members, int startIndex, int endIndex, boolean invocation, int relevance) {
+		for (IMember member : members) {
+			createMemberProposal(member, startIndex, endIndex, invocation, relevance);
+		}
 	}
 
 	private void createMemberProposal(IMember member, int startIndex, int endIndex) {

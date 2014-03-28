@@ -60,7 +60,7 @@ return[[#
 # end
 #
 # -- show quick description type exposed by module
-# if currenttype and not isempty(currenttype.fields) then
+# if currenttype and (not isempty(currenttype.fields) or currenttype:getcalldef()) then
 	<h$(i+1)><a id="$(anchor(currenttype))" >Type <code>$(currenttype.name)</code></a></h$(i+1)>
 	$( applytemplate(currenttype, i+2, 'index') )
 # end
@@ -69,7 +69,7 @@ return[[#
 # --
 # if _file.types then
 #	for name, type in sortedpairs( _file.types ) do
-#		if type ~= currenttype and type.tag == 'recordtypedef' and not isempty(type.fields) then
+#		if type ~= currenttype and type.tag == 'recordtypedef' and (not isempty(type.fields) or type:getcalldef()) then
 			<h$(i+1)><a id="$(anchor(type))">Type <code>$(name)</code></a></h$(i+1)>
 			$( applytemplate(type, i+2, 'index') )
 #		end

@@ -3,83 +3,69 @@ do local _={
 	globalvars={
 
 	}
-	--[[table: 0x1b1c6e0]],
+	--[[table: 0x1863c30]],
 	types={
 		["__=__1"]={
-			name="__=__1",
 			shortdescription="",
 			description="",
-			metadata={
-				usage={
-					[1]={
-						description="local code"
-					}
-					--[[table: 0x2009630]],
-					tag="usage"
-				}
-			--[[table: 0x1f8a700]]
-			}
-			--[[table: 0x1f8a6b0]],
+			name="__=__1",
 			parent=nil --[[ref]],
 			returns={
 
 			}
-			--[[table: 0x1e6a9f0]],
+			--[[table: 0x1797710]],
 			params={
 
 			}
-			--[[table: 0x1e6a9a0]],
+			--[[table: 0x17976c0]],
 			tag="functiontypedef"
 		}
-		--[[table: 0x1e222b0]],
+		--[[table: 0x15fda60]],
 		modulename={
 			description="",
 			parent=nil --[[ref]],
+			call={
+				typename="__=__1",
+				tag="internaltyperef"
+			}
+			--[[table: 0x16af6c0]],
 			shortdescription="",
 			name="modulename",
 			sourcerange={
 				min=1,
-				max=26
+				max=23
 			}
-			--[[table: 0x1cd1f00]],
+			--[[table: 0x18d4630]],
 			fields={
 				functionname={
 					type={
 						typename="__=__1",
 						tag="internaltyperef"
 					}
-					--[[table: 0x1f8a840]],
+					--[[table: 0x15fdb10]],
 					description="",
 					parent=nil --[[ref]],
-					metadata={
-						usage={
-							[1]=nil --[[ref]],
-							tag="usage"
-						}
-					--[[table: 0x1e1d0b0]]
-					}
-					--[[table: 0x1e1d060]],
 					shortdescription="",
 					name="functionname",
 					sourcerange={
-						min=28,
-						max=99
+						min=25,
+						max=98
 					}
-					--[[table: 0x1e221a0]],
+					--[[table: 0x15fd9b0]],
 					occurrences={
 
 					}
-					--[[table: 0x1e22150]],
+					--[[table: 0x15fd960]],
 					tag="item"
 				}
-			--[[table: 0x1e22100]]
+			--[[table: 0x15fd910]]
 			}
-			--[[table: 0x1cd1eb0]],
+			--[[table: 0x18d45e0]],
 			tag="recordtypedef"
 		}
-	--[[table: 0x1cd1e60]]
+	--[[table: 0x1589100]]
 	}
-	--[[table: 0x1b1c690]],
+	--[[table: 0x1863be0]],
 	shortdescription="",
 	name="modulename",
 	returns={
@@ -89,21 +75,20 @@ do local _={
 					typename="modulename",
 					tag="internaltyperef"
 				}
-			--[[table: 0x1bb1ac0]]
+			--[[table: 0x1588f60]]
 			}
-			--[[table: 0x1bb1c10]],
+			--[[table: 0x15890b0]],
 			description="",
 			tag="return"
 		}
-	--[[table: 0x1bb1b10]]
+	--[[table: 0x1588fb0]]
 	}
-	--[[table: 0x1b1c730]],
+	--[[table: 0x1863c80]],
 	tag="file"
 }
---[[table: 0x1b1c640]];
+--[[table: 0x1863b90]];
 _.types["__=__1"].parent=_;
 _.types.modulename.parent=_;
 _.types.modulename.fields.functionname.parent=_.types.modulename;
-_.types.modulename.fields.functionname.metadata.usage[1]=_.types["__=__1"].metadata.usage[1];
 return _;
 end

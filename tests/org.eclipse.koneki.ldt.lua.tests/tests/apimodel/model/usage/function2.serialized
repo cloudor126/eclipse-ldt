@@ -1,104 +1,115 @@
 do local _={
-		description="",
-		globalvars={
+	description="",
+	globalvars={
 
-		}
-		--[[table: 0x8fceb38]],
-		shortdescription="",
-		name="modulename",
-		returns={
-			[1]={
-				types={
+	}
+	--[[table: 0x14a9fb0]],
+	types={
+		["__=__1"]={
+			name="__=__1",
+			shortdescription="",
+			description="",
+			metadata={
+				usage={
 					[1]={
-						typename="modulename",
+						description="local code"
+					}
+					--[[table: 0x16f8840]],
+					[2]={
+						description="other local code"
+					}
+					--[[table: 0x1296d00]],
+					tag="usage"
+				}
+			--[[table: 0x1563500]]
+			}
+			--[[table: 0x15634b0]],
+			parent=nil --[[ref]],
+			returns={
+
+			}
+			--[[table: 0x1563390]],
+			params={
+
+			}
+			--[[table: 0x1563340]],
+			tag="functiontypedef"
+		}
+		--[[table: 0x153da30]],
+		modulename={
+			description="",
+			parent=nil --[[ref]],
+			shortdescription="",
+			name="modulename",
+			sourcerange={
+				min=1,
+				max=26
+			}
+			--[[table: 0x13be650]],
+			fields={
+				functionname={
+					type={
+						typename="__=__1",
 						tag="internaltyperef"
 					}
-					--[[table: 0x90389d0]]
-				}
-				--[[table: 0x8fda578]],
-				description="",
-				tag="return"
-			}
-			--[[table: 0x913c150]]
-		}
-		--[[table: 0x8fcec48]],
-		types={
-			["__=__1"]={
-				shortdescription="",
-				description="",
-				name="__=__1",
-				parent=nil --[[ref]],
-				returns={
-
-				}
-				--[[table: 0x91ce0c8]],
-				params={
-
-				}
-				--[[table: 0x91ce060]],
-				tag="functiontypedef"
-			}
-			--[[table: 0x8f377a0]],
-			modulename={
-				fields={
-					functionname={
-						type={
-							typename="__=__1",
-							tag="internaltyperef"
+					--[[table: 0x16020d0]],
+					description="",
+					parent=nil --[[ref]],
+					metadata={
+						usage={
+							[1]=nil --[[ref]],
+							[2]=nil --[[ref]],
+							tag="usage"
 						}
-						--[[table: 0x90db488]],
-						description="",
-						parent=nil --[[ref]],
-						metadata={
-							usage={
-								[1]={
-									description="local code"
-								}
-								--[[table: 0x912df98]],
-								[2]={
-									description="other local code"
-								}
-								--[[table: 0x8efa278]],
-								tag="usage"
-							}
-							--[[table: 0x9227c18]]
-						}
-						--[[table: 0x91ce118]],
-						shortdescription="",
-						name="functionname",
-						sourcerange={
-							min=28,
-							max=126
-						}
-						--[[table: 0x8f37738]],
-						occurrences={
-
-						}
-						--[[table: 0x8f30fe0]],
-						tag="item"
+					--[[table: 0x16021d0]]
 					}
-					--[[table: 0x919f358]]
+					--[[table: 0x1602180]],
+					shortdescription="",
+					name="functionname",
+					sourcerange={
+						min=28,
+						max=126
+					}
+					--[[table: 0x153d920]],
+					occurrences={
+
+					}
+					--[[table: 0x1296e10]],
+					tag="item"
 				}
-				--[[table: 0x9227e58]],
-				shortdescription="",
-				name="modulename",
-				parent=nil --[[ref]],
-				sourcerange={
-					min=1,
-					max=26
-				}
-				--[[table: 0x921b398]],
-				description="",
-				tag="recordtypedef"
+			--[[table: 0x1296dc0]]
 			}
-			--[[table: 0x8fda5e0]]
+			--[[table: 0x13be600]],
+			tag="recordtypedef"
 		}
-		--[[table: 0x8ef9b80]],
-		tag="file"
+	--[[table: 0x14c5930]]
 	}
-	--[[table: 0x90d5a78]];
-	_.types["__=__1"].parent=_;
-	_.types.modulename.fields.functionname.parent=_.types.modulename;
-	_.types.modulename.parent=_;
-	return _;
+	--[[table: 0x152c530]],
+	shortdescription="",
+	name="modulename",
+	returns={
+		[1]={
+			types={
+				[1]={
+					typename="modulename",
+					tag="internaltyperef"
+				}
+			--[[table: 0x13c9750]]
+			}
+			--[[table: 0x14c58e0]],
+			description="",
+			tag="return"
+		}
+	--[[table: 0x13c97a0]]
+	}
+	--[[table: 0x14aa000]],
+	tag="file"
+}
+--[[table: 0x152c4e0]];
+_.types["__=__1"].parent=_;
+_.types.modulename.parent=_;
+_.types.modulename.fields.functionname.parent=_.types.modulename;
+_.types.modulename.fields.functionname.metadata.usage[1]=_.types["__=__1"].metadata.usage[1];
+_.types.modulename.fields.functionname.metadata.usage[2]=_.types["__=__1"].metadata.usage[2];
+return _;
 end

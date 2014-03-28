@@ -130,7 +130,8 @@ function M._typedef(_typedef,notemplate, handledexpr)
 			_typedef.sourcerange.max,
 			M._typeref(_typedef.supertype),
 			M._typeref(_typedef.defaultkeytyperef),
-			M._typeref(_typedef.defaultvaluetyperef)
+			M._typeref(_typedef.defaultvaluetyperef),
+			M._typeref(_typedef.call)
 		)
 
 		-- Appending fields
@@ -140,8 +141,20 @@ function M._typedef(_typedef,notemplate, handledexpr)
 		end
 
 	elseif _typedef.tag == "functiontypedef" then
-		-- Dealing with function
-		jtypedef = javaapimodelfactory.newfunctiontypedef()
+	  
+	  -- manage description
+	  local description = ""
+	  if notemplate then
+      local t = {}
+      if _typedef.shortdescription and _typedef.shortdescription ~= "" then table.insert(t,_typedef.shortdescription) end
+      if _typedef.description and _typedef.description ~= "" then table.insert(t,_typedef.description) end
+      if #t ~= 0 then description = string.format("<div style='white-space:pre'>%s</div>",table.concat(t,"\n") ) end
+    else
+      description = templateengine.applytemplate(_typedef, 3)
+    end
+	  
+	  -- Dealing with function
+		jtypedef = javaapimodelfactory.newfunctiontypedef(description)
 
 		-- Appending parameters
 		for _, _param in ipairs(_typedef.params) do

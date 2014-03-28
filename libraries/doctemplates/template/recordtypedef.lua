@@ -55,8 +55,22 @@ return [[#
 # --
 # -- Describe type fields
 # --
-#if not isempty( _recordtypedef.fields ) then
+#local calldef = _recordtypedef:getcalldef()
+#local hasfield = not isempty(_recordtypedef.fields)
+#if calldef or hasfield then
 	<h$(i)>Field(s)</h$(i)>
+# if calldef then
+<dl class="function">
+<dt>
+  <a id="$(anchor(calldef,_recordtypedef))" >
+  <strong>$( prettyname(calldef,_recordtypedef) )</strong>
+  </a>
+</dt>
+<dd> 	
+   $( applytemplate(calldef, i, nil, true) )
+</dd>
+</dl>
+# end
 #	for name, item in sortedpairs( _recordtypedef.fields ) do
 		$( applytemplate(item, i) )
 #	end

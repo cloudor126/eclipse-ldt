@@ -225,6 +225,28 @@ local function generatefunctiontypename(_functiontypedef)
 	return table.concat(name)
 end
 
+ --
+-- Store user defined tags
+--
+local function attachmetadata(apiobj, parsedcomment)
+    local thirdtags = parsedcomment and parsedcomment.unknowntags
+    if thirdtags  then
+      -- Define a storage index for user defined tags on current API element
+      if not apiobj.metadata then apiobj.metadata = {} end
+
+      -- Loop over user defined tags
+      for usertag, taglist in pairs(thirdtags) do
+        if not apiobj.metadata[ usertag ] then
+          apiobj.metadata[ usertag ] = {
+            tag = usertag
+          }
+        end
+        for _, tag in ipairs( taglist ) do
+          table.insert(apiobj.metadata[usertag], tag)
+        end
+      end
+    end
+end
 
 
 ------------------------------------------------------
@@ -382,7 +404,7 @@ function M.createmoduleapi(ast,modulename)
 				-- add item to its parent
 				local scope = regulartags["field"][1].parent
 				M.additemtoparent(_file,_item,scope,sourcerangemin,sourcerangemax)
-			elseif regulartags["function"] or regulartags["param"] or regulartags["return"] then
+			elseif regulartags["function"] or regulartags["param"] or regulartags["return"] or regulartags["callof"] then
 				-- create item
 				local _item = apimodel._item()
 				_item.shortdescription = parsedcomment.shortdescription
@@ -423,6 +445,7 @@ function M.createmoduleapi(ast,modulename)
 
 				-- add type name
 				_functiontypedef.name = generatefunctiontypename(_functiontypedef)
+				 attachmetadata(_functiontypedef, parsedcomment)
 				_file:addtype(_functiontypedef)
 
 				-- create ref to this type
@@ -435,6 +458,21 @@ function M.createmoduleapi(ast,modulename)
 				local sourcerangemax = comment.lineinfo.last.offset
 				local scope = (regulartags["function"] and regulartags["function"][1].parent) or nil
 				M.additemtoparent(_file,_item,scope,sourcerangemin,sourcerangemax)
+				
+				-- manage callof
+				if regulartags["callof"] and regulartags["callof"][1] and regulartags["callof"][1].type then
+				  -- get the type which will be callable !
+				  local _internaltyperef = createtyperef(regulartags["callof"][1].type)
+				  if _internaltyperef and _internaltyperef.tag == "internaltyperef" then
+  				  local _typedeftypedef = gettypedef(_file,_internaltyperef.typename,"recordtypedef",sourcerangemin,sourcerangemax)
+  				  if _typedeftypedef then 
+    				  -- refer the function used when the type is called
+              local _internaltyperef = apimodel._internaltyperef()
+              _internaltyperef.typename = _functiontypedef.name
+              _typedeftypedef.call =_internaltyperef
+            end
+          end
+				end
 			end
 		end
 
@@ -447,27 +485,8 @@ function M.createmoduleapi(ast,modulename)
 			_lastapiobject.sourcerange.max = comment.lineinfo.last.offset
 		end
 
-		--
-		-- Store user defined tags
-		--
-		local thirdtags = parsedcomment and parsedcomment.unknowntags
-		if thirdtags  then
-			-- Define a storage index for user defined tags on current API element
-			if not _lastapiobject.metadata then _lastapiobject.metadata = {} end
-
-			-- Loop over user defined tags
-			for usertag, taglist in pairs(thirdtags) do
-				if not _lastapiobject.metadata[ usertag ] then
-					_lastapiobject.metadata[ usertag ] = {
-						tag = usertag
-					}
-				end
-				for _, tag in ipairs( taglist ) do
-					table.insert(_lastapiobject.metadata[usertag], tag)
-				end
-			end
-		end
-
+    attachmetadata(_lastapiobject, parsedcomment)
+    
 		-- if we create an api object linked it to
 		_comment2apiobj[comment] =_lastapiobject
 	end

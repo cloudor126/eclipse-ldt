@@ -380,6 +380,11 @@ local function completeapidocitem (apidocitem, itemname, init, file, binder, com
 			-- if not found extracttype from code 
 			apidocitem.type = createtype(init,1,comment2apiobj,file)
 		end
+		
+		local apitype = apidocitem:resolvetype(file)
+    if apitype and apitype.tag == "functiontypedef" and apidocitem.metadata then
+      apitype.metadata = apidocitem.metadata
+    end
 	end
 end
 

@@ -238,6 +238,20 @@ local extendsparsers = {
 }
 
 -- ----------------------------------------------------
+-- parse a callof tag
+-- ----------------------------------------------------
+local callofparsers = {
+  -- full parser
+  gg.sequence({
+    builder = function (result)
+      raiserror(result)
+      return {type = result[1]}
+    end,
+    '@','callof', internaltyperefparser
+  }),
+}
+
+-- ----------------------------------------------------
 -- parse a return tag
 -- ----------------------------------------------------
 local returnparsers = {
@@ -497,7 +511,8 @@ local function initparser()
 		["param"]    = paramparsers,
 		["extends"]  = extendsparsers,
 		["list"]     = listparsers,
-		["map"]      = mapparsers
+		["map"]      = mapparsers,
+		["callof"]   = callofparsers
 	}
 
 	-- create lexer used for parsing

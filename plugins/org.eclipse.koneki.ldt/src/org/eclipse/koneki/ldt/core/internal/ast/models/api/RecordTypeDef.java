@@ -25,6 +25,7 @@ public class RecordTypeDef extends TypeDef {
 	private TypeRef supertype;
 	private TypeRef defaultKeyTyperef;
 	private TypeRef defaultValueTyperef;
+	private TypeRef callTyperef;
 
 	public RecordTypeDef() {
 
@@ -95,5 +96,13 @@ public class RecordTypeDef extends TypeDef {
 
 	public TypeRef getDefaultkeytyperef() {
 		return defaultKeyTyperef;
+	}
+
+	public void setCallTyperef(TypeRef call) {
+		this.callTyperef = call;
+	}
+
+	public TypeRef getCallTypeRef() {
+		return callTyperef;
 	}
 }

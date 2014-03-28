@@ -68,5 +68,12 @@
 	name="@map"
 	description="%map.description"
 	autoinsert="true">@map &lt;#${keytype},#${valuetype}&gt; ${description}</template>
+	
+<template
+	context="LuaDocumentorTemplateContextType"
+	id="org.eclipse.koneki.ldt.ui.templates.luadocumentor.callof"
+	name="@callof"
+	description="%callof.description"
+	autoinsert="true">@callof #${type}</template>
 
 </templates>

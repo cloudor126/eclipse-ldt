@@ -273,6 +273,7 @@ public final class APIModelFactory {
 				TypeRef supertype = l.checkJavaObject(5, TypeRef.class);
 				TypeRef defaultkeyindex = l.checkJavaObject(6, TypeRef.class);
 				TypeRef defaultvalueindex = l.checkJavaObject(7, TypeRef.class);
+				TypeRef call = l.checkJavaObject(8, TypeRef.class);
 
 				RecordTypeDef record = new RecordTypeDef();
 				record.setName(name);
@@ -285,6 +286,8 @@ public final class APIModelFactory {
 					record.setDefaultkeytyperef(defaultkeyindex);
 				if (defaultvalueindex != null)
 					record.setDefaultvaluetyperef(defaultvalueindex);
+				if (call != null)
+					record.setCallTyperef(call);
 
 				l.pushJavaObject(record);
 
@@ -320,7 +323,10 @@ public final class APIModelFactory {
 		return new NamedJavaFunction() {
 			@Override
 			public int invoke(LuaState l) {
-				l.pushJavaObject(new FunctionTypeDef());
+				String documentation = l.checkString(1);
+				FunctionTypeDef functionTypeDef = new FunctionTypeDef();
+				functionTypeDef.setDocumentation(documentation);
+				l.pushJavaObject(functionTypeDef);
 
 				return 1;
 			}

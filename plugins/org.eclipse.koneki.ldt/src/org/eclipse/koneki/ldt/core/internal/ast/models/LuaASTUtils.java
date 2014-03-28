@@ -224,7 +224,7 @@ public final class LuaASTUtils {
 	}
 
 	private static TypeResolution getDefaultIndexType(TypeResolution recordTypeResolution, Set<TypeResolution> cache) {
-		if (recordTypeResolution.getTypeDef() instanceof RecordTypeDef) {
+		if (recordTypeResolution != null && recordTypeResolution.getTypeDef() instanceof RecordTypeDef) {
 			// search the default index
 			RecordTypeDef recordTypeDef = (RecordTypeDef) recordTypeResolution.getTypeDef();
 			TypeRef defaultIndex = recordTypeDef.getDefaultvaluetyperef();
@@ -265,13 +265,25 @@ public final class LuaASTUtils {
 		} else if (expr instanceof Call) {
 			Call call = ((Call) expr);
 			// resolve the function which is called
-			TypeResolution resolvedFunctionType = resolveType(sourceModule, call.getFunction());
-			if (resolvedFunctionType != null && resolvedFunctionType.getTypeDef() instanceof FunctionTypeDef) {
-				FunctionTypeDef functiontype = (FunctionTypeDef) resolvedFunctionType.getTypeDef();
-				if (functiontype.getReturns().size() > 0) {
+			TypeResolution resolvedType = resolveType(sourceModule, call.getFunction());
+			if (resolvedType != null) {
+				// we must found a function type.
+				FunctionTypeDef functiontype = null;
+				if (resolvedType.getTypeDef() instanceof FunctionTypeDef) {
+					// if the resolved type is function, we get it.
+					functiontype = (FunctionTypeDef) resolvedType.getTypeDef();
+				} else if (resolvedType.getTypeDef() instanceof RecordTypeDef) {
+					// if the resolved type is a record(a table) we get it if it is "callable"
+					TypeResolution type = resolveType(resolvedType.getModule(), ((RecordTypeDef) resolvedType.getTypeDef()).getCallTypeRef());
+					if (type != null && type.getTypeDef() instanceof FunctionTypeDef) {
+						functiontype = (FunctionTypeDef) type.getTypeDef();
+					}
+				}
+
+				if (functiontype != null && functiontype.getReturns().size() > 0) {
 					List<TypeRef> types = functiontype.getReturns().get(0).getTypes();
 					if (types.size() >= returnposition) {
-						return resolveType(resolvedFunctionType.getModule(), types.get(returnposition - 1));
+						return resolveType(resolvedType.getModule(), types.get(returnposition - 1));
 					}
 				}
 			}

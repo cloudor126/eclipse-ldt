@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.koneki.ldt.core.internal.ast.models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.dltk.ast.ASTNode;
@@ -174,11 +175,12 @@ public final class LuaASTModelUtils {
 	}
 
 	/**
-	 * Get IMember from Item <br/>
+	 * Get IMembers from Item <br/>
 	 * 
 	 * AST => DLTK Model
 	 */
-	public static IMember getIMember(ISourceModule sourceModule, Item item) {
+	public static List<IMember> getIMembers(ISourceModule sourceModule, Item item) {
+		ArrayList<IMember> results = new ArrayList<IMember>();
 		LuaASTNode parent = item.getParent();
 		// we don't no manage inline type we create fake model element for now ... :/
 		if (LuaASTUtils.isTypeField(item) && !LuaASTUtils.isInlineTypeField(item)) {
@@ -187,14 +189,16 @@ public final class LuaASTModelUtils {
 			if (iType != null) {
 				try {
 					for (IModelElement child : iType.getChildren()) {
-						if (child.getElementName().equals(item.getName()) && child instanceof IMember)
-							return (IMember) child;
+						if (child.getElementName().equals(item.getName()) && child instanceof IMember) {
+							results.add((IMember) child);
+							return results;
+						}
 					}
 				} catch (ModelException e) {
 					Activator.logWarning("unable to get IMember corresponding to the given item " + item, e); //$NON-NLS-1$
 				}
 			}
-		} else if (LuaASTUtils.isLocalVariable(item) || LuaASTUtils.isInlineTypeField(item)) {
+		} else if (LuaASTUtils.isLocalVariable(item) || LuaASTUtils.isInlineTypeField(item) || LuaASTUtils.isGlobalVariable(item)) {
 			// TODO retrieve local var which are in the model (so the local var in the first block)
 			// support local variable
 			// ------------------------------------------------------------------------------------
@@ -219,7 +223,8 @@ public final class LuaASTModelUtils {
 				for (int i = 0; i < parametersName.length; i++) {
 					parametersName[i] = functionResolvedType.getParameters().get(i).getName();
 				}
-				return new FakeMethod(sourceModule, item.getName(), item.sourceStart(), item.getName().length(), parametersName, modifier, item);
+				results.add(new FakeMethod(sourceModule, item.getName(), item.sourceStart(), item.getName().length(), parametersName, modifier, item));
+				return results;
 			}
 
 			// get type
@@ -227,25 +232,51 @@ public final class LuaASTModelUtils {
 			if (item.getType() instanceof PrimitiveTypeRef || item.getType() instanceof InternalTypeRef || item.getType() instanceof ExternalTypeRef)
 				type = item.getType().toReadableString();
 
-			TypeDef resolvedType = LuaASTUtils.resolveTypeLocaly(sourceModule, item);
-			if (resolvedType instanceof RecordTypeDef) {
+			TypeResolution typeResolution = LuaASTUtils.resolveType(sourceModule, item.getType());
+			if (typeResolution != null && typeResolution.getTypeDef() instanceof RecordTypeDef) {
 				modifier |= Flags.AccInterface;
-				return new FakeField(sourceModule, item.getName(), type, item.sourceStart(), item.getName().length(), modifier, item);
-			} else
-				return new FakeField(sourceModule, item.getName(), type, item.sourceStart(), item.getName().length(), modifier, item);
-		} else if (LuaASTUtils.isGlobalVariable(item)) {
-			// support global var
-			try {
-				for (IModelElement child : sourceModule.getChildren()) {
-					if (child.getElementName().equals(item.getName()) && child instanceof IMember)
-						return (IMember) child;
+				results.add(new FakeField(sourceModule, item.getName(), type, item.sourceStart(), item.getName().length(), modifier, item));
+
+				// check if members is callable
+				TypeResolution resolvedCallType = LuaASTUtils.resolveType(typeResolution.getModule(),
+						((RecordTypeDef) typeResolution.getTypeDef()).getCallTypeRef());
+				if (resolvedCallType != null && resolvedCallType.getTypeDef() instanceof FunctionTypeDef) {
+					// if yes create another member corresponding to this item
+					FunctionTypeDef functionResolvedType = (FunctionTypeDef) resolvedCallType.getTypeDef();
+					if (functionResolvedType.getParameters().size() > 1) {
+						String[] parametersName = new String[functionResolvedType.getParameters().size() - 1];
+						// we must ignore the first parameter.
+						for (int i = 0; i < parametersName.length; i++) {
+							parametersName[i] = functionResolvedType.getParameters().get(i + 1).getName();
+						}
+						results.add(new FakeMethod(resolvedCallType.getModule(), item.getName(), item.sourceStart(), item.getName().length(),
+								parametersName, modifier, functionResolvedType));
+					} else {
+						results.add(new FakeMethod(resolvedCallType.getModule(), item.getName(), item.sourceStart(), item.getName().length(),
+								new String[0], modifier, functionResolvedType));
+					}
 				}
-			} catch (ModelException e) {
-				Activator.logWarning("unable to get IMember corresponding to the given item " + item, e); //$NON-NLS-1$
+				return results;
+			} else {
+				results.add(new FakeField(sourceModule, item.getName(), type, item.sourceStart(), item.getName().length(), modifier, item));
+				return results;
 			}
 		} else if (LuaASTUtils.isUnresolvedGlobal(item)) {
-			return new FakeField(sourceModule, item.getName(), null, item.sourceStart(), item.getName().length(), Declaration.AccGlobal, item);
+			results.add(new FakeField(sourceModule, item.getName(), null, item.sourceStart(), item.getName().length(), Declaration.AccGlobal, item));
+			return results;
 		}
+		return null;
+	}
+
+	/**
+	 * Get IMember from Item <br/>
+	 * 
+	 * AST => DLTK Model
+	 */
+	public static IMember getIMember(ISourceModule sourceModule, Item item) {
+		List<IMember> iMembers = getIMembers(sourceModule, item);
+		if (iMembers != null && iMembers.size() > 0)
+			return iMembers.get(0);
 		return null;
 	}
 

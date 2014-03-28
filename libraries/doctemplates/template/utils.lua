@@ -28,11 +28,14 @@ end
 
 ---
 -- Provide a handling function for all supported anchor types
---                 recordtypedef => #(typename)
--- item (field of recordtypedef) => #(typename).itemname
---                 item (global) => itemname
+--                    recordtypedef => #(typename)
+--    item (field of recordtypedef) => #(typename).itemname
+--                    item (global) => itemname
+--functiontypedef callof given type => ##(giventypename)__call 
+                
 M.anchortypes = {
 	recordtypedef = function (o) return string.format('#(%s)', o.name) end,
+	functiontypedef = function (o,t) return string.format('#(%s)__call', t.name) end,
 	item = function(o)
 		if not o.parent or o.parent.tag == 'file' then
 			-- Handle items referencing globals
@@ -59,10 +62,10 @@ M.anchortypes = {
 -- @usage # -- In a template
 -- # local anchorname = anchor(someobject)
 -- <a id="$(anchorname)" />
-function M.anchor( modelobject )
+function M.anchor( modelobject,... )
 	local tag = modelobject.tag
 	if M.anchortypes[ tag ] then
-		return M.anchortypes[ tag ](modelobject)
+		return M.anchortypes[ tag ](modelobject,...)
 	end
 	return nil, string.format('No anchor available for `%s', tag)
 end
@@ -94,6 +97,7 @@ end
 --                                        => linkto(file)#anchor(recordtyperef)
 --                           file(module) => modulename.html
 --                                  index => index.html
+--      functiontypedef callof given type => ##(giventypename)__call     
 --                          recordtypedef => ##(typename)
 --                                        => #anchor(recordtyperef)
 -- item (internal field of recordtypedef) => ##(typename).itemname
@@ -116,6 +120,13 @@ M.linktypes = {
 		end
 		return string.format('#%s', anchor)
 	end,
+	functiontypedef   = function(o,...)
+    local anchor = M.anchor(o,...)
+    if not anchor then
+      return nil, 'Unable to generate anchor for `functiontypedef.'
+    end
+    return string.format('#%s', anchor)
+  end,
 	item = function(o)
 
 		-- For every item get anchor
@@ -159,10 +170,10 @@ M.linktypes = {
 -- @result #string Links text for an API model element, this function __may rise an error__.
 -- @usage # -- In a template
 -- <a href="$( linkto(api) )">Some text</a>
-function M.linkto( apiobject )
+function M.linkto( apiobject,...)
 	local tag = apiobject.tag
 	if M.linktypes[ tag ] then
-		return M.linktypes[tag](apiobject)
+		return M.linktypes[tag](apiobject,...)
 	end
 	if not tag then
 		return nil, 'Link generation is impossible as no tag has been provided.'
@@ -174,10 +185,11 @@ end
 -- Provide a handling function for all supported pretty name types
 --                                 primitivetyperef => #typename
 --                                  internaltyperef => #typename
---                                  inlinetyperef => #def.typename
+--                                  inlinetyperef   => #def.typename
 --                                  externaltyperef => modulename#typename
 --                                     file(module) => modulename
 --                                            index => index
+--                functiontypedef callof given type => giventypename(param1,param2, ...)        
 --                                    recordtypedef => typename
 --        item (internal function of recordtypedef) => typename.itemname(param1, param2,...)
 --  item (internal func with self of recordtypedef) => typename:itemname(param2)
@@ -210,6 +222,18 @@ M.prettynametypes = {
 	index = function(o) return "index" end,
 	file = function(o) return o.name end,
 	recordtypedef = function(o) return o.name end,
+	functiontypedef = function(o,t)
+	  if t and t.tag == 'recordtypedef' and t.name then
+	    local paramlist = {}
+	    for position, param in ipairs(o.params) do
+        -- we ignore the first param
+        if not (position == 1) then
+          table.insert(paramlist, param.name)
+        end
+      end
+	    return string.format('%s(%s)',t.name, table.concat(paramlist, ", "))
+	  end
+	end,
 	item = function( o )
 
 		-- Determine item name
@@ -319,10 +343,10 @@ end
 -- @param apiobject Object form API model
 -- @result #string Human readable description of given element.
 -- @result #nil, #string In case of error.
-function M.prettyname( apiobject )
+function M.prettyname( apiobject, ... )
 	local tag = apiobject.tag
 	if M.prettynametypes[tag] then
-		return M.prettynametypes[tag](apiobject)
+		return M.prettynametypes[tag](apiobject,...)
 	elseif not tag then
 		return nil, 'No pretty name available as no tag has been provided.'
 	end
