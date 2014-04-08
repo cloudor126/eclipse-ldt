@@ -285,8 +285,17 @@ local paramparsers = {
 		end,
 		'@','param', typerefparser, idparser
 	}),
+	
+	-- reject the case were only a type without name 
+  gg.sequence({
+    builder = function (result)
+      raiserror(result)
+      return nil
+    end,
+    '@','param', '#'
+  }),
 
-	-- full parser without type
+	-- parser without type
 	gg.sequence({
 		builder = function (result)
 			raiserror(result)
