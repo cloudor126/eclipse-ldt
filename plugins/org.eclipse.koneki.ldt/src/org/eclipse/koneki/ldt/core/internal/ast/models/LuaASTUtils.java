@@ -588,7 +588,9 @@ public final class LuaASTUtils {
 					throws CoreException {
 				if (sourceModule != null && !sourceModule.equals(originalSourceModule)) {
 					if (exactName) {
-						definitions.add(getInternalGlobalVarDefinition(sourceModule, start));
+						Definition globalVarDef = getInternalGlobalVarDefinition(sourceModule, start);
+						if (globalVarDef != null)
+							definitions.add(globalVarDef);
 					} else {
 						definitions.addAll(getAllInternalGlobalVarsDefinition(sourceModule, start));
 					}
