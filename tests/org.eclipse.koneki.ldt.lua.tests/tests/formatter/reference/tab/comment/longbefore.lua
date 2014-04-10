@@ -1,5 +1,5 @@
 function test()
 	--[[ my
-	comment]]
+ comment]]
 	test()
 end

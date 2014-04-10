@@ -32,7 +32,7 @@ local COMMENT = '--'
 ---
 -- Comment adjusted first line and first offset of a node.
 --
--- @return #int, #int
+-- @return #number, #number
 local function getfirstline(node, ignorecomments)
   -- Consider preceding comments as part of current chunk
   -- WARNING: This is NOT the default in Metalua
@@ -52,7 +52,7 @@ end
 ---
 -- Last line of a node.
 --
--- @return #int
+-- @return #number
 local function getlastline(node)
   return node.lineinfo.last.line , node.lineinfo.last.offset
 end
@@ -353,14 +353,45 @@ local function getindentlevel(source, indenttable)
     indentation = { },
     -- Key:   Line number to indent back.
     -- Value: Previous line number, it has the indentation depth wanted.
-    unindentation = { }
+    unindentation = { },
+    -- cache of handled comment
+    handledcomments = { },
   }
 
   local function onNode(...)
-    local tag = (...).tag
+    local node = (...)
+    local tag = node.tag
     if not tag then case.Do(configuration, state, ...) else
       local f = case[tag]
       if f then f(configuration, state, ...) end
+    end
+
+    -- Do not indent long comment
+    -- -----------------------------------------
+    -- Define function to deal with long comment
+    local function indentlongcomment (comment)
+      -- If this is a long comment
+      -- (Only long comment has value at index 2 : this is the number of '=' for this comment)
+      if comment[2] and not state.handledcomments[comment]
+        and comment.lineinfo and comment.lineinfo.first and comment.lineinfo.first.line
+        and comment.lineinfo.last and comment.lineinfo.last.line then
+
+        state.handledcomments[comment] = true
+        for i=comment.lineinfo.first.line+1, comment.lineinfo.last.line do
+          state.indentation[i] = false
+        end
+      end
+    end
+    -- manage comment before, then after this node
+    if node.lineinfo and node.lineinfo.first and node.lineinfo.first.comments then
+      for _, comment in ipairs(node.lineinfo.first.comments) do
+        indentlongcomment(comment)
+      end
+    end
+    if node.lineinfo and node.lineinfo.last and node.lineinfo.last.comments then
+      for _, comment in ipairs(node.lineinfo.last.comments) do
+        indentlongcomment(comment)
+      end
     end
   end
 
