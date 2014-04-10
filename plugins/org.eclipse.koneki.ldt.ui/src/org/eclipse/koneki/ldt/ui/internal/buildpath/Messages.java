@@ -16,6 +16,7 @@ public final class Messages extends NLS {
 	// CHECKSTYLE NLS: OFF
 	private static final String BUNDLE_NAME = "org.eclipse.koneki.ldt.ui.internal.buildpath.messages"; //$NON-NLS-1$
 	public static String LuaExecutionEnvironmentLabelProvider_embedded_string;
+	public static String LuaExecutionEnvironmentWizardPage_warning_several_ee;
 	public static String LuaExecutionEnvironmentWizardPageConfigureButtonLabel;
 	public static String LuaExecutionEnvironmentWizardPageDescription;
 	public static String LuaExecutionEnvironmentWizardPageTitle;

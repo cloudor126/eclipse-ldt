@@ -10,14 +10,18 @@
  *******************************************************************************/
 package org.eclipse.koneki.ldt.ui.internal.buildpath;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IBuildpathEntry;
+import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.internal.ui.wizards.IBuildpathContainerPage;
 import org.eclipse.dltk.internal.ui.wizards.IBuildpathContainerPageExtension2;
+import org.eclipse.dltk.ui.wizards.IBuildpathContainerPageExtension;
 import org.eclipse.dltk.ui.wizards.NewElementWizardPage;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
@@ -33,6 +37,8 @@ import org.eclipse.koneki.ldt.core.internal.buildpath.LuaExecutionEnvironmentBui
 import org.eclipse.koneki.ldt.core.internal.buildpath.LuaExecutionEnvironmentConstants;
 import org.eclipse.koneki.ldt.ui.LuaExecutionEnvironmentUIManager;
 import org.eclipse.koneki.ldt.ui.SWTUtil;
+import org.eclipse.koneki.ldt.ui.internal.Activator;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -41,10 +47,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 
 @SuppressWarnings("restriction")
-public class LuaExecutionEnvironmentWizardPage extends NewElementWizardPage implements IBuildpathContainerPage, IBuildpathContainerPageExtension2 {
+public class LuaExecutionEnvironmentWizardPage extends NewElementWizardPage implements IBuildpathContainerPage, IBuildpathContainerPageExtension,
+		IBuildpathContainerPageExtension2 {
 
 	private TreeViewer eeTreeViewer;
 	private Button configureEE;
+	private ArrayList<LuaExecutionEnvironment> currentEEs;
 
 	public LuaExecutionEnvironmentWizardPage() {
 		super("LuaExecutionEnvironmentWizardPage"); //$NON-NLS-1$
@@ -146,6 +154,9 @@ public class LuaExecutionEnvironmentWizardPage extends NewElementWizardPage impl
 
 		// get new input
 		final List<LuaExecutionEnvironment> newInput = LuaExecutionEnvironmentUIManager.getAvailableExecutionEnvironments();
+		if (currentEEs != null)
+			newInput.removeAll(currentEEs);
+
 		eeTreeViewer.setInput(newInput);
 
 		// try to guess the better new selection
@@ -207,5 +218,33 @@ public class LuaExecutionEnvironmentWizardPage extends NewElementWizardPage impl
 	@Override
 	public void setSelection(IBuildpathEntry containerEntry) {
 		// not used
+	}
+
+	/**
+	 * @see org.eclipse.dltk.ui.wizards.IBuildpathContainerPageExtension#initialize(org.eclipse.dltk.core.IScriptProject,
+	 *      org.eclipse.dltk.core.IBuildpathEntry[])
+	 */
+	@Override
+	public void initialize(IScriptProject project, IBuildpathEntry[] currentEntries) {
+		// Get all EE for this project in a list.
+		currentEEs = new ArrayList<LuaExecutionEnvironment>();
+		for (IBuildpathEntry entry : currentEntries) {
+
+			LuaExecutionEnvironment executionEnvironment = null;
+			try {
+				executionEnvironment = LuaExecutionEnvironmentBuildpathUtil.getExecutionEnvironment(entry.getPath());
+			} catch (CoreException e) {
+				Activator.logWarning(NLS.bind("Unable to get execution environement for the path {0}.", entry.getPath(), e)); //$NON-NLS-1$
+			}
+			if (executionEnvironment != null) {
+				currentEEs.add(executionEnvironment);
+			}
+		}
+
+		// If there are EE already installed, show a warning.
+		if (!currentEEs.isEmpty()) {
+			setMessage(Messages.LuaExecutionEnvironmentWizardPage_warning_several_ee, WARNING);
+		}
+
 	}
 }
