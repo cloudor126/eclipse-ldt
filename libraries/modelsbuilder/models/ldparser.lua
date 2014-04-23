@@ -289,8 +289,9 @@ local paramparsers = {
 	-- reject the case were only a type without name 
   gg.sequence({
     builder = function (result)
-      raiserror(result)
-      return nil
+      local errortag = {tag="Error"}
+      raiserror(errortag)
+      return errortag
     end,
     '@','param', '#'
   }),
