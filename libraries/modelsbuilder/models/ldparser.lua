@@ -384,6 +384,16 @@ local fieldparsers = {
 		'@','field', typerefparser
 	}),
 	
+  -- reject the case where the type name is empty 
+  gg.sequence({
+    builder = function (result)
+      local error = {tag = "Error"}
+      raiserror(error)
+      return error
+    end,
+    '@','field', '#'
+  }),
+	
 	-- parser without type and modifiers
 	gg.sequence({
 		builder = function (result)
