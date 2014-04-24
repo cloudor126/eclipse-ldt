@@ -102,6 +102,7 @@ public class Activator extends AbstractUIPlugin {
 		reg.put(ImageConstants.PUBLIC_TABLE_OBJ16, AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID, ImageConstants.PUBLIC_TABLE_OBJ16));
 
 		reg.put(ImageConstants.DOCLUA_OVERLAY, AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID, ImageConstants.DOCLUA_OVERLAY));
+		reg.put(ImageConstants.DOCLUA_FILE_WIZARD_BAN, AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID, ImageConstants.DOCLUA_FILE_WIZARD_BAN));
 	}
 
 	/**

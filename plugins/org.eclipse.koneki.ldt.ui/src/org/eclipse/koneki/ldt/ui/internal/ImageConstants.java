@@ -33,4 +33,5 @@ public interface ImageConstants {
 	String NEW_FILE = "icons/obj16/lua_file_plus.png"; //$NON-NLS-1$
 
 	String DOCLUA_OVERLAY = "icons/ovr16/doclua.png"; //$NON-NLS-1$
+	String DOCLUA_FILE_WIZARD_BAN = "icons/wizban/doclua_newfile_wiz.png"; //$NON-NLS-1$
 }

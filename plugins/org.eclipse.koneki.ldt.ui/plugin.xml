@@ -248,6 +248,14 @@
             id="org.eclipse.koneki.ldt.wizard.file"
             name="%wizard.file.new.name">
       </wizard>
+      <wizard
+            category="org.eclipse.koneki.ldt.category"
+            class="org.eclipse.koneki.ldt.ui.wizards.DocLuaNewFileWizard"
+            finalPerspective="org.eclipse.koneki.ldt.ui.luaperspective"
+            icon="icons/obj16/doclua_file_plus.png"
+            id="org.eclipse.koneki.ldt.wizard.docfile"
+            name="%wizard.docfile.new.name">
+      </wizard>
    </extension>
    <extension
          point="org.eclipse.ui.perspectiveExtensions">
@@ -258,6 +266,9 @@
          </newWizardShortcut>
          <newWizardShortcut
                id="org.eclipse.koneki.ldt.wizard.file">
+         </newWizardShortcut>
+         <newWizardShortcut
+               id="org.eclipse.koneki.ldt.wizard.docfile">
          </newWizardShortcut>
       </perspectiveExtension>
    </extension>
