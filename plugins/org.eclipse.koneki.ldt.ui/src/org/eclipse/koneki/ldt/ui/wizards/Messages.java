@@ -15,7 +15,10 @@ import org.eclipse.osgi.util.NLS;
 //CHECKSTYLE NLS: OFF
 public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.eclipse.koneki.ldt.ui.wizards.messages"; //$NON-NLS-1$
+
+	/** @since 1.2 */
 	public static String DocLuaNewFileWizard_title;
+
 	public static String LuaNewFileWizardTitle;
 	public static String LuaProjectCreatorInitializingSourceFolder;
 	public static String LuaProjectWizard_warning_noSourceFolder;

@@ -14,6 +14,9 @@ import org.eclipse.dltk.ui.wizards.NewSourceModulePage;
 import org.eclipse.koneki.ldt.core.LuaConstants;
 import org.eclipse.koneki.ldt.core.LuaNature;
 
+/**
+ * @since 1.2
+ */
 public class DocLuaFilePage extends NewSourceModulePage {
 
 	@Override
@@ -31,19 +34,21 @@ public class DocLuaFilePage extends NewSourceModulePage {
 		return LuaNature.ID;
 	}
 
-	protected String getFileName() {
-		final String fileText = getFileText();
-
-		String extension = "doclua"; //$NON-NLS-1$
-		if (extension.length() > 0 && fileText.endsWith("." + extension)) { //$NON-NLS-1$
-			return fileText;
-		}
-
-		return fileText + "." + extension; //$NON-NLS-1$
+	@Override
+	protected String[] getFileExtensions() {
+		return new String[] { "doclua" }; //$NON-NLS-1$
 	}
 
 	protected String getFileContent() {
 		return String.format(LuaConstants.DOCLUA_FILE_DEFAULT_CONTENT, getFileText());
 	}
 
+	@Override
+	protected String getFileText() {
+		String fileText = super.getFileText();
+		if (fileText != null)
+			return fileText.trim();
+
+		return null;
+	}
 }

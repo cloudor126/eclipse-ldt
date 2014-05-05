@@ -29,4 +29,13 @@ public class LuaFilePage extends NewSourceModulePage {
 	protected String getRequiredNature() {
 		return LuaNature.ID;
 	}
+
+	@Override
+	protected String getFileText() {
+		String fileText = super.getFileText();
+		if (fileText != null)
+			return fileText.trim();
+
+		return null;
+	}
 }
