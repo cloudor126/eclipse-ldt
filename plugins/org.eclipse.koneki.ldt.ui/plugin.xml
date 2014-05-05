@@ -142,11 +142,6 @@
                 id="org.eclipse.koneki.ldt.ui.buildpathcontainer.documentation"
                 name="%handler.documentation.label">
           </command>
-          <command
-                description="%command.description.rename"
-                id="org.eclipse.koneki.ldt.ui.source.rename"
-                name="%command.name.rename">
-          </command>
        </extension>
        <extension
              point="org.eclipse.ui.handlers">
@@ -203,7 +198,7 @@
                 locationURI="menu:org.eclipse.dltk.ui.source.menu?after=editGroup">
              <command
                    commandId="org.eclipse.dltk.ui.edit.text.script.rename.element"
-                   label="%command.label.rename">
+                   label="%rename.command.label">
              </command>
           </menuContribution>
           <menuContribution
@@ -211,7 +206,7 @@
                 locationURI="popup:org.eclipse.dltk.ui.source.menu?after=editGroup">
              <command
                    commandId="org.eclipse.dltk.ui.edit.text.script.rename.element"
-                   label="%command.label.rename">
+                   label="%rename.command.label">
              </command>
           </menuContribution>
        </extension>
@@ -546,5 +541,15 @@
             lightweight="true"
             state="true">
       </decorator>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="org.eclipse.dltk.ui.edit.text.script.rename.element"
+            contextId="org.eclipse.dltk.ui.scriptEditorScope"
+            platform="cocoa"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+M3+R">
+      </key>
    </extension>
 </plugin>

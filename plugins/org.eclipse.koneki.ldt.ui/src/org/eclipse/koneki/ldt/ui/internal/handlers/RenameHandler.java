@@ -63,7 +63,7 @@ public class RenameHandler extends AbstractHandler {
 
 		// Get identifier under selection.
 		final LuaSourceRoot luaSourceRoot = LuaASTModelUtils.getLuaSourceRoot(sourceModule);
-		final LuaExpression luaExpression = LuaASTUtils.getLuaExpressionAt(luaSourceRoot, selectionOffset, selectionOffset + selectionLength + 1);
+		final LuaExpression luaExpression = LuaASTUtils.getLuaExpressionAt(luaSourceRoot, selectionOffset, selectionOffset + selectionLength);
 		if (luaExpression == null || !(luaExpression instanceof Identifier)) {
 			return null;
 		}
