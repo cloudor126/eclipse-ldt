@@ -315,7 +315,8 @@ function M.createmoduleapi(ast,modulename)
             if regulartags["extends"]	and regulartags["extends"][1] then
               local supertype = regulartags["extends"][1].type
               if supertype then _moduletypedef.supertype = createtyperef(supertype) end
-            elseif regulartags["map"] and regulartags["map"][1] then
+            end
+            if regulartags["map"] and regulartags["map"][1] then
               local keytype = regulartags["map"][1].keytype
               local valuetype = regulartags["map"][1].valuetype
               if keytype and valuetype then
