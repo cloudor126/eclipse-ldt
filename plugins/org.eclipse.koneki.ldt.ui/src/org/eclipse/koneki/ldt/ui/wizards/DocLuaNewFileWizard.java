@@ -17,6 +17,7 @@ import org.eclipse.koneki.ldt.ui.internal.Activator;
 import org.eclipse.koneki.ldt.ui.internal.ImageConstants;
 import org.eclipse.koneki.ldt.ui.wizards.pages.DocLuaFilePage;
 
+/** @since 1.2 */
 public class DocLuaNewFileWizard extends NewSourceModuleWizard {
 
 	public DocLuaNewFileWizard() {
