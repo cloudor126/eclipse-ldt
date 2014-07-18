@@ -8,11 +8,11 @@
       <text>
          Lua Development Tools
 
-© Copyright Eclipse contributors and others 2000, 2012.  All rights reserved.
+© Copyright Eclipse contributors and others 2000, 2015.  All rights reserved.
 
 This product includes software developed by the Apache Software Foundation http://www.apache.org/
 
-Visit http://www.eclipse.org/koneki/ldt for more information.
+Visit http://www.eclipse.org/ldt for more information.
       </text>
    </aboutInfo>
 
@@ -40,9 +40,9 @@ plugins\org.eclipse.equinox.launcher_1.1.1.R36x_v20101122_1400.jar</programArgsW
 
    <splash
       location="org.eclipse.koneki.ldt.branding"
-      startupProgressRect="3,281,493,14"
-      startupMessageRect="7,260,350,20"
-      startupForegroundColor="D4BAA9" />
+      startupProgressRect="2,290,448,10"
+      startupMessageRect="7,265,320,20"
+      startupForegroundColor="9C9696" />
    <launcher name="LuaDevelopmentTools">
       <linux icon="../../../../plugins/org.eclipse.koneki.ldt.branding/icons/ldt.xpm"/>
       <macosx icon="../../../../plugins/org.eclipse.koneki.ldt.branding/icons/ldt.icns"/>
@@ -52,6 +52,7 @@ plugins\org.eclipse.equinox.launcher_1.1.1.R36x_v20101122_1400.jar</programArgsW
          <bmp/>
       </win>
    </launcher>
+
 
    <vm>
    </vm>

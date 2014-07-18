@@ -49,7 +49,7 @@ public class Activator extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		// get version of Product installable unit !
-		String version = "NA"; //$NON-NLS-1$
+		String version = "m.m.m.q"; //$NON-NLS-1$
 		System.setProperty(PRODUCT_VERSION_PROPERTY, version);
 
 		ProvisioningUI provisioningUI = ProvisioningUI.getDefaultUI();

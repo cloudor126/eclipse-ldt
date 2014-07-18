@@ -34,8 +34,8 @@ import org.eclipse.ui.splash.BasicSplashHandler;
 public class SplashHandler extends BasicSplashHandler {
 
 	private static final int DEFAULT_FOREGROUND_COLOR = 0xD2D7FF;
-	private static final Rectangle DEFAULT_MESSAGE_RECT = new Rectangle(1, 1, 10, 100);
-	private static final Rectangle DEFAULT_PROGRESS_RECT = new Rectangle(1, 12, 10, 100);
+	private static final Rectangle DEFAULT_MESSAGE_RECT = new Rectangle(10, 10, 300, 15);
+	private static final Rectangle DEFAULT_PROGRESS_RECT = new Rectangle(10, 35, 300, 15);
 
 	private Font font;
 
@@ -76,9 +76,9 @@ public class SplashHandler extends BasicSplashHandler {
 			version = version.substring(0, lastIndexOf);
 
 		final String buildId = "Version: " + version; //$NON-NLS-1$
-		final Point position = new Point(280, 150);
+		final Point position = new Point(340, 165);
 
-		font = new Font(Display.getDefault(), new FontData("Helvetica", (Platform.getOS().equals(Platform.OS_MACOSX) ? 9 : 7), SWT.BOLD)); //$NON-NLS-1$
+		font = new Font(Display.getDefault(), new FontData("Sans", (Platform.getOS().equals(Platform.OS_MACOSX) ? 9 : 7), SWT.BOLD)); //$NON-NLS-1$
 		getContent().addPaintListener(new PaintListener() {
 			public void paintControl(PaintEvent e) {
 				e.gc.setForeground(getForeground());
@@ -93,4 +93,5 @@ public class SplashHandler extends BasicSplashHandler {
 		font.dispose();
 		super.dispose();
 	}
+
 }
