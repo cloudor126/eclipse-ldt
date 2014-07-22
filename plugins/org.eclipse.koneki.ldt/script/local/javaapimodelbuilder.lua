@@ -128,10 +128,10 @@ function M._typedef(_typedef,notemplate, handledexpr)
 		    description,
 			_typedef.sourcerange.min - 1,
 			_typedef.sourcerange.max,
-			M._typeref(_typedef.supertype),
-			M._typeref(_typedef.defaultkeytyperef),
-			M._typeref(_typedef.defaultvaluetyperef),
-			M._typeref(_typedef.call)
+			M._typeref(_typedef.supertype,handledexpr),
+			M._typeref(_typedef.defaultkeytyperef,handledexpr),
+			M._typeref(_typedef.defaultvaluetyperef,handledexpr),
+			M._typeref(_typedef.call,handledexpr)
 		)
 
 		-- Appending fields
@@ -158,14 +158,14 @@ function M._typedef(_typedef,notemplate, handledexpr)
 
 		-- Appending parameters
 		for _, _param in ipairs(_typedef.params) do
-			javaapimodelfactory.addparam(jtypedef,_param.name, M._typeref(_param.type), _param.description)
+			javaapimodelfactory.addparam(jtypedef,_param.name, M._typeref(_param.type, handledexpr), _param.description)
 		end
 
 		-- Appending returned types
 		for _, _return in ipairs(_typedef.returns) do
 			local jreturn = javaapimodelfactory.newreturn()
 			for _, _type in ipairs( _return.types ) do
-				javaapimodelfactory.addtype(jreturn,M._typeref(_type))
+				javaapimodelfactory.addtype(jreturn,M._typeref(_type,handledexpr))
 			end
 			javaapimodelfactory.functionaddreturn(jtypedef,jreturn)
 		end
@@ -198,7 +198,7 @@ function M._file(_file)
 	for _, _return in ipairs(_file.returns) do
 		local jreturn = javaapimodelfactory.newreturn()
 		for _, _type in ipairs( _return.types ) do
-			javaapimodelfactory.addtype(jreturn,M._typeref(_type))
+			javaapimodelfactory.addtype(jreturn,M._typeref(_type,handledexpr))
 		end
 		javaapimodelfactory.fileapiaddreturn(jfile,jreturn)
 	end
