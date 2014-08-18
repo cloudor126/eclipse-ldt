@@ -19,8 +19,8 @@
 		<tycho-version>0.15.0</tycho-version>
 		<tycho-extras-version>0.15.0</tycho-extras-version>
 		<tycho-groupid>org.eclipse.tycho</tycho-groupid>
-		<download-publish-rootpath>/home/data/httpd/download.eclipse.org/koneki/</download-publish-rootpath>
-		<download-publish-relativepath>updates-nightly/ldt</download-publish-relativepath>
+		<download-publish-rootpath>/home/data/httpd/download.eclipse.org/ldt/</download-publish-rootpath>
+		<download-publish-relativepath>updates-nightly</download-publish-relativepath>
 		<download-publish-path>${download-publish-rootpath}${download-publish-relativepath}</download-publish-path>
 		<eclipse-site>http://download.eclipse.org/releases/luna</eclipse-site>
 	</properties>
@@ -34,7 +34,7 @@
 		<profile>
 			<id>maintenance</id>
 			<properties>
-				<download-publish-relativepath>updates-nightly-maintenance/ldt</download-publish-relativepath>
+				<download-publish-relativepath>updates-nightly-maintenance</download-publish-relativepath>
 			</properties>
 		</profile>
 		<profile>
