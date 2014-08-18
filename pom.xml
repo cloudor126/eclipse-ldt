@@ -215,8 +215,8 @@
 			<url>https://repository.sonatype.org/content/repositories/forge</url>
 		</pluginRepository>
 		<pluginRepository>
-			<id>maven.eclipse.org</id>
-			<url>http://maven.eclipse.org/nexus/content/groups/public/</url>
+			<id>repo.eclipse.org</id>
+			<url>https://repo.eclipse.org/content/repositories/releases/</url>
 		</pluginRepository>
 	</pluginRepositories>
 </project>
