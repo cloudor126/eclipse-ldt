@@ -146,7 +146,7 @@
 											</fileset>
 										</delete>
 										<copy includeemptydirs="false" todir="${download-publish-path}">
-											<fileset dir="target/checksumFix">
+											<fileset dir="target/repository">
 												<include name="**"/>
 											</fileset>
 										</copy>
