@@ -21,14 +21,14 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>${tycho-groupid}</groupId>
+				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-surefire-plugin</artifactId>
 				<version>${tycho-version}</version>
 				<configuration>
 					<dependencies>
 						<dependency>
-							<type>p2-installable-unit</type>
-							<artifactId>org.eclipse.koneki.ldt.feature.group</artifactId>
+							<type>eclipse-feature</type>
+							<artifactId>org.eclipse.koneki.ldt</artifactId>
 						</dependency>
 					</dependencies>
 				</configuration>
