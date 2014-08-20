@@ -9,7 +9,7 @@
 --     Sierra Wireless - initial API and implementation
 -------------------------------------------------------------------------------
 
-local DBGP_CLIENT_VERSION = "1.1.0"
+local DBGP_CLIENT_VERSION = "1.3.0"
 
 local debug = require "debug"
 
