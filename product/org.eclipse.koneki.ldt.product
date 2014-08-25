@@ -36,7 +36,7 @@ plugins\org.eclipse.equinox.launcher_1.1.1.R36x_v20101122_1400.jar</programArgsW
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
-   <windowImages i16="/org.eclipse.koneki.ldt.branding/icons/LDT_16.png" i32="/org.eclipse.koneki.ldt.branding/icons/LDT_32.png" i64="/org.eclipse.koneki.ldt.branding/icons/LDT_64.png" i128="/org.eclipse.koneki.ldt.branding/icons/LDT_128.png"/>
+   <windowImages i16="/org.eclipse.koneki.ldt.branding/icons/LDT_16.png" i32="/org.eclipse.koneki.ldt.branding/icons/LDT_32.png" i48="/org.eclipse.koneki.ldt.branding/icons/LDT_48.png" i64="/org.eclipse.koneki.ldt.branding/icons/LDT_64.png" i128="/org.eclipse.koneki.ldt.branding/icons/LDT_128.png"/>
 
    <splash
       location="org.eclipse.koneki.ldt.branding"
@@ -52,6 +52,7 @@ plugins\org.eclipse.equinox.launcher_1.1.1.R36x_v20101122_1400.jar</programArgsW
          <bmp/>
       </win>
    </launcher>
+
 
    <vm>
    </vm>
