@@ -89,7 +89,7 @@ public class LuaRemoteEnvironmentTab extends AbstractLaunchConfigurationTab {
 			ILaunchConfiguration config = (ILaunchConfiguration) inputElement;
 			Map m;
 			try {
-				m = config.getAttribute(ILaunchManager.ATTR_ENVIRONMENT_VARIABLES, Collections.EMPTY_MAP);
+				m = config.getAttribute(ILaunchManager.ATTR_ENVIRONMENT_VARIABLES, Collections.<String, String> emptyMap());
 			} catch (CoreException e) {
 				DebugUIPlugin.log(new Status(IStatus.ERROR, DebugUIPlugin.getUniqueIdentifier(), IStatus.ERROR, "Error reading configuration", e)); //$NON-NLS-1$
 				return elements.toArray();

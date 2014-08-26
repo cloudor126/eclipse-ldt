@@ -49,7 +49,6 @@ public class LuaGenericInterpreterConfigurer {
 		// TODO HACK ENV_VAR : make environment variable defined at interpreter level less a priority
 		// ****************************************************************************
 		// get launch conf env var
-		@SuppressWarnings("unchecked")
 		final Map<String, String> configEnvs = launch.getLaunchConfiguration().getAttribute(ILaunchManager.ATTR_ENVIRONMENT_VARIABLES,
 				(Map<String, String>) null);
 		EnvironmentVariable[] interEnvs = interpreterinstall.getEnvironmentVariables();

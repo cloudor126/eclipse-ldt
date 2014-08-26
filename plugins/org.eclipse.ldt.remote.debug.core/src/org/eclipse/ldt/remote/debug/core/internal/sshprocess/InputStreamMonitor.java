@@ -151,7 +151,8 @@ public class InputStreamMonitor {
 		}
 		try {
 			synchronized (fLock) {
-				fLock.wait();
+				while (fQueue.isEmpty() && fThread != null)
+					fLock.wait();
 			}
 			// CHECKSTYLE:OFF
 		} catch (InterruptedException e) {

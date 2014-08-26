@@ -84,7 +84,7 @@ public class LuaRemoteLaunchConfigurationDelegate extends LaunchConfigurationDel
 			String scriptName = configuration.getAttribute(LuaRemoteDebugConstant.SCRIPT_NAME, "");//$NON-NLS-1$
 			IHost host = LuaRemoteLaunchConfigurationUtil.getHost(configuration);
 			@SuppressWarnings("rawtypes")
-			Map env = configuration.getAttribute(ILaunchManager.ATTR_ENVIRONMENT_VARIABLES, Collections.EMPTY_MAP);
+			Map env = configuration.getAttribute(ILaunchManager.ATTR_ENVIRONMENT_VARIABLES, Collections.<String, String> emptyMap());
 
 			// valid configuration information
 			String errorMessage = LuaRemoteLaunchConfigurationUtil.validateRemoteLaunchConfiguration(projectName, scriptName, host);

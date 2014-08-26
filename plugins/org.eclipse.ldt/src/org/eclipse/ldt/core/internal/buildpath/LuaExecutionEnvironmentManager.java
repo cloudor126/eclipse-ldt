@@ -546,12 +546,10 @@ public final class LuaExecutionEnvironmentManager {
 			IScriptProject[] projects = new IScriptProject[length];
 			affectedProjects.toArray(projects);
 			IBuildpathContainer[] containers = new IBuildpathContainer[length];
-			if (ee != null) {
-				LuaExecutionEnvironmentBuildpathContainer container = new LuaExecutionEnvironmentBuildpathContainer(ee.getID(), ee.getVersion(),
-						containerPath);
-				for (int i = 0; i < length; i++) {
-					containers[i] = container;
-				}
+			LuaExecutionEnvironmentBuildpathContainer container = new LuaExecutionEnvironmentBuildpathContainer(ee.getID(), ee.getVersion(),
+					containerPath);
+			for (int i = 0; i < length; i++) {
+				containers[i] = container;
 			}
 			DLTKCore.setBuildpathContainer(containerPath, projects, containers, null);
 		} catch (ModelException e) {

@@ -61,7 +61,7 @@ public final class LuaRemoteLaunchConfigurationUtil {
 	 */
 	public static final IHost getHost(ILaunchConfiguration conf) {
 		try {
-			List<?> hostData = conf.getAttribute(LuaRemoteDebugConstant.HOST_ID, Collections.EMPTY_LIST);
+			List<?> hostData = conf.getAttribute(LuaRemoteDebugConstant.HOST_ID, Collections.<String> emptyList());
 
 			// list must contained 2 elements (profileName and host name)
 			if (hostData.size() != 2)

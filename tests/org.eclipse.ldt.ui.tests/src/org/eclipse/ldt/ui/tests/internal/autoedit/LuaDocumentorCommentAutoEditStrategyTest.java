@@ -13,7 +13,6 @@ package org.eclipse.ldt.ui.tests.internal.autoedit;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.eclipse.core.filebuffers.IDocumentSetupParticipant;
@@ -27,6 +26,7 @@ import org.eclipse.ldt.ui.internal.Activator;
 import org.eclipse.ldt.ui.internal.editor.text.ILuaPartitions;
 import org.eclipse.ldt.ui.internal.editor.text.LuaDocumentorCommentAutoEditStrategy;
 import org.eclipse.ldt.ui.internal.editor.text.LuaTextTools;
+import org.junit.Assert;
 
 /**
  * Tests for {@link LuaDocumentorCommentAutoEditStrategy}

@@ -52,7 +52,7 @@ public class LuaRemoteDebuggingEngineRunner extends LuaAttachDebuggingEngineRunn
 		try {
 			initializeLaunch(launch, config, createPreferencesLookupDelegate(launch));
 			final ScriptDebugTarget target = (ScriptDebugTarget) launch.getDebugTarget();
-			DebugSessionAcceptor debugSessionAcceptor = new DebugSessionAcceptor(target, monitor);
+			new DebugSessionAcceptor(target, monitor);
 			startProcess();
 		} catch (CoreException e) {
 			launch.terminate();
