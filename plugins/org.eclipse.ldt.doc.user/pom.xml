@@ -26,13 +26,7 @@
     <plugins>
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
-          <dependencies>
-            <dependency>
-              <groupId>ant</groupId>
-              <artifactId>optional</artifactId>
-              <version>1.5.4</version>
-            </dependency>
-        </dependencies>
+        <version>${maven-antrun-plugin-version}</version>
         <executions>
           <execution>
             <phase>generate-sources</phase>

@@ -22,7 +22,7 @@
 		<plugins>
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.6</version>
+				<version>${maven-antrun-plugin-version}</version>
 				<executions>
 					<execution>
 						<phase>compile</phase>
