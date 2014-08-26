@@ -2,13 +2,13 @@
 <?pde version="3.8"?><target name="Lua Development Tools - Luna" sequenceNumber="42">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.platform.sdk" version="4.4.0.I20140501-0200"/>
-<unit id="org.eclipse.rse.feature.group" version="3.5.0.201312161920"/>
+<unit id="org.eclipse.platform.sdk" version="4.4.0.I20140606-1215"/>
+<unit id="org.eclipse.rse.feature.group" version="3.5.0.201406091451"/>
 <repository location="http://download.eclipse.org/releases/luna"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.wst.jsdt.feature.feature.group" version="1.6.0.v201404302110-7G7FFyXFBBoPc8Psb9bz0ul"/>
-<unit id="org.eclipse.jdt.feature.group" version="3.10.0.v20140501-0200"/>
+<unit id="org.eclipse.wst.jsdt.feature.feature.group" version="1.6.0.v201405071612-7G7FFyXFBBoPc8Pvc8c0wn"/>
+<unit id="org.eclipse.jdt.feature.group" version="3.10.0.v20140606-1536"/>
 <repository location="http://download.eclipse.org/releases/luna"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
