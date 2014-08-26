@@ -4,10 +4,10 @@
   <modelVersion>4.0.0</modelVersion>
 	<parent>
 		<artifactId>aggregator</artifactId>
-		<groupId>org.eclipse.koneki.ldt</groupId>
+		<groupId>org.eclipse.ldt</groupId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-  <groupId>org.eclipse.koneki.ldt</groupId>
+  <groupId>org.eclipse.ldt</groupId>
   <artifactId>plugins</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
@@ -25,18 +25,18 @@
     <module>com.naef.jnlua.windows-lua52</module>
     <module>com.naef.jnlua.windows64-lua51</module>
     <module>com.naef.jnlua.windows64-lua52</module>
-    <module>org.eclipse.koneki.ldt</module>
-    <module>org.eclipse.koneki.ldt.branding</module>
-    <module>org.eclipse.koneki.ldt.doc.user</module>
-    <module>org.eclipse.koneki.ldt.metalua</module>
-    <module>org.eclipse.koneki.ldt.ui</module>
-    <module>org.eclipse.koneki.ldt.debug.core</module>
-    <module>org.eclipse.koneki.ldt.debug.ui</module>
-    <module>org.eclipse.koneki.ldt.support.lua51</module>
-    <module>org.eclipse.koneki.ldt.support.lua52</module>
-    <module>org.eclipse.koneki.ldt.remote.core</module>
-    <module>org.eclipse.koneki.ldt.remote.ui</module>
-    <module>org.eclipse.koneki.ldt.remote.debug.core</module>
-    <module>org.eclipse.koneki.ldt.remote.debug.ui</module>
+    <module>org.eclipse.ldt</module>
+    <module>org.eclipse.ldt.branding</module>
+    <module>org.eclipse.ldt.doc.user</module>
+    <module>org.eclipse.ldt.metalua</module>
+    <module>org.eclipse.ldt.ui</module>
+    <module>org.eclipse.ldt.debug.core</module>
+    <module>org.eclipse.ldt.debug.ui</module>
+    <module>org.eclipse.ldt.support.lua51</module>
+    <module>org.eclipse.ldt.support.lua52</module>
+    <module>org.eclipse.ldt.remote.core</module>
+    <module>org.eclipse.ldt.remote.ui</module>
+    <module>org.eclipse.ldt.remote.debug.core</module>
+    <module>org.eclipse.ldt.remote.debug.ui</module>
   </modules>
 </project>

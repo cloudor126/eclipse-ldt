@@ -5,10 +5,10 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<artifactId>libraries</artifactId>
-		<groupId>org.eclipse.koneki.ldt</groupId>
+		<groupId>org.eclipse.ldt</groupId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<groupId>org.eclipse.koneki.ldt</groupId>
+	<groupId>org.eclipse.ldt</groupId>
 	<artifactId>luadbgpclient</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>

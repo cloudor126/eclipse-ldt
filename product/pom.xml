@@ -5,11 +5,11 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<artifactId>aggregator</artifactId>
-		<groupId>org.eclipse.koneki.ldt</groupId>
+		<groupId>org.eclipse.ldt</groupId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<groupId>org.eclipse.koneki.ldt</groupId>
-	<artifactId>org.eclipse.koneki.ldt.product-product</artifactId>
+	<groupId>org.eclipse.ldt</groupId>
+	<artifactId>org.eclipse.ldt.product-product</artifactId>
 	<version>0.1.0-SNAPSHOT</version>
 	<packaging>eclipse-repository</packaging>
 
@@ -34,8 +34,8 @@
 					</formats>
 					<products>
 						<product>
-							<id>org.eclipse.koneki.ldt.product-product</id>			
-							<archiveFileName>org.eclipse.koneki.ldt.product</archiveFileName>
+							<id>org.eclipse.ldt.product-product</id>			
+							<archiveFileName>org.eclipse.ldt.product</archiveFileName>
 						</product>
 					</products>
 				</configuration>

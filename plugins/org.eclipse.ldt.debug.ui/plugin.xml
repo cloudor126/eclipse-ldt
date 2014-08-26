@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?><!--
+    Copyright (c) 2009, 2011 Sierra Wireless and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        Sierra Wireless - initial API and implementation
+ -->
+<plugin>
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+      <launchConfigurationTabGroup
+            class="org.eclipse.ldt.debug.ui.internal.launchconfiguration.attach.LuaAttachLaunchConfigurationTabGroup"
+            description="%LuaAttachLaunchConfigurationTabGroup.description"
+            id="org.eclipse.ldt.debug.ui.luaAttachLaunchConfigurationTabGroup"
+            type="org.eclipse.ldt.debug.core.luaattachdebug">
+         <launchMode
+               mode="debug"
+               perspective="org.eclipse.debug.ui.DebugPerspective">
+         </launchMode>
+      </launchConfigurationTabGroup>
+      <launchConfigurationTabGroup
+            class="org.eclipse.ldt.debug.ui.internal.launchconfiguration.local.LuaLaunchConfigurationTabGroup"
+            description="%LuaLocalLaunchConfigurationTabGroup.description"
+            id="org.eclipse.ldt.debug.ui.LuaLocalLaunchConfigurationTabGroup"
+            type="org.eclipse.ldt.debug.core.lualocaldebug">
+         <launchMode
+               mode="debug"
+               perspective="org.eclipse.debug.ui.DebugPerspective">
+         </launchMode>
+         <launchMode
+               mode="run"
+               perspective="org.eclipse.debug.ui.DebugPerspective">
+         </launchMode>
+      </launchConfigurationTabGroup>
+   </extension>
+   <extension point="org.eclipse.debug.ui.debugModelPresentations">
+		<debugModelPresentation
+			class="org.eclipse.ldt.debug.ui.internal.LuaDebugModelPresentation"
+			id="org.eclipse.ldt.nature.debugModel">
+		</debugModelPresentation>
+   </extension>
+   <extension
+           point="org.eclipse.dltk.debug.ui.language">
+        <language
+              class="org.eclipse.ldt.debug.ui.internal.LuaDebugUILanguageToolkit"
+              nature="org.eclipse.ldt.nature"
+		priority="0">
+      </language>
+   </extension>
+   
+    <extension
+    point="org.eclipse.ui.popupMenus">
+    <viewerContribution
+      id="org.eclipse.ldt.ui.rulerContribution"
+     targetID="#RulerContext">
+      <action
+        class="org.eclipse.debug.ui.actions.RulerEnableDisableBreakpointActionDelegate"
+        id="org.eclipse.ldt.ui.actions.RulerEnableDisableBreakpointActionDelegate"
+        label="%action.label.enablebreakpoint"
+        menubarPath="debug" />
+      <action
+        class="org.eclipse.debug.ui.actions.RulerToggleBreakpointActionDelegate"
+        id="org.eclipse.ldt.ui.actions.RulerToggleBreakpointActionDelegate"
+        label="%action.label.togglebreakpoint"
+        menubarPath="debug" />
+      <action
+        class="org.eclipse.dltk.debug.ui.actions.ScriptBreakpointPropertiesRulerActionDelegate"
+        id="org.eclipse.ldt.ui.actions.ScriptBreakpointPropertiesRulerActionDelegate"
+        label="%action.label.breakpointproperties"
+        menubarPath="group.properties" />
+    </viewerContribution>
+    <objectContribution
+          adaptable="false"
+          id="org.eclipse.ldt.ui.debug.contextExtensions"
+          objectClass="org.eclipse.dltk.debug.core.model.IScriptVariable">
+       <action
+             class="org.eclipse.ldt.debug.ui.internal.actions.GotoFunctionDefinitionAction"
+             enablesFor="1"
+             id="org.eclipse.ldt.ui.debug.GotoFunctionDefinitionAction"
+             label="%action.label.GotoFunctionDefinitionAction">
+       </action>
+    </objectContribution>
+  </extension>
+      <extension 
+    point="org.eclipse.core.runtime.adapters">
+    <factory
+      adaptableType="org.eclipse.ldt.ui.internal.editor.LuaEditor"
+      class="org.eclipse.ldt.debug.ui.internal.LuaEditorDebugAdapterFactory">
+      <adapter type="org.eclipse.debug.ui.actions.IToggleBreakpointsTarget"/>
+      <adapter type="org.eclipse.debug.ui.actions.IRunToLineTarget"/>
+    </factory>
+    <factory
+          adaptableType="org.eclipse.dltk.internal.debug.core.model.ScriptVariable"
+          class="org.eclipse.ldt.debug.ui.internal.LuaDebugElementAdapterFactory">
+       <adapter
+             type="org.eclipse.debug.internal.ui.viewers.model.provisional.IElementEditor">
+       </adapter>
+    </factory>         
+  </extension>
+      <extension
+    point="org.eclipse.ui.editorActions">
+    <editorContribution
+      id="org.eclipse.ldt.ui.BreakpointRulerActions"
+      targetID="org.eclipse.ldt.ui.editor">
+      <action
+        actionID="RulerDoubleClick"
+        class="org.eclipse.debug.ui.actions.RulerToggleBreakpointActionDelegate"
+        id="LuaEditor.doubleClickBreakpointAction"
+        label="%action.label.doubleclicktogglebreakpoint"
+        style="push" />
+    </editorContribution>
+  </extension>
+      <extension
+            point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+         <launchConfigurationTypeImage
+               configTypeID="org.eclipse.ldt.debug.core.luaattachdebug"
+               icon="icons/obj16/lua_attach.gif"
+               id="org.eclipse.ldt.debug.ui.luaattachdebug.image">
+         </launchConfigurationTypeImage>
+         <launchConfigurationTypeImage
+               configTypeID="org.eclipse.ldt.debug.core.lualocaldebug"
+               icon="icons/obj16/lua_local.gif"
+               id="org.eclipse.ldt.debug.ui.lualocaldebug.image">
+         </launchConfigurationTypeImage>
+      </extension>
+      <extension
+            point="org.eclipse.ui.perspectiveExtensions">
+         <perspectiveExtension
+               targetID="org.eclipse.ldt.ui.luaperspective">
+            <perspectiveShortcut
+                  id="org.eclipse.debug.ui.DebugPerspective">
+            </perspectiveShortcut>
+            <actionSet
+                  id="org.eclipse.debug.ui.launchActionSet">
+            </actionSet>
+         </perspectiveExtension>
+      </extension>
+       <!-- The watch is not supported on variables -->
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="org.eclipse.ldt.debug.ui.internal.actions.DoNothingHandler"
+            commandId="org.eclipse.debug.ui.actions.WatchCommand">
+         <activeWhen>
+			<iterate>
+				<and>
+					<adapt
+           				type="org.eclipse.dltk.debug.core.model.IScriptVariable">
+					</adapt>
+					<test
+						property="org.eclipse.debug.ui.getModelIdentifier"
+						value="org.eclipse.ldt.nature.debugModel">
+					</test>
+				</and>
+            </iterate>
+         </activeWhen>
+         <enabledWhen> <!-- never active -->
+			<not>
+				<instanceof
+					value="java.lang.Object">
+				</instanceof>
+			</not>
+         </enabledWhen>
+      </handler>
+   </extension>
+   <extension
+             point="org.eclipse.core.expressions.propertyTesters">
+       <propertyTester
+                class="org.eclipse.ldt.debug.ui.internal.LuaDebugPropertyTester"
+                id="org.eclipse.ldt.debug.ui.propertytester"
+                namespace="org.eclipse.ldt.debug.ui.propertytester"
+                properties="isLaunchableProjectFragment"
+                type="org.eclipse.dltk.core.IProjectFragment">
+       </propertyTester>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.eclipse.ldt.ui.globalpreferencepage"
+            class="org.eclipse.ldt.debug.ui.internal.interpreters.LuaInterpreterPreferencePage"
+            id="org.eclipse.ldt.debug.ui.interpreters"
+            name="%interpreterspage.name">
+      </page>
+   </extension>
+ <extension point="org.eclipse.debug.ui.launchShortcuts">
+  <shortcut
+    label="%launchShortcut.luaApp.label"
+    icon="icons/obj16/lua_local.gif"
+    helpContextId="org.eclipse.jdt.debug.ui"
+    modes="run, debug"
+    class="org.eclipse.ldt.debug.ui.internal.launchconfiguration.local.LuaApplicationLaunchShortcut"
+    description="%launchShortcut.luaApp.description"
+    id="org.eclipse.ldt.debug.ui.localLuaShortcut">
+    <description
+     description="%launchShortcut.luaApp.run.description"
+     mode="run">
+    </description>
+    <description
+     description="%launchShortcut.luaApp.debug.description"
+     mode="debug">
+    </description>
+  <contextualLaunch>
+  <enablement>
+    <with variable="selection">
+     <count value="1"/>
+      <iterate>
+   		<and>
+	 		<adapt type="org.eclipse.core.resources.IResource">
+        		<test property="org.eclipse.core.resources.projectNature"
+               		  value="org.eclipse.ldt.nature"/>
+         	</adapt>
+	        <or>
+	        	<adapt type="org.eclipse.core.resources.IResource">
+	        		<test property="org.eclipse.core.resources.extension" value="lua"/>
+	        	</adapt>
+	        	<adapt type="org.eclipse.core.resources.IProject">
+	        		<test property="org.eclipse.core.resources.open"/>
+	        	</adapt>
+	        	<adapt type="org.eclipse.dltk.core.IProjectFragment">
+            		<test
+               			forcePluginActivation="true"
+                  		property="org.eclipse.ldt.debug.ui.propertytester.isLaunchableProjectFragment">
+                  	</test>
+         	    </adapt>
+          		<instanceof value="org.eclipse.dltk.core.IScriptFolder"></instanceof>
+	        </or>
+        </and>
+      </iterate>
+     </with>
+  </enablement>
+  </contextualLaunch>
+  <configurationType
+    id="org.eclipse.ldt.debug.core.lualocaldebug">
+  </configurationType>
+  </shortcut>
+</extension>
+</plugin>

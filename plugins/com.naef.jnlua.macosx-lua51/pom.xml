@@ -3,10 +3,10 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<artifactId>plugins</artifactId>
-		<groupId>org.eclipse.koneki.ldt</groupId>
+		<groupId>org.eclipse.ldt</groupId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<groupId>org.eclipse.koneki.ldt</groupId>
+	<groupId>org.eclipse.ldt</groupId>
 	<artifactId>com.naef.jnlua.macosx</artifactId>
 	<version>0.9.1-SNAPSHOT</version>
 	<packaging>eclipse-plugin</packaging>

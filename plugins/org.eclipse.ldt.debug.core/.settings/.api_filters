@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<component id="org.eclipse.ldt.debug.core" version="2">
+    <resource path="src-gen/org/eclipse/ldt/debug/core/internal/model/interpreter/Info.java" type="org.eclipse.ldt.debug.core.internal.model.interpreter.Info">
+        <filter id="305365105">
+            <message_arguments>
+                <message_argument value="org.eclipse.ldt.debug.core.internal.model.interpreter.Info"/>
+                <message_argument value="org.eclipse.ldt.debug.core_1.2.0"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src-gen/org/eclipse/ldt/debug/core/internal/model/interpreter/InterpreterFactory.java" type="org.eclipse.ldt.debug.core.internal.model.interpreter.InterpreterFactory">
+        <filter id="305365105">
+            <message_arguments>
+                <message_argument value="org.eclipse.ldt.debug.core.internal.model.interpreter.InterpreterFactory"/>
+                <message_argument value="org.eclipse.ldt.debug.core_1.2.0"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src-gen/org/eclipse/ldt/debug/core/internal/model/interpreter/InterpreterPackage.java" type="org.eclipse.ldt.debug.core.internal.model.interpreter.InterpreterPackage">
+        <filter id="305365105">
+            <message_arguments>
+                <message_argument value="org.eclipse.ldt.debug.core.internal.model.interpreter.InterpreterPackage"/>
+                <message_argument value="org.eclipse.ldt.debug.core_1.2.0"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src-gen/org/eclipse/ldt/debug/core/internal/model/interpreter/impl/InfoImpl.java" type="org.eclipse.ldt.debug.core.internal.model.interpreter.impl.InfoImpl">
+        <filter id="305365105">
+            <message_arguments>
+                <message_argument value="org.eclipse.ldt.debug.core.internal.model.interpreter.impl.InfoImpl"/>
+                <message_argument value="org.eclipse.ldt.debug.core_1.2.0"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src-gen/org/eclipse/ldt/debug/core/internal/model/interpreter/impl/InterpreterFactoryImpl.java" type="org.eclipse.ldt.debug.core.internal.model.interpreter.impl.InterpreterFactoryImpl">
+        <filter id="305365105">
+            <message_arguments>
+                <message_argument value="org.eclipse.ldt.debug.core.internal.model.interpreter.impl.InterpreterFactoryImpl"/>
+                <message_argument value="org.eclipse.ldt.debug.core_1.2.0"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src-gen/org/eclipse/ldt/debug/core/internal/model/interpreter/impl/InterpreterPackageImpl.java" type="org.eclipse.ldt.debug.core.internal.model.interpreter.impl.InterpreterPackageImpl">
+        <filter id="305365105">
+            <message_arguments>
+                <message_argument value="org.eclipse.ldt.debug.core.internal.model.interpreter.impl.InterpreterPackageImpl"/>
+                <message_argument value="org.eclipse.ldt.debug.core_1.2.0"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src-gen/org/eclipse/ldt/debug/core/internal/model/interpreter/util/InterpreterAdapterFactory.java" type="org.eclipse.ldt.debug.core.internal.model.interpreter.util.InterpreterAdapterFactory">
+        <filter id="305365105">
+            <message_arguments>
+                <message_argument value="org.eclipse.ldt.debug.core.internal.model.interpreter.util.InterpreterAdapterFactory"/>
+                <message_argument value="org.eclipse.ldt.debug.core_1.2.0"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src-gen/org/eclipse/ldt/debug/core/internal/model/interpreter/util/InterpreterSwitch.java" type="org.eclipse.ldt.debug.core.internal.model.interpreter.util.InterpreterSwitch">
+        <filter id="305365105">
+            <message_arguments>
+                <message_argument value="org.eclipse.ldt.debug.core.internal.model.interpreter.util.InterpreterSwitch"/>
+                <message_argument value="org.eclipse.ldt.debug.core_1.2.0"/>
+            </message_arguments>
+        </filter>
+    </resource>
+</component>

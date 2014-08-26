@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+<template
+	context="LuaDocumentorTemplateContextType"
+	description="%module.description"
+	id="org.eclipse.ldt.ui.templates.luadocumentor.module"
+	name="@module">@module ${module_name}</template>
+
+<template
+	context="LuaDocumentorTemplateContextType"
+	id="org.eclipse.ldt.ui.templates.luadocumentor.function"
+	name="@function"
+	description="%function.description"
+	autoinsert="true">@function [parent=#${module_name}] ${name}</template>
+
+<template
+	context="LuaDocumentorTemplateContextType"
+	id="org.eclipse.ldt.ui.templates.luadocumentor.param"
+	name="@param"
+	description="%param.description"
+	autoinsert="true">@param #${type} ${name} ${description}</template>
+
+<template
+	context="LuaDocumentorTemplateContextType"
+	id="org.eclipse.ldt.ui.templates.luadocumentor.field"
+	name="@field"
+	description="%field.description"
+	autoinsert="true">@field [parent=#${module_name}] #${type} ${name} ${description}</template>
+
+<template
+	context="LuaDocumentorTemplateContextType"
+	id="org.eclipse.ldt.ui.templates.luadocumentor.fieldinparent"
+	name="@fieldinparent"
+	description="%fieldinparent.description"
+	autoinsert="true">@field #${type} ${name} ${description}</template>
+
+<template
+	context="LuaDocumentorTemplateContextType"
+	id="org.eclipse.ldt.ui.templates.luadocumentor.type"
+	name="@type"
+	description="%type.description"
+	autoinsert="true">@type ${name}</template>
+
+<template
+	context="LuaDocumentorTemplateContextType"
+	id="org.eclipse.ldt.ui.templates.luadocumentor.return"
+	name="@return"
+	description="%return.description"
+	autoinsert="true">@return #${type} ${description}</template>
+	
+<template
+	context="LuaDocumentorTemplateContextType"
+	id="org.eclipse.ldt.ui.templates.luadocumentor.extends"
+	name="@extends"
+	description="%extends.description"
+	autoinsert="true">@extends ${module}#${type} </template>
+	
+<template
+	context="LuaDocumentorTemplateContextType"
+	id="org.eclipse.ldt.ui.templates.luadocumentor.list"
+	name="@list"
+	description="%list.description"
+	autoinsert="true">@list &lt;#${type}&gt; ${description}</template>
+	
+<template
+	context="LuaDocumentorTemplateContextType"
+	id="org.eclipse.ldt.ui.templates.luadocumentor.map"
+	name="@map"
+	description="%map.description"
+	autoinsert="true">@map &lt;#${keytype},#${valuetype}&gt; ${description}</template>
+	
+<template
+	context="LuaDocumentorTemplateContextType"
+	id="org.eclipse.ldt.ui.templates.luadocumentor.callof"
+	name="@callof"
+	description="%callof.description"
+	autoinsert="true">@callof #${type}</template>
+
+</templates>

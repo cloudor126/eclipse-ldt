@@ -3,19 +3,19 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<artifactId>aggregator</artifactId>
-		<groupId>org.eclipse.koneki.ldt</groupId>
+		<groupId>org.eclipse.ldt</groupId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<groupId>org.eclipse.koneki.ldt</groupId>
+	<groupId>org.eclipse.ldt</groupId>
 	<artifactId>tests</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<modules>
-		<module>org.eclipse.koneki.ldt.jnlua.tests</module>
-		<module>org.eclipse.koneki.ldt.metalua.tests</module>
-		<module>org.eclipse.koneki.ldt.lua.tests</module>
-		<module>org.eclipse.koneki.ldt.core.tests</module>
-		<module>org.eclipse.koneki.ldt.ui.tests</module>
+		<module>org.eclipse.ldt.jnlua.tests</module>
+		<module>org.eclipse.ldt.metalua.tests</module>
+		<module>org.eclipse.ldt.lua.tests</module>
+		<module>org.eclipse.ldt.core.tests</module>
+		<module>org.eclipse.ldt.ui.tests</module>
 		
 	</modules>
 	<build>
@@ -28,7 +28,7 @@
 					<dependencies>
 						<dependency>
 							<type>eclipse-feature</type>
-							<artifactId>org.eclipse.koneki.ldt</artifactId>
+							<artifactId>org.eclipse.ldt</artifactId>
 						</dependency>
 					</dependencies>
 				</configuration>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?><!--
+    Copyright (c) 2013 Sierra Wireless and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        Sierra Wireless - initial API and implementation
+ -->
+<plugin>
+   <extension
+         point="org.eclipse.ldt.executionEnvironment">
+      <executionEnvironment
+            id="lua"
+            resourcedirectory="resource/lua-5.2/"
+            version="5.2">
+	</executionEnvironment>
+	</extension>
+   <extension
+         point="org.eclipse.dltk.launching.interpreterInstallTypes">
+      <interpreterInstallType
+            class="org.eclipse.ldt.support.lua52.internal.interpreter.JNLua52InterpreterInstallType"
+            id="org.eclipse.ldt.support.lua52.JNLua52InterpreterInstallType">
+      </interpreterInstallType>
+      <interpreterInstallType
+            class="org.eclipse.ldt.support.lua52.internal.interpreter.Lua52InterpreterInstallType"
+            id="org.eclipse.ldt.support.lua52.Lua52InterpreterInstallType">
+      </interpreterInstallType>
+   </extension>
+   <extension
+         point="org.eclipse.dltk.launching.interpreterInstalls">
+      <interpreterInstall
+            home="(Embedded)"
+            id="org.eclipse.ldt.support.lua52.JNLua52InterpreterInstall"
+            interpreterArgs="-e &quot;io.stdout:setvbuf(&apos;no&apos;)&quot;"
+            interpreterInstallType="org.eclipse.ldt.support.lua52.JNLua52InterpreterInstallType"
+            name="Lua 5.2 on JNLua">
+      </interpreterInstall>
+   </extension>
+</plugin>
