@@ -8,8 +8,6 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<modules>
-		<module>libraries</module>
-		<module>plugins</module>
 		<module>features</module>
 		<module>tests</module>
 		<!-- <module>repository</module> -->
@@ -23,28 +21,45 @@
 		<maven-antrun-plugin-version>1.7</maven-antrun-plugin-version>
 		<tycho-version>0.20.0</tycho-version>
 		<tycho-extras-version>0.20.0</tycho-extras-version>
+		<shared-publish-rootpath>/shared/tools/ldt</shared-publish-rootpath>
+		<shared-products-folder>/products</shared-products-folder>
+		<shared-publish-nightly-product>${shared-publish-rootpath}${shared-products-folder}/nightly</shared-publish-nightly-product>
+		<shared-publish-nightly-maintenance-product>${shared-publish-rootpath}${shared-products-folder}/nightly-maintenance</shared-publish-nightly-maintenance-product>
 		<download-publish-rootpath>/home/data/httpd/download.eclipse.org/ldt/</download-publish-rootpath>
 		<download-publish-relativepath>updates-nightly</download-publish-relativepath>
+		<download-publish-maintenance-relativepath>updates-nightly-maintenance</download-publish-maintenance-relativepath>
 		<download-publish-path>${download-publish-rootpath}${download-publish-relativepath}</download-publish-path>
 		<eclipse-site>http://download.eclipse.org/releases/luna</eclipse-site>
 	</properties>
-	
-	<!-- Precise git as scm for the buildnumber-maven-plugin plugin for the documentor build-->
-    <scm>
-        <connection>scm:git:</connection>
-    </scm>
+
+	<!-- Precise git as scm for the buildnumber-maven-plugin plugin for the 
+		documentor build -->
+	<scm>
+		<connection>scm:git:</connection>
+	</scm>
 
 	<profiles>
 		<profile>
 			<id>maintenance</id>
 			<properties>
-				<download-publish-relativepath>updates-nightly-maintenance</download-publish-relativepath>
+				<download-publish-relativepath>${download-publish-maintenance-relativepath}</download-publish-relativepath>
+				<shared-publish-nightly-product>${shared-publish-nightly-maintenance-product}</shared-publish-nightly-product>
 			</properties>
 		</profile>
 		<profile>
 			<id>build-product</id>
 			<modules>
 				<module>product</module>
+			</modules>
+		</profile>
+		<profile>
+			<id>build-source</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<modules>
+				<module>libraries</module>
+				<module>plugins</module>
 			</modules>
 		</profile>
 		<profile>
@@ -125,11 +140,11 @@
 						<version>${tycho-version}</version>
 						<executions>
 							<execution>
-							<id>pack200-normalize</id>
-							<goals>
-								<goal>normalize</goal>
-							</goals>
-							<phase>verify</phase>
+								<id>pack200-normalize</id>
+								<goals>
+									<goal>normalize</goal>
+								</goals>
+								<phase>verify</phase>
 							</execution>
 						</executions>
 					</plugin>
@@ -139,11 +154,11 @@
 						<version>${eclipse-jarsigner-version}</version>
 						<executions>
 							<execution>
-							<id>sign</id>
-							<goals>
-								<goal>sign</goal>
-							</goals>
-							<phase>verify</phase>
+								<id>sign</id>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+								<phase>verify</phase>
 							</execution>
 						</executions>
 					</plugin>
@@ -153,11 +168,11 @@
 						<version>${tycho-version}</version>
 						<executions>
 							<execution>
-							<id>pack200-pack</id>
-							<goals>
-								<goal>pack</goal>
-							</goals>
-							<phase>verify</phase>
+								<id>pack200-pack</id>
+								<goals>
+									<goal>pack</goal>
+								</goals>
+								<phase>verify</phase>
 							</execution>
 						</executions>
 					</plugin>
@@ -167,11 +182,11 @@
 						<version>${tycho-version}</version>
 						<executions>
 							<execution>
-							<id>p2-metadata</id>
-							<goals>
-								<goal>p2-metadata</goal>
-							</goals>
-							<phase>verify</phase>
+								<id>p2-metadata</id>
+								<goals>
+									<goal>p2-metadata</goal>
+								</goals>
+								<phase>verify</phase>
 							</execution>
 						</executions>
 						<configuration>
@@ -215,7 +230,7 @@
 				<version>${tycho-version}</version>
 				<executions>
 					<execution>
-		 				<id>plugin-source</id>
+						<id>plugin-source</id>
 						<goals>
 							<goal>plugin-source</goal>
 						</goals>
@@ -290,7 +305,7 @@
 	<pluginRepositories>
 		<!-- repo for eclipse-jarsigner-plugin -->
 		<pluginRepository>
-		<id>eclipse-cbi</id>
+			<id>eclipse-cbi</id>
 			<url>https://repo.eclipse.org/content/groups/cbi/</url>
 		</pluginRepository>
 	</pluginRepositories>

@@ -1,33 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<parent>
 		<artifactId>aggregator</artifactId>
 		<groupId>org.eclipse.ldt</groupId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>org.eclipse.ldt-features</groupId>
-  <artifactId>features</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  <packaging>pom</packaging>
-  <modules>
-    <module>org.eclipse.ldt-feature</module>
-    <module>org.eclipse.ldt.product-feature</module>
-    <module>org.eclipse.ldt.remote-feature</module>
-  </modules>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.eclipse.ldt-features</groupId>
+	<artifactId>features</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
 
-  <build>
-      <plugins>
-          <plugin>
-              <groupId>org.eclipse.tycho</groupId>
-              <artifactId>tycho-packaging-plugin</artifactId>
-              <version>${tycho-version}</version>
-              <configuration>
-                  <deployableFeature>true</deployableFeature>
-              </configuration>
-          </plugin>
-      </plugins>
-  </build>
+	<profiles>
+		<profile>
+			<id>build-source</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<modules>
+				<module>org.eclipse.ldt-feature</module>
+				<module>org.eclipse.ldt.remote-feature</module>
+			</modules>
+		</profile>
+		<profile>
+			<id>build-product</id>
+			<modules>
+				<module>org.eclipse.ldt.product-feature</module>
+			</modules>
+		</profile>
+	</profiles>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-packaging-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<deployableFeature>true</deployableFeature>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 
 </project>
