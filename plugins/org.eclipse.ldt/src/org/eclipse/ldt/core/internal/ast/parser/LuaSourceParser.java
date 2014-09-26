@@ -103,13 +103,18 @@ public class LuaSourceParser extends AbstractSourceParser {
 	 */
 	@Override
 	public IModuleDeclaration parse(IModuleSource input, IProblemReporter reporter) {
-		final String source = input.getSourceContents();
+		String source = input.getSourceContents();
 		final String moduleName = LuaUtils.getModuleFullName(input);
 		LuaSourceRoot module = new LuaSourceRoot(source.length());
 		final OffsetFixer fixer = new OffsetFixer(source);
 
 		synchronized (LuaSourceParser.class) {
 			try {
+				// remove Byte Order Mark :
+				if (source.startsWith("\ufeff")) { //$NON-NLS-1$
+					source = source.substring(1);
+				}
+
 				// Build AST
 				module = astBuilder.buildAST(source, moduleName);
 

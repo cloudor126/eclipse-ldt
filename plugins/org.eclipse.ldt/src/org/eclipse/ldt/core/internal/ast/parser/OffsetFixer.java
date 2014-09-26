@@ -17,9 +17,12 @@ import java.nio.charset.CharsetEncoder;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+import org.apache.commons.io.ByteOrderMark;
+
 /**
  * Lua deals with characters like C does: 8 bit clean. So does Metalua. Eclipse components such as editors handle several {@link Charset}s. Here, we
  * do the matching between Lua offsets and Java charset-aware offsets.
+ * This class manage unicode BOM char too.
  */
 public class OffsetFixer {
 
@@ -29,6 +32,8 @@ public class OffsetFixer {
 	 */
 	private final TreeMap<Integer, Integer> cache;
 	private final int charactersLength;
+	private boolean hasBOM = false;
+	private int bomShift = 0;
 
 	public OffsetFixer(final String src) {
 		/*
@@ -39,6 +44,14 @@ public class OffsetFixer {
 		 * one byte per character, but all Unicode characters can be represented.
 		 */
 		final CharsetEncoder encoder = Charset.forName("UTF-8").newEncoder(); //$NON-NLS-1$
+
+		/*
+		 * Manage BOM : http://stackoverflow.com/a/18275066
+		 */
+		if (src.startsWith("\ufeff")) { //$NON-NLS-1$
+			hasBOM = true;
+			bomShift = ByteOrderMark.UTF_8.length();
+		}
 
 		/*
 		 * Build cache
@@ -80,14 +93,18 @@ public class OffsetFixer {
 		// Compute difference from ceiling byte position
 		final Entry<Integer, Integer> floorEntry = cache.floorEntry(bytePosition);
 		if (floorEntry != null)
-			return bytePosition - floorEntry.getValue();
+			return bytePosition - floorEntry.getValue() + bomShift;
 
 		// No difference associated
-		return bytePosition;
+		return bytePosition + bomShift;
 	}
 
 	/** @return Length of {@link CharBuffer} from given {@link String}. */
 	public int getCharactersLength() {
 		return charactersLength;
+	}
+
+	public boolean hasBom() {
+		return hasBOM;
 	}
 }
