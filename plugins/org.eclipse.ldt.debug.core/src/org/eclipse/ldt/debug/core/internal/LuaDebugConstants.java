@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.ldt.debug.core.internal;
 
-import java.io.File;
-
 /**
  * Constant for attribute of Lua launch configuration
  */
@@ -76,7 +74,7 @@ public interface LuaDebugConstants {
 
 	/**
 	 * Default working directory pattern (for Lua Application Launch configuration) <br>
-	 * {1} => projectname
+	 * {0} => projectname
 	 */
-	String LAUNCH_CONFIGURATION_WORKING_DIRECTORY = "$'{'workspace_loc'}'" + File.separator + "{0}"; //$NON-NLS-1$ //$NON-NLS-2$
+	String LAUNCH_CONFIGURATION_WORKING_DIRECTORY = "$'{'workspace_loc:{0}'}'"; //$NON-NLS-1$
 }
