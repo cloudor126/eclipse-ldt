@@ -18,16 +18,6 @@ local lx                -- lexer used to parse tag
 local registeredparsers -- table {tagname => {list de parsers}}
 
 -- ----------------------------------------------------
--- raise an error if result contains a node error
--- ----------------------------------------------------
-local function raiserror(result)
-	for i, node in ipairs(result) do
-		assert(not node or node.tag ~= "Error")
-	end
-end
-
-
--- ----------------------------------------------------
 -- copy key and value from one table to an other
 -- ----------------------------------------------------
 local function copykey(tablefrom, tableto)
@@ -59,7 +49,6 @@ end
 -- ----------------------------------------------------
 local idparser = gg.sequence({
 	builder =	function (result)
-		raiserror(result)
 		return { name = result[1][1] }
 	end,
 	parseword
@@ -71,7 +60,6 @@ local idparser = gg.sequence({
 -- ----------------------------------------------------
 local modulenameparser = gg.list({
 	builder =	function (result)
-		raiserror(result)
 		local ids = {}
 		for i, id in ipairs(result) do
 			table.insert(ids,id.name)
@@ -92,7 +80,6 @@ local typenameparser = modulenameparser
 -- ----------------------------------------------------
 local internaltyperefparser = gg.sequence({
   builder = function(result)
-    raiserror(result)
     return {tag = "typeref",type=result[1].name}
   end,
   "#", typenameparser
@@ -103,7 +90,6 @@ local internaltyperefparser = gg.sequence({
 -- ----------------------------------------------------
 local sharplessinternaltyperefparser = gg.sequence({
   builder = function(result)
-    raiserror(result)
     return {tag = "typeref",type=result[1].name}
   end,
   typenameparser
@@ -114,7 +100,6 @@ local sharplessinternaltyperefparser = gg.sequence({
 -- ----------------------------------------------------
 local externaltyperefparser = gg.sequence({
 	builder =	function(result)
-		raiserror(result)
 		return {tag = "typeref",module=result[1].name,type=result[2].name}
 	end,
 	modulenameparser,"#", typenameparser
@@ -131,7 +116,6 @@ typerefparser = function (...) return _typerefparser(...) end
 -- ----------------------------------------------------
 local sharplesslisttyperefparser = gg.sequence({
 	builder =	function(result)
-		raiserror(result)
 		return {tag = "typeref", type="list", valuetype=result[1]}
 	end,
 	"list","<", typerefparser, ">"
@@ -142,7 +126,6 @@ local sharplesslisttyperefparser = gg.sequence({
 -- ----------------------------------------------------
 local sharplessmaptyperefparser = gg.sequence({
 	builder =	function(result)
-		raiserror(result)
 		return {tag = "typeref", type="map", keytype=result[1], valuetype=result[2]}
 	end,
 	"map","<", typerefparser, ",", typerefparser, ">"
@@ -155,7 +138,6 @@ local sharplessmaptyperefparser = gg.sequence({
 -- ----------------------------------------------------
 local sharptyperefparser = gg.sequence({
   builder = function(result)
-    raiserror(result)
     return result[1]
   end,
   "#",
@@ -189,7 +171,6 @@ local typereflistparser = gg.list({
 -- ----------------------------------------------------
 local modifiersparser = gg.sequence({
 	builder =	function(result)
-		raiserror(result)
 		return {[result[1].name]=result[2]}
 	end,
 	"[", idparser ,  "=" , internaltyperefparser , "]"
@@ -202,7 +183,6 @@ local listparsers = {
   -- full parser
   gg.sequence({
     builder = function (result)
-      raiserror(result)
       return {type = result[1]}
     end,
     '@','list','<',typerefparser,'>'
@@ -216,7 +196,6 @@ local mapparsers = {
   -- full parser
   gg.sequence({
     builder = function (result)
-      raiserror(result)
       return {keytype = result[1],valuetype = result[2]}
     end,
     '@','map','<',typerefparser,',',typerefparser,'>'
@@ -230,7 +209,6 @@ local extendsparsers = {
   -- full parser
   gg.sequence({
     builder = function (result)
-      raiserror(result)
       return {type = result[1]}
     end,
     '@','extends', typerefparser
@@ -244,7 +222,6 @@ local callofparsers = {
   -- full parser
   gg.sequence({
     builder = function (result)
-      raiserror(result)
       return {type = result[1]}
     end,
     '@','callof', internaltyperefparser
@@ -258,7 +235,6 @@ local returnparsers = {
 	-- full parser
 	gg.sequence({
 		builder =	function (result)
-			raiserror(result)
 			return { types= result[1]}
 		end,
 		'@','return', typereflistparser
@@ -266,7 +242,6 @@ local returnparsers = {
 	-- parser without typerefs
 	gg.sequence({
 		builder =	function (result)
-			raiserror(result)
 			return { types = {}}
 		end,
 		'@','return'
@@ -280,7 +255,6 @@ local paramparsers = {
 	-- full parser
 	gg.sequence({
 		builder =	function (result)
-			raiserror(result)
 			return { name = result[2].name, type = result[1]}
 		end,
 		'@','param', typerefparser, idparser
@@ -289,9 +263,7 @@ local paramparsers = {
 	-- reject the case were only a type without name 
   gg.sequence({
     builder = function (result)
-      local errortag = {tag="Error"}
-      raiserror(errortag)
-      return errortag
+      return {tag="Error"}
     end,
     '@','param', '#'
   }),
@@ -299,7 +271,6 @@ local paramparsers = {
 	-- parser without type
 	gg.sequence({
 		builder = function (result)
-			raiserror(result)
 			return { name = result[1].name}
 		end,
 		'@','param', idparser
@@ -308,7 +279,6 @@ local paramparsers = {
 	-- Parser for `Dots
 	gg.sequence({
 		builder = function (result)
-			raiserror(result)
 			return { name = '...' }
 		end,
 		'@','param', '...'
@@ -321,7 +291,6 @@ local fieldparsers = {
 	-- full parser
 	gg.sequence({
 		builder =	function (result)
-			raiserror(result)
 			local tag = {}
 			copykey(result[1],tag)
 			tag.type = result[2]
@@ -330,11 +299,18 @@ local fieldparsers = {
 		end,
 		'@','field', modifiersparser, typerefparser, idparser
 	}),
+	
+	-- reject the case where the type name is empty 
+  gg.sequence({
+    builder = function (result)
+      return {tag = "Error"}
+    end,
+    '@','field',modifiersparser, '#'
+  }),
 
 	-- parser without name
 	gg.sequence({
 		builder = 	function (result)
-			raiserror(result)
 			local tag = {}
 			copykey(result[1],tag)
 			tag.type = result[2]
@@ -346,7 +322,6 @@ local fieldparsers = {
 	-- parser without type
 	gg.sequence({
 		builder = 	function (result)
-			raiserror(result)
 			local tag = {}
 			copykey(result[1],tag)
 			tag.name = result[2].name
@@ -358,7 +333,6 @@ local fieldparsers = {
 	-- parser without type and name
 	gg.sequence({
 		builder = 	function (result)
-			raiserror(result)
 			local tag = {}
 			copykey(result[1],tag)
 			return tag
@@ -369,7 +343,6 @@ local fieldparsers = {
 	-- parser  without modifiers
 	gg.sequence({
 		builder = 	function (result)
-			raiserror(result)
 			return { name = result[2].name, type = result[1]}
 		end,
 		'@','field', typerefparser, idparser
@@ -378,7 +351,6 @@ local fieldparsers = {
 	-- parser without modifiers and name
 	gg.sequence({
 		builder = function (result)
-			raiserror(result)
 			return {type = result[1]}
 		end,
 		'@','field', typerefparser
@@ -387,9 +359,7 @@ local fieldparsers = {
   -- reject the case where the type name is empty 
   gg.sequence({
     builder = function (result)
-      local error = {tag = "Error"}
-      raiserror(error)
-      return error
+      return {tag = "Error"}
     end,
     '@','field', '#'
   }),
@@ -397,7 +367,6 @@ local fieldparsers = {
 	-- parser without type and modifiers
 	gg.sequence({
 		builder = function (result)
-			raiserror(result)
 			return { name = result[1].name}
 		end,
 		'@','field', idparser
@@ -406,7 +375,6 @@ local fieldparsers = {
 	-- parser with nothing
 	gg.sequence({
 		builder = function (result)
-			raiserror(result)
 			return {}
 		end,
 		'@','field'
@@ -421,7 +389,6 @@ local functionparsers = {
 	-- full parser
 	gg.sequence({
 		builder = 	function (result)
-			raiserror(result)
 			local tag = {}
 			copykey(result[1],tag)
 			tag.name = result[2].name
@@ -433,7 +400,6 @@ local functionparsers = {
 	-- parser without name
 	gg.sequence({
 		builder = 	function (result)
-			raiserror(result)
 			local tag = {}
 			copykey(result[1],tag)
 			return tag
@@ -444,7 +410,6 @@ local functionparsers = {
 	-- parser without modifier
 	gg.sequence({
 		builder = 	function (result)
-			raiserror(result)
 			local tag = {}
 			tag.name = result[1].name
 			return tag
@@ -455,7 +420,6 @@ local functionparsers = {
 	-- empty parser
 	gg.sequence({
 		builder = 	function (result)
-			raiserror(result)
 			return {}
 		end,
 		'@','function'
@@ -469,7 +433,6 @@ local typeparsers = {
 	-- full parser
 	gg.sequence({
 		builder = 	function (result)
-			raiserror(result)
 			return { name = result[1].name}
 		end,
 		'@','type',typenameparser
@@ -477,7 +440,6 @@ local typeparsers = {
 	-- parser without name
 	gg.sequence({
 		builder = 	function (result)
-			raiserror(result)
 			return {}
 		end,
 		'@','type'
@@ -491,7 +453,6 @@ local moduleparsers = {
 	-- full parser
 	gg.sequence({
 		builder = 	function (result)
-			raiserror(result)
 			return { name = result[1].name }
 		end,
 		'@','module', modulenameparser
@@ -499,7 +460,6 @@ local moduleparsers = {
 	-- parser without name
 	gg.sequence({
 		builder = 	function (result)
-			raiserror(result)
 			return {}
 		end,
 		'@','module'
@@ -511,7 +471,6 @@ local moduleparsers = {
 -- ----------------------------------------------------
 local thirdtagsparser = gg.sequence({
 	builder = 	function (result)
-		raiserror(result)
 		return { name = result[1][1] }
 	end,
 	'@', mlp.id
