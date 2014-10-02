@@ -24,38 +24,38 @@ local modeltransformations = require 'modeltransformations'
 local tablecompare = require 'tablecompare'
 
 if #arg < 1 then
-	print 'No file to serialize.'
-	return
+  print 'No file to serialize.'
+  return
 end
 for k = 1, #arg do
 
-	-- Load source to serialize
-	local filename = arg[k]
-	local status, error = modeltransformations.codetoserialisedmodel(
-		filename,
-		'serialized',
-		function (ast)
-			--
-			-- Generate API model
-			--
-			local apimodel, comment2apiobj = apimodelbuilder.createmoduleapi(ast)
-		
-			--
-			-- Generate internal model
-			--
-			local internalmodel = internalmodelbuilder.createinternalcontent(ast,apimodel,comment2apiobj, 'modulename')
-		
-			--
-			-- create table with the two models
-			-- 
-			local luasourceroot = {}
-			luasourceroot.fileapi=apimodel
-			luasourceroot.internalcontent=internalmodel
-			
-			return luasourceroot
-		end
-	)
-	if not status then
-		print( error )
-	end
+  -- Load source to serialize
+  local filename = arg[k]
+  local status, error = modeltransformations.codetoserialisedmodel(
+    filename,
+    'serialized',
+    function (ast)
+      --
+      -- Generate API model
+      --
+      local apimodel, comment2apiobj = apimodelbuilder.createmoduleapi(ast)
+
+      --
+      -- Generate internal model
+      --
+      local internalmodel = internalmodelbuilder.createinternalcontent(ast,apimodel,comment2apiobj, 'modulename')
+
+      --
+      -- create table with the two models
+      --
+      local luasourceroot = {}
+      luasourceroot.fileapi=apimodel
+      luasourceroot.internalcontent=internalmodel
+
+      return luasourceroot
+    end
+  )
+  if not status then
+    print( error )
+  end
 end

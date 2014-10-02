@@ -21,13 +21,13 @@ return
 # -- Show item type for internal type
 # --
 #if _item.type and (not typedef or typedef.tag ~= 'functiontypedef') then
-#	--Show link only when available 
-#	local link = fulllinkto(_item.type)
-#	if link then
-		<em>$( link )</em>
-#	else
-		<em>$(prettyname(_item.type))</em>
-#	end
+#  --Show link only when available 
+#  local link = fulllinkto(_item.type)
+#  if link then
+    <em>$( link )</em>
+#  else
+    <em>$(prettyname(_item.type))</em>
+#  end
 #end
 <a id="$(anchor(_item))" >
 <strong>$( prettyname(_item) )</strong>
@@ -36,11 +36,11 @@ return
 <dd>
 # local ignoredescription = false
 # if _item.shortdescription then
-	  $( format(_item.shortdescription) )
+    $( format(_item.shortdescription) )
 #   ignoredescription = true
 # end
 # if _item.description and #_item.description > 0 then
-	  $( format(_item.description) )
+    $( format(_item.description) )
 #   ignoredescription = true
 # end
 #
@@ -48,7 +48,7 @@ return
 # -- For function definitions, describe parameters and return values
 # --
 #if typedef and typedef.tag == 'functiontypedef' then
-#	local fdef = typedef
+#  local fdef = typedef
   $( applytemplate(fdef, i,nil,isinvokable(_item),ignoredescription) )
 #else
 #--

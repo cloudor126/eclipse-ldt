@@ -20,10 +20,10 @@ return [[#
 # -- Descriptions
 # --
 #if _recordtypedef.shortdescription and #_recordtypedef.shortdescription > 0 then
-	$( format( _recordtypedef.shortdescription ) )
+  $( format( _recordtypedef.shortdescription ) )
 #end
 #if _recordtypedef.description and #_recordtypedef.description > 0 then
-	$( format( _recordtypedef.description ) )
+  $( format( _recordtypedef.description ) )
 #end
 # --
 # -- Structure
@@ -50,7 +50,7 @@ return [[#
 #-- Describe usage
 #--
 #if _recordtypedef.metadata and _recordtypedef.metadata.usage then
-	$( applytemplate(_recordtypedef.metadata.usage, i) )
+  $( applytemplate(_recordtypedef.metadata.usage, i) )
 #end
 # --
 # -- Describe type fields
@@ -58,7 +58,7 @@ return [[#
 #local calldef = _recordtypedef:getcalldef()
 #local hasfield = not isempty(_recordtypedef.fields)
 #if calldef or hasfield then
-	<h$(i)>Field(s)</h$(i)>
+  <h$(i)>Field(s)</h$(i)>
 # if calldef then
 <dl class="function">
 <dt>
@@ -66,12 +66,12 @@ return [[#
   <strong>$( prettyname(calldef,_recordtypedef) )</strong>
   </a>
 </dt>
-<dd> 	
+<dd>   
    $( applytemplate(calldef, i, nil, true) )
 </dd>
 </dl>
 # end
-#	for name, item in sortedpairs( _recordtypedef.fields ) do
-		$( applytemplate(item, i) )
-#	end
+#  for name, item in sortedpairs( _recordtypedef.fields ) do
+    $( applytemplate(item, i) )
+#  end
 #end ]]

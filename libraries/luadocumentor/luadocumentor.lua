@@ -13,8 +13,8 @@
 
 -- Check interpreter version
 if _VERSION ~= "Lua 5.1" then
-	print("Luadocumentor is only compatible with Lua 5.1")
-	return
+  print("Luadocumentor is only compatible with Lua 5.1")
+  return
 end
 
 -- try to define the right lua path.
@@ -22,17 +22,17 @@ end
 local luadocumentordirpath
 local debugpath = debug.getinfo(1).source;
 if debugpath then
-	-- extract the directory path of luadocumentor.lua
-	luadocumentordirpath = string.match(debugpath,"^@(.*)luadocumentor.lua$")
-	if luadocumentordirpath then
-		if luadocumentordirpath == "" then luadocumentordirpath = "./" end
-		-- change lua path and mpath to not load system version of metalua
-		package.path = luadocumentordirpath.."?.lua;"..luadocumentordirpath.."?.luac;"
-		require "metalua.loader"
-		package.mpath = luadocumentordirpath.."?.mlua;"
-		-- do not change cpath to have access to lfs.
-		-- (it must be already installed)
-	end
+  -- extract the directory path of luadocumentor.lua
+  luadocumentordirpath = string.match(debugpath,"^@(.*)luadocumentor.lua$")
+  if luadocumentordirpath then
+    if luadocumentordirpath == "" then luadocumentordirpath = "./" end
+    -- change lua path and mpath to not load system version of metalua
+    package.path = luadocumentordirpath.."?.lua;"..luadocumentordirpath.."?.luac;"
+    require "metalua.loader"
+    package.mpath = luadocumentordirpath.."?.mlua;"
+    -- do not change cpath to have access to lfs.
+    -- (it must be already installed)
+  end
 end
 
 --
@@ -57,12 +57,12 @@ local lapp = require 'pl.lapp'
 local args = lapp( help )
 
 if not args or #args < 1 then
-	print('No directory provided')
-	return
+  print('No directory provided')
+  return
 elseif args.help then
-	-- Just print help
-	print( help )
-	return
+  -- Just print help
+  print( help )
+  return
 end
 
 --
@@ -80,117 +80,117 @@ local allpresent, missing = fs.checkdirectory(args)
 
 -- Some of given directories are absent
 if missing then
-	-- List missing directories
-	print 'Unable to open'
-	for _, file in ipairs( missing ) do
-		print('\t'.. file)
-	end
-	return
+  -- List missing directories
+  print 'Unable to open'
+  for _, file in ipairs( missing ) do
+    print('\t'.. file)
+  end
+  return
 end
 
 -- Get files from given directories
 local filestoparse, error = fs.filelist( args )
 if not filestoparse then
-	print ( error )
-	return
+  print ( error )
+  return
 end
 
 --
 -- Generate documentation only files
 --
 if args.format == 'api' then
-	for _, filename in ipairs( filestoparse ) do
+  for _, filename in ipairs( filestoparse ) do
 
-		-- Loading file content
-		print('Dealing with "'..filename..'".')
-		local file, error = io.open(filename, 'r')
-		if not file then
-			print ('Unable to open "'..filename.."'.\n"..error)
-		else
-			local code = file:read('*all')
-			file:close()
+    -- Loading file content
+    print('Dealing with "'..filename..'".')
+    local file, error = io.open(filename, 'r')
+    if not file then
+      print ('Unable to open "'..filename.."'.\n"..error)
+    else
+      local code = file:read('*all')
+      file:close()
 
-			--
-			-- Creating comment file
-			--
-			local commentfile, error = lddextractor.generatecommentfile(filename, code)
+      --
+      -- Creating comment file
+      --
+      local commentfile, error = lddextractor.generatecommentfile(filename, code)
 
-			-- Getting module name
-			-- Optimize me
-			local module, moduleerror = lddextractor.generateapimodule(filename, code)
-			if not commentfile then
-				print('Unable to create documentation file for "'..filename..'"\n'..error)
-			elseif not module or not module.name then
-				local error = moduleerror and '\n'..moduleerror or ''
-				print('Unable to compute module name for "'..filename..'".'..error)
-			else
-				--
-				-- Flush documentation file on disk
-				--
-				local path = args.dir..fs.separator..module.name..'.lua'
-				local status, err = fs.fill(path, commentfile)
-				if not status then
-					print(err)
-				end
-			end
-		end
-	end
-	print('Done')
-	return
+      -- Getting module name
+      -- Optimize me
+      local module, moduleerror = lddextractor.generateapimodule(filename, code)
+      if not commentfile then
+        print('Unable to create documentation file for "'..filename..'"\n'..error)
+      elseif not module or not module.name then
+        local error = moduleerror and '\n'..moduleerror or ''
+        print('Unable to compute module name for "'..filename..'".'..error)
+      else
+        --
+        -- Flush documentation file on disk
+        --
+        local path = args.dir..fs.separator..module.name..'.lua'
+        local status, err = fs.fill(path, commentfile)
+        if not status then
+          print(err)
+        end
+      end
+    end
+  end
+  print('Done')
+  return
 end
 
 -- Deal only supported output types
 if args.format ~= 'doc' then
-	print ('"'..args.format..'" format is not handled.')
-	return
+  print ('"'..args.format..'" format is not handled.')
+  return
 end
 -- Generate html form files
 local parsedfiles, unparsed = docgenerator.generatedocforfiles(filestoparse, cssfilename,args.noheuristic)
 
 -- Show warnings on unparsed files
 if #unparsed > 0 then
-	for _, faultyfile in ipairs( unparsed ) do
-		print( faultyfile )
-	end
+  for _, faultyfile in ipairs( unparsed ) do
+    print( faultyfile )
+  end
 end
 -- This loop is just for counting parsed files
 -- TODO: Find a more elegant way to do it
 local parsedfilescount = 0
 for _, p in pairs(parsedfiles) do
-	parsedfilescount = parsedfilescount + 1
+  parsedfilescount = parsedfilescount + 1
 end
 print (parsedfilescount .. ' file(s) parsed.')
 
 -- Create html files
 local generated = 0
 for _, apifile in pairs ( parsedfiles ) do
-	local status, err = fs.fill(args.dir..fs.separator..apifile.name..'.html', apifile.body)
-	if status then
-		generated = generated + 1
-	else
-		print( 'Unable to create '..apifile.name..'.html on disk.')
-	end
+  local status, err = fs.fill(args.dir..fs.separator..apifile.name..'.html', apifile.body)
+  if status then
+    generated = generated + 1
+  else
+    print( 'Unable to create '..apifile.name..'.html on disk.')
+  end
 end
 print (generated .. ' file(s) generated.')
 
 -- Copying css
 local csscontent
 if args.style == '!' then
-	csscontent = require 'defaultcss'
+  csscontent = require 'defaultcss'
 else
-	local css, error = io.open(args.style, 'r')
-	if not css then
-		print('Unable to open "'..args.style .. '".\n'..error)
-		return
-	end
-	csscontent = css:read("*all")
-	css:close()
+  local css, error = io.open(args.style, 'r')
+  if not css then
+    print('Unable to open "'..args.style .. '".\n'..error)
+    return
+  end
+  csscontent = css:read("*all")
+  css:close()
 end
 
 local status, error = fs.fill(args.dir..fs.separator..cssfilename, csscontent)
 if not status then
-	print(error)
-	return
+  print(error)
+  return
 end
 print('Adding css')
 print('Done')

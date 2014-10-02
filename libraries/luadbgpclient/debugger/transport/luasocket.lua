@@ -11,7 +11,7 @@
 -- LuaSocket backend for DBGP debugger.
 -------------------------------------------------------------------------------
 
--- in order to be as lightweight as possible with Luasocket, core API is used 
+-- in order to be as lightweight as possible with Luasocket, core API is used
 -- directly (to no add yet another layer)
 
 --FIXME: remove this hack as soon as luasocket officially support 5.2
@@ -26,31 +26,31 @@ local reg = debug.getregistry()
 
 
 return {
-    create = socket.tcp,
-    sleep  = socket.sleep,
-    
-    -- Base64 related functions
-    --- Encodes a string into Base64 with line wrapping
-    -- @param data (string) data to encode
-    -- @return base64 encoded string
-    b64 = function(data)
-        local filter = ltn12.filter.chain(mime.encode("base64"), mime.wrap("base64"))
-        local sink, output = ltn12.sink.table()
-        ltn12.pump.all(ltn12.source.string(data), ltn12.sink.chain(filter, sink))
-        return table.concat(output)
-    end,
+  create = socket.tcp,
+  sleep  = socket.sleep,
 
-    --- Encodes a string into Base64, without any extra parsing (wrapping, ...)
-    -- @param data (string) data to encode
-    -- @return decoded string
-    rawb64 = function(data)
-        return (mime.b64(data)) -- first result of the low-level function is fine here
-    end,
+  -- Base64 related functions
+  --- Encodes a string into Base64 with line wrapping
+  -- @param data (string) data to encode
+  -- @return base64 encoded string
+  b64 = function(data)
+    local filter = ltn12.filter.chain(mime.encode("base64"), mime.wrap("base64"))
+    local sink, output = ltn12.sink.table()
+    ltn12.pump.all(ltn12.source.string(data), ltn12.sink.chain(filter, sink))
+    return table.concat(output)
+  end,
 
-    --- Decodes base64 data
-    -- @param data (string) base64 encoded data
-    -- @return decoded string
-    unb64 = function(data)
-        return (mime.unb64(data)) -- first result of the low-level function is fine here
-    end,
+  --- Encodes a string into Base64, without any extra parsing (wrapping, ...)
+  -- @param data (string) data to encode
+  -- @return decoded string
+  rawb64 = function(data)
+    return (mime.b64(data)) -- first result of the low-level function is fine here
+  end,
+
+  --- Decodes base64 data
+  -- @param data (string) base64 encoded data
+  -- @return decoded string
+  unb64 = function(data)
+    return (mime.unb64(data)) -- first result of the low-level function is fine here
+  end,
 }

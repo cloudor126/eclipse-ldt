@@ -48,7 +48,7 @@ local function gc_str(gcref) -- Convert a GCref (to a GCstr) into a string
   if gcref ~= 0 then
     local ts = ffi.cast("uint32_t*", gcref)
     return ffi.string(ts + 4, ts[3])
-  end
+end
 end
 
 local function memptr(gcobj)
@@ -170,7 +170,7 @@ local type_keys = {
 
 -- Create a metatable for each CT.
 local metatables = {
-}
+  }
 for _, CT in ipairs(CTs) do
   local what = CT[1]
   local mt = {__index = {}}
@@ -195,7 +195,7 @@ local CTAs = {[0] =
 }
 
 -- C function calling conventions (CTCC_* constants in lj_refct.h)
-local CTCCs = {[0] = 
+local CTCCs = {[0] =
   "cdecl",
   "thiscall",
   "fastcall",
@@ -212,7 +212,7 @@ local function refct_from_id(id) -- refct = refct_from_id(CTypeID)
     typeid = id,
     name = gc_str(ctype.name),
   }, metatables[what])
-  
+
   -- Interpret (most of) the CType::info field
   for i = 5, #CT do
     if bit.band(ctype.info, CT[i][1]) ~= 0 then
@@ -228,7 +228,7 @@ local function refct_from_id(id) -- refct = refct_from_id(CTypeID)
   elseif what == "func" then
     refct.convention = CTCCs[bit.band(bit.rshift(ctype.info, 16), 3)]
   end
-  
+
   if CT[2] ~= "" then -- Interpret the CType::cid field
     local k = CT[2]
     local cid = bit.band(ctype.info, 0xffff)
@@ -241,7 +241,7 @@ local function refct_from_id(id) -- refct = refct_from_id(CTypeID)
     end
     refct[k] = cid
   end
-  
+
   if CT[3] ~= "" then -- Interpret the CType::size field
     local k = CT[3]
     refct[k] = ctype.size
@@ -249,7 +249,7 @@ local function refct_from_id(id) -- refct = refct_from_id(CTypeID)
       refct[k] = "none"
     end
   end
-  
+
   if what == "attrib" then
     -- Merge leading attributes onto the type being decorated.
     local CTA = CTAs[bit.band(bit.rshift(ctype.info, 16), 0xff)]
@@ -276,7 +276,7 @@ local function refct_from_id(id) -- refct = refct_from_id(CTypeID)
     }
     refct.bool, refct.const, refct.volatile, refct.unsigned = nil
   end
-  
+
   if CT[4] then -- Merge sibling attributes onto this type.
     while ctype.sib ~= 0 do
       local entry = CTState.tab[ctype.sib]
@@ -285,9 +285,9 @@ local function refct_from_id(id) -- refct = refct_from_id(CTypeID)
       local sib = refct_from_id(ctype.sib)
       sib:CTA(refct)
       ctype = entry
-    end
   end
-  
+  end
+
   return refct
 end
 

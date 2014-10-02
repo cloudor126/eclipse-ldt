@@ -34,12 +34,12 @@ local socket = {}
 -- @return true on success.
 -- @return nil, error message on failure.
 function socket:connect (host,port)
-	local status, res = pcall(function() return self.wrapper:connect(host,port) end)
-	if status then
-		return true
-	else
-		return nil, res
-	end
+  local status, res = pcall(function() return self.wrapper:connect(host,port) end)
+  if status then
+    return true
+  else
+    return nil, res
+  end
 end
 
 --------------------------------------------------------------------------------
@@ -51,25 +51,25 @@ end
 -- @return nil, error message, partial buffer on failure.
 function socket:receive (number)
 
-	local function receive()
-		local res = {}
-		for i=1,number do
-			local data = self.wrapper:receive()
-			if (data =="") then
-				res[#res+1] = "\000"
-			else
-				res[#res+1] = data
-			end
-		end
-		return table.concat(res,"")
-	end
+  local function receive()
+    local res = {}
+    for i=1,number do
+      local data = self.wrapper:receive()
+      if (data =="") then
+        res[#res+1] = "\000"
+      else
+        res[#res+1] = data
+      end
+    end
+    return table.concat(res,"")
+  end
 
-	local status, res = pcall(receive)
-	if status then
-		return res
-	else
-		return nil, res
-	end
+  local status, res = pcall(receive)
+  if status then
+    return res
+  else
+    return nil, res
+  end
 end
 
 --------------------------------------------------------------------------------
@@ -80,12 +80,12 @@ end
 -- @return true on success.
 -- @return nil, error message on failure.
 function socket:send (buffer)
-	return pcall(function () string.gsub(buffer,"([^%z]+)",
-		function (data)
-			self.wrapper:send(data)
-			self.wrapper:send("")
-		end)
-	end)
+  return pcall(function () string.gsub(buffer,"([^%z]+)",
+    function (data)
+      self.wrapper:send(data)
+      self.wrapper:send("")
+    end)
+  end)
 end
 
 --------------------------------------------------------------------------------
@@ -101,7 +101,7 @@ end
 -- @return nil, error message on failure.
 
 function socket:settimeout (nonblocking)
-	return  pcall(function() return self.wrapper:settimeout(nonblocking) end)
+  return  pcall(function() return self.wrapper:settimeout(nonblocking) end)
 end
 
 --------------------------------------------------------------------------------
@@ -110,7 +110,7 @@ end
 -- @param self
 -- @return true.
 function socket:close ()
-	return  pcall(function() return self.wrapper:close() end)
+  return  pcall(function() return self.wrapper:close() end)
 end
 
 --------------------------------------------------------------------------------
@@ -118,13 +118,13 @@ end
 -- @function [parent=#debugger.transport.java] create
 -- @return #socket the created socket
 function M.create ()
-	local status, res = pcall(function() return javamodule.create() end)
-	if status then
-		local t = setmetatable({wrapper = res},{__index = socket})
-		return t
-	else
-		return nil, res
-	end
+  local status, res = pcall(function() return javamodule.create() end)
+  if status then
+    local t = setmetatable({wrapper = res},{__index = socket})
+    return t
+  else
+    return nil, res
+  end
 end
 
 --------------------------------------------------------------------------------
@@ -134,7 +134,7 @@ end
 -- @param #number time amount of time to wait in seconds (decimal numbers
 --  allowed).
 function M.sleep (time)
-	javamodule.sleep(time)
+  javamodule.sleep(time)
 end
 
 --------------------------------------------------------------------------------
@@ -143,7 +143,7 @@ end
 -- @param #string input content to encode.
 -- @return #string Base64 encoded string.
 function M.rawb64 (input)
-	return javamodule.rawb64(input)
+  return javamodule.rawb64(input)
 end
 
 --------------------------------------------------------------------------------
@@ -153,7 +153,7 @@ end
 -- @param #string input content to encode.
 -- @return #string Base64 encoded string.
 function M.b64 (input)
-	return javamodule.b64(input)
+  return javamodule.b64(input)
 end
 
 --------------------------------------------------------------------------------
@@ -162,7 +162,7 @@ end
 -- @param #string input Base64 encoded string.
 -- @return #string decoded string.
 function M.unb64 (input)
-	return javamodule.unb64(input)
+  return javamodule.unb64(input)
 end
 
 return M

@@ -36,31 +36,31 @@ local SOCKET_MT = {
 SOCKET_MT.__index = SOCKET_MT
 
 return {
-    create = function()
-      local skt, err = apr.socket_create('tcp')
-      if not skt then return nil, err end
-      return setmetatable({skt = skt}, SOCKET_MT)
-    end,
-    sleep      = apr.sleep, -- exact same API as LuaSocket
-    
-    -- Base64 related functions
-    --- Encodes a string into Base64 with line wrapping
-    -- @param data (string) data to encode
-    -- @return base64 encoded string
-    b64 = function(data)
-        t = {}
-        local b64_data = apr.base64_encode(data)
-        for i=1, #b64_data, 76 do t[#t+1] = b64_data:sub(i, i+75).."\r\n" end
-        return table.concat(t)
-    end,
+  create = function()
+    local skt, err = apr.socket_create('tcp')
+    if not skt then return nil, err end
+    return setmetatable({skt = skt}, SOCKET_MT)
+  end,
+  sleep      = apr.sleep, -- exact same API as LuaSocket
 
-    --- Encodes a string into Base64, without any extra parsing (wrapping, ...)
-    -- @param data (string) data to encode
-    -- @return decoded string
-    rawb64 = apr.base64_encode,
+  -- Base64 related functions
+  --- Encodes a string into Base64 with line wrapping
+  -- @param data (string) data to encode
+  -- @return base64 encoded string
+  b64 = function(data)
+    t = {}
+    local b64_data = apr.base64_encode(data)
+    for i=1, #b64_data, 76 do t[#t+1] = b64_data:sub(i, i+75).."\r\n" end
+    return table.concat(t)
+  end,
 
-    --- Decodes base64 data
-    -- @param data (string) base64 encoded data
-    -- @return decoded string
-    unb64 = apr.base64_decode,
+  --- Encodes a string into Base64, without any extra parsing (wrapping, ...)
+  -- @param data (string) data to encode
+  -- @return decoded string
+  rawb64 = apr.base64_encode,
+
+  --- Decodes base64 data
+  -- @param data (string) base64 encoded data
+  -- @return decoded string
+  unb64 = apr.base64_decode,
 }

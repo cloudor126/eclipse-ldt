@@ -51,10 +51,10 @@ function M.build(source, modulename)
         local cleanedsource
         local iscleaned = false
         if linetoclean == nbline then
-           -- manage last line
-           cleanedsource = source:gsub('([^\n]-)$',function (lastline)
+          -- manage last line
+          cleanedsource = source:gsub('([^\n]-)$',function (lastline)
             iscleaned = true
-            return string.rep(' ',string.len(lastline)) 
+            return string.rep(' ',string.len(lastline))
           end)
         elseif linetoclean == 1 then
           -- manage first line
@@ -71,7 +71,7 @@ function M.build(source, modulename)
         end
         return cleanedsource, iscleaned
       end
-  
+
       local cleanedsource
       local iscleaned = false
       if lineindex == 1 then
@@ -101,7 +101,7 @@ function M.build(source, modulename)
             cleanedsource, iscleaned = cleanline(source,realcodelineindex,nbline)
           end
         end
-  
+
         -- after cleaning, recheck hoping there are no errors.
         if iscleaned then
           f, _ = loadstring(cleanedsource,'source_to_check')
@@ -112,7 +112,7 @@ function M.build(source, modulename)
           end
         end
       end
-  
+
       -- take cleaned source as source
       if f then
         source = cleanedsource
@@ -121,7 +121,7 @@ function M.build(source, modulename)
     -- ------------------------------------------------
     -- END OF EXPERIMENTAL CODE
     -- -------------------------------------------------
-    end
+  end
 
   if not f then return root end
 

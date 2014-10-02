@@ -13,8 +13,8 @@
 
 local util = require "debugger.util"
 
-local error, setmetatable, type, pairs, ipairs, tostring, tconcat = 
-      error, setmetatable, type, pairs, ipairs, tostring, table.concat
+local error, setmetatable, type, pairs, ipairs, tostring, tconcat =
+  error, setmetatable, type, pairs, ipairs, tostring, table.concat
 
 local M = { }
 
@@ -23,11 +23,11 @@ local M = { }
 -- @param cmd_args (string) sequence of arguments
 -- @return table described above
 function M.arg_parse(cmd_args)
-    local args = {}
-    for arg, val in cmd_args:gmatch("%-(%w) (%S+)") do
-        args[arg] = val
-    end
-    return args
+  local args = {}
+  for arg, val in cmd_args:gmatch("%-(%w) (%S+)") do
+    args[arg] = val
+  end
+  return args
 end
 
 --- Parses a command line
@@ -35,26 +35,26 @@ end
 -- @retrun arguments (table)
 -- @return data (string, optional)
 function M.cmd_parse(cmd)
-    local cmd_name, args, data
-    if cmd:find("--", 1, true) then -- there is a data part
-        cmd_name, args, data = cmd:match("^(%S+)%s+(.*)%s+%-%-%s*(.*)$")
-        data = util.unb64(data)
-    else
-        cmd_name, args = cmd:match("^(%S+)%s+(.*)$")
-    end
-    return cmd_name, M.arg_parse(args), data
+  local cmd_name, args, data
+  if cmd:find("--", 1, true) then -- there is a data part
+    cmd_name, args, data = cmd:match("^(%S+)%s+(.*)%s+%-%-%s*(.*)$")
+    data = util.unb64(data)
+  else
+    cmd_name, args = cmd:match("^(%S+)%s+(.*)$")
+  end
+  return cmd_name, M.arg_parse(args), data
 end
 
 --- Returns the packet read from socket, or nil followed by an error message on errors.
 function M.read_packet(skt)
-    local size = {}
-    while true do
-        local byte, err = skt:receive(1)
-        if not byte then return nil, err end
-        if byte == "\000" then break end
-        size[#size+1] = byte
-    end
-    return tconcat(size)
+  local size = {}
+  while true do
+    local byte, err = skt:receive(1)
+    if not byte then return nil, err end
+    if byte == "\000" then break end
+    size[#size+1] = byte
+  end
+  return tconcat(size)
 end
 
 M.DBGP_ERR_METATABLE = {} -- unique object used to identify DBGp errors
@@ -66,7 +66,7 @@ M.DBGP_ERR_METATABLE = {} -- unique object used to identify DBGp errors
 -- @param message message string (optional)
 -- @param attr extra attributes to add to the response tag (optional)
 function M.error(code, message, attr)
-    error(setmetatable({ code = code, message = message, attr = attr or {} }, M.DBGP_ERR_METATABLE), 2)
+  error(setmetatable({ code = code, message = message, attr = attr or {} }, M.DBGP_ERR_METATABLE), 2)
 end
 
 --- Like core assert but throws a DBGp error if condition is not met.
@@ -74,8 +74,8 @@ end
 -- @param message condition to test
 -- @param ... will be used as error message if test fails.
 function M.assert(code, success, ...)
-    if not success then M.error(code, (...)) end
-    return success, ...
+  if not success then M.error(code, (...)) end
+  return success, ...
 end
 
 -- -----------------
@@ -86,43 +86,43 @@ local xmlattr_specialchars = { ['"'] = "&quot;", ["<"] = "&lt;", ["&"] = "&amp;"
 -- Generates a XML string from a Lua Object Model (LOM) table.
 -- See http://matthewwild.co.uk/projects/luaexpat/lom.html
 function M.lom2str(xml)
-    local pieces = { } -- string buffer
+  local pieces = { } -- string buffer
 
-    local function generate(node)
-        pieces[#pieces + 1] = "<"..node.tag
+  local function generate(node)
+    pieces[#pieces + 1] = "<"..node.tag
+    pieces[#pieces + 1] = " "
+    -- attribute ordering is not honored here
+    for attr, val in pairs(node.attr or {}) do
+      if type(attr) == "string" then
+        pieces[#pieces + 1] = attr .. '="' .. tostring(val):gsub('["&<]', xmlattr_specialchars) .. '"'
         pieces[#pieces + 1] = " "
-        -- attribute ordering is not honored here
-        for attr, val in pairs(node.attr or {}) do
-            if type(attr) == "string" then
-                pieces[#pieces + 1] = attr .. '="' .. tostring(val):gsub('["&<]', xmlattr_specialchars) .. '"'
-                pieces[#pieces + 1] = " "
-            end
-        end
-        pieces[#pieces] = nil -- remove the last separator (useless)
-        
-        if node[1] then
-            pieces[#pieces + 1] = ">"
-            for _, child in ipairs(node) do
-                if type(child) == "table" then generate(child)
-                else pieces[#pieces + 1] = "<![CDATA[" .. tostring(child) .. "]]>" end
-            end
-            pieces[#pieces + 1] = "</" .. node.tag .. ">"
-        else
-            pieces[#pieces + 1] = "/>"
-        end
+      end
     end
-    
-    generate(xml)
-    return tconcat(pieces)
+    pieces[#pieces] = nil -- remove the last separator (useless)
+
+    if node[1] then
+      pieces[#pieces + 1] = ">"
+      for _, child in ipairs(node) do
+        if type(child) == "table" then generate(child)
+        else pieces[#pieces + 1] = "<![CDATA[" .. tostring(child) .. "]]>" end
+      end
+      pieces[#pieces + 1] = "</" .. node.tag .. ">"
+    else
+      pieces[#pieces + 1] = "/>"
+    end
+  end
+
+  generate(xml)
+  return tconcat(pieces)
 end
 
 function M.send_xml(skt, resp)
-    if not resp.attr then resp.attr = {} end
-    resp.attr.xmlns = "urn:debugger_protocol_v1"
-    
-    local data = '<?xml version="1.0" encoding="UTF-8" ?>\n'..M.lom2str(resp)
-    util.log("DEBUG", "Send " .. data)
-    skt:send(tostring(#data).."\000"..data.."\000")
+  if not resp.attr then resp.attr = {} end
+  resp.attr.xmlns = "urn:debugger_protocol_v1"
+
+  local data = '<?xml version="1.0" encoding="UTF-8" ?>\n'..M.lom2str(resp)
+  util.log("DEBUG", "Send " .. data)
+  skt:send(tostring(#data).."\000"..data.."\000")
 end
 
 --- Return an XML tag describing a debugger error, with an optional message
@@ -130,11 +130,11 @@ end
 -- @param msg  (string, optional) textual description of error
 -- @return table, suitable to be converted into XML
 function M.make_error(code, msg)
-    local elem = { tag = "error", attr = { code = code } }
-    if msg then
-        elem[1] = { tostring(msg), tag = "message" }
-    end
-    return elem
+  local elem = { tag = "error", attr = { code = code } }
+  if msg then
+    elem[1] = { tostring(msg), tag = "message" }
+  end
+  return elem
 end
 
 return M

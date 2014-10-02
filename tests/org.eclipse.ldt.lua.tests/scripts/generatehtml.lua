@@ -22,7 +22,7 @@ local apimodelbuilder      = require 'models.apimodelbuilder'
 local modeltransformations = require 'modeltransformations'
 local templateengine       = require 'templateengine'
 for key, value in pairs(require 'template.utils') do
-	templateengine.env[key] = value
+  templateengine.env[key] = value
 end
 if #arg < 1 then
 	print 'No file to serialize.'

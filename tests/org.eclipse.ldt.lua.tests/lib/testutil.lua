@@ -21,22 +21,22 @@ local xml = require 'xml'
 -- Loading template engine environment
 --
 for key, value in pairs(require 'template.utils') do
-	templateengine.env[key] = value
+  templateengine.env[key] = value
 end
 
 local M = {}
 
 local errorhandling = function (filename)
-	local errorbuffer = {}
-	return function (err, offset)
-		local message = string.format(
-			"An error occured while parsing html for %s at offset %d:%s\n",
-			filename,
-			offset,
-			err
-		)
-		table.insert(errorbuffer, message)
-	end, errorbuffer
+  local errorbuffer = {}
+  return function (err, offset)
+    local message = string.format(
+      "An error occured while parsing html for %s at offset %d:%s\n",
+      filename,
+      offset,
+      err
+    )
+    table.insert(errorbuffer, message)
+  end, errorbuffer
 end
 
 ---
@@ -46,15 +46,15 @@ end
 -- @return #string file content
 function M.loadfile(filepath)
 
-	local luafile, errormessage = io.open(filepath, 'r')
-	assert(
-		luafile,
-		string.format('Unable to read from %s.\n%s', filepath, errormessage or '')
-	)
-	local filestring = luafile:read('*a')
-	luafile:close()
-	
-	return filestring
+  local luafile, errormessage = io.open(filepath, 'r')
+  assert(
+    luafile,
+    string.format('Unable to read from %s.\n%s', filepath, errormessage or '')
+  )
+  local filestring = luafile:read('*a')
+  luafile:close()
+
+  return filestring
 end
 
 ---
@@ -65,27 +65,27 @@ end
 -- @return table
 -- @return status, errormessage in case of failure
 function M.parsehtml(htmlstring, filename)
-	
-	-- Create parser for input html
-	local handler = domhandler.createhandler()
-	local xmlparser = xml.newparser(handler)
-	xmlparser.options.stripWS = false
-	local errorhandlingfunction, errormessages = errorhandling(filename)
-	xmlparser.options.errorHandler = errorhandlingfunction
-	
-	-- Actual html parsing
-	local status, pcallerror = pcall( function() 
-		xmlparser:parse(htmlstring)
-	end)
-	
-	-- throw error with all message
-	assert(status, string.format("%s\n%s\n%s",table.concat(errormessages), tostring(pcallerror),htmlstring))
-	
-	--throw failure
-	if #errormessages ~= 0 then
-		return nil, string.format("%s\n%s",table.concat(errormessages),htmlstring)
-	end
-	return handler.root
+
+  -- Create parser for input html
+  local handler = domhandler.createhandler()
+  local xmlparser = xml.newparser(handler)
+  xmlparser.options.stripWS = false
+  local errorhandlingfunction, errormessages = errorhandling(filename)
+  xmlparser.options.errorHandler = errorhandlingfunction
+
+  -- Actual html parsing
+  local status, pcallerror = pcall( function()
+    xmlparser:parse(htmlstring)
+  end)
+
+  -- throw error with all message
+  assert(status, string.format("%s\n%s\n%s",table.concat(errormessages), tostring(pcallerror),htmlstring))
+
+  --throw failure
+  if #errormessages ~= 0 then
+    return nil, string.format("%s\n%s",table.concat(errormessages),htmlstring)
+  end
+  return handler.root
 end
 
 ---
@@ -97,41 +97,41 @@ end
 -- @parm referencehtml Html expected
 -- @return status, formattederrormessage
 function M.comparehtml(generatedtable, referencetable, generatedhtml, referencehtml)
-	-- Check that they are equivalent
-	local equivalent = tablecompare.compare(generatedtable, referencetable)
-	if #equivalent > 0 then
-	
-		-- Compute which keys differs
-		local differentkeys = tablecompare.diff(generatedtable, referencetable)
-		local differentkeysstring = pp.tostring(differentkeys, {line_max=1})
-		
-		-- Convert table in formatted string
-		local xmlformatter = require("xmlformatter")
-		local htmlformattedstring= xmlformatter.xmltostring(generatedtable)
-		local htmlformattedreferencestring = xmlformatter.xmltostring(referencetable)
-		
-		-- Create the diff
-		local diffclass = java.require("diff.match.patch.diff_match_patch")
-		local diff = diffclass:new()
-		local differences = diff:diff_main(htmlformattedstring,htmlformattedreferencestring)
-		diff:diff_cleanupSemantic(differences)
-		
-		-- Prettify the result
-		local diffutil = java.require("org.eclipse.ldt.lua.tests.internal.utils.DiffUtil")
-		local prettydiff = diffutil:diff_pretty_diff(differences)
-		
-		-- Formalise first table output
-		local _ = '_'
-		local line = _:rep(80)
-		local stringdiff = string.format('%s\nString Diff \n%s\n%s', line, line, prettydiff)
-		local generatedhtml   = string.format('%s\nGenerated HTML\n%s\n%s', line, line, generatedhtml)
-		local referencehtml  = string.format('%s\nReference HTML\n%s\n%s', line, line, referencehtml)
-		local tablediff = string.format('%s\nTable Diff \n%s\n%s', line, line, differentkeysstring)
-		local generatedtable   = string.format('%s\nGenerated table\n%s\n%s', line, line, pp.tostring(generatedtable, {line_max=1}))
-		local referencetable  = string.format('%s\nReference table\n%s\n%s', line, line, pp.tostring(referencetable, {line_max=1}))
-		return nil, string.format('The generated HTML is not the same as the reference:\n%s\n%s\n%s\n%s\n%s\n%s',stringdiff, generatedhtml, referencehtml, tablediff, generatedtable, referencetable)
-	end
-	return true
+  -- Check that they are equivalent
+  local equivalent = tablecompare.compare(generatedtable, referencetable)
+  if #equivalent > 0 then
+
+    -- Compute which keys differs
+    local differentkeys = tablecompare.diff(generatedtable, referencetable)
+    local differentkeysstring = pp.tostring(differentkeys, {line_max=1})
+
+    -- Convert table in formatted string
+    local xmlformatter = require("xmlformatter")
+    local htmlformattedstring= xmlformatter.xmltostring(generatedtable)
+    local htmlformattedreferencestring = xmlformatter.xmltostring(referencetable)
+
+    -- Create the diff
+    local diffclass = java.require("diff.match.patch.diff_match_patch")
+    local diff = diffclass:new()
+    local differences = diff:diff_main(htmlformattedstring,htmlformattedreferencestring)
+    diff:diff_cleanupSemantic(differences)
+
+    -- Prettify the result
+    local diffutil = java.require("org.eclipse.ldt.lua.tests.internal.utils.DiffUtil")
+    local prettydiff = diffutil:diff_pretty_diff(differences)
+
+    -- Formalise first table output
+    local _ = '_'
+    local line = _:rep(80)
+    local stringdiff = string.format('%s\nString Diff \n%s\n%s', line, line, prettydiff)
+    local generatedhtml   = string.format('%s\nGenerated HTML\n%s\n%s', line, line, generatedhtml)
+    local referencehtml  = string.format('%s\nReference HTML\n%s\n%s', line, line, referencehtml)
+    local tablediff = string.format('%s\nTable Diff \n%s\n%s', line, line, differentkeysstring)
+    local generatedtable   = string.format('%s\nGenerated table\n%s\n%s', line, line, pp.tostring(generatedtable, {line_max=1}))
+    local referencetable  = string.format('%s\nReference table\n%s\n%s', line, line, pp.tostring(referencetable, {line_max=1}))
+    return nil, string.format('The generated HTML is not the same as the reference:\n%s\n%s\n%s\n%s\n%s\n%s',stringdiff, generatedhtml, referencehtml, tablediff, generatedtable, referencetable)
+  end
+  return true
 end
 
 return M

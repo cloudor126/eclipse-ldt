@@ -312,7 +312,7 @@ function M.createmoduleapi(ast,modulename)
 
           -- manage extends (inheritance) and structure tags
           if _moduletypedef and _moduletypedef.tag == "recordtypedef" then
-            if regulartags["extends"]	and regulartags["extends"][1] then
+            if regulartags["extends"] and regulartags["extends"][1] then
               local supertype = regulartags["extends"][1].type
               if supertype then _moduletypedef.supertype = createtyperef(supertype) end
             end
@@ -414,7 +414,7 @@ function M.createmoduleapi(ast,modulename)
         _lastapiobject = _item
 
         -- set name
-        if regulartags["function"] then	_item.name =  regulartags["function"][1].name end
+        if regulartags["function"] then _item.name =  regulartags["function"][1].name end
 
         -- define sourcerange
         local sourcerangemin = comment.lineinfo.first.offset

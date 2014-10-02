@@ -21,19 +21,19 @@ require 'metalua.loader'
 local apimodelbuiler = require 'models.apimodelbuilder'
 local modeltransformations = require 'modeltransformations'
 if #arg < 1 then
-	print 'No file to serialize.'
-	return
+  print 'No file to serialize.'
+  return
 end
 for k = 1, #arg do
 
-	-- Load source to serialize
-	local filename = arg[k]
-	local status, error = modeltransformations.codetoserialisedmodel(
-		filename,
-		'serialized',
-		apimodelbuiler.createmoduleapi
-	)
-	if not status then
-		print( error )
-	end
+  -- Load source to serialize
+  local filename = arg[k]
+  local status, error = modeltransformations.codetoserialisedmodel(
+    filename,
+    'serialized',
+    apimodelbuiler.createmoduleapi
+  )
+  if not status then
+    print( error )
+  end
 end
