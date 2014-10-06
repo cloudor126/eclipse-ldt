@@ -10,7 +10,7 @@
 -------------------------------------------------------------------------------
 -- Debugger using DBGp protocol.
 -------------------------------------------------------------------------------
--- The module returns a single init function which takes 6 parameters (IDEHOST, IDEPORT, IDEKEY, TRANSPORT, PLATFORM, WORKINGDIR).
+-- The module returns a single init function which takes 7 parameters (IDEHOST, IDEPORT, IDEKEY, TRANSPORT, PLATFORM, WORKINGDIR, NBRETRY).
 --
 -- IDEHOST: the host name or the ip address of the DBGP server (so your ide)
 -- if HOST is nil, the DBGP_IDEHOST env var is used.
@@ -38,6 +38,10 @@
 -- by default the debugger will try to guess it and surely success, if for some reasons it fails you could help it by precise the working directory. 
 -- if WORKINGDIR is nil, the DBGP_WORKINGDIR env var is used.
 -- if the env var is nil, the debugger will try to guess it.
+--
+-- NBRETRY: (advanced optional parameter) the number of connection retry at start up.
+-- if NBRETRY is nil, the DBGP_NBRETRY env var is used.
+-- if the env var is nil, the default value is 10.
 --
 -------------------------------------------------------------------------------
 -- Known Issues:

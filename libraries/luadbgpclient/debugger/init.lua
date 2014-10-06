@@ -455,50 +455,7 @@ if rawget(_G, "jit") then
   end
 end
 
-local function init(host, port, idekey, transport, executionplatform, workingdirectory)
-  -- get connection data
-  local host = host or os.getenv "DBGP_IDEHOST" or "127.0.0.1"
-  local port = port or os.getenv "DBGP_IDEPORT" or "10000"
-  local idekey = idekey or os.getenv("DBGP_IDEKEY") or "luaidekey"
-
-  -- init plaform module
-  local executionplatform = executionplatform or os.getenv("DBGP_PLATFORM") or nil
-  local workingdirectory = workingdirectory or os.getenv("DBGP_WORKINGDIR") or nil
-  platform.init(executionplatform,workingdirectory)
-
-  -- get transport layer
-  local transportpath = transport or os.getenv("DBGP_TRANSPORT") or "debugger.transport.luasocket"
-  local transport = require(transportpath)
-
-  -- install base64 functions into util
-  util.b64, util.rawb64, util.unb64 = transport.b64, transport.rawb64, transport.unb64
-
-  local skt = assert(transport.create())
-  skt:settimeout(nil)
-
-  -- try to connect several times: if IDE launches both process and server at same time, first connect attempts may fail
-  local ok, err
-  print(string.format("Debugger v%s", DBGP_CLIENT_VERSION))
-  print(string.format("Debugger: Trying to connect to %s:%s ... ", host, port))
-  ok, err = skt:connect(host, port)
-  for i=1, 4 do
-    if ok then
-      print("Debugger: Connection succeed.")
-      break
-    else
-      -- wait
-      transport.sleep(0.5)
-      -- then retry.
-      print(string.format("Debugger: Retrying to connect to %s:%s ... ", host, port))
-      ok, err = skt:connect(host, port)
-    end
-  end
-  if err then error(string.format("Cannot connect to %s:%d : %s", host, port, err)) end
-
-  -- get the debugger and transport layer URI
-  debugger_uri = platform.get_uri(debug.getinfo(1).source)
-  transportmodule_uri = platform.get_uri(debug.getinfo(transport.create).source)
-
+local function sendInitPacket(skt,idekey)
   -- get the root script path (the highest possible stack index)
   local source
   for i=2, math.huge do
@@ -523,6 +480,67 @@ local function init(host, port, idekey, transport, executionplatform, workingdir
     protocol_version = "1.0",
     fileuri = source
   } })
+end
+
+local function init(host, port, idekey, transport, executionplatform, workingdirectory, nbRetry)
+  -- get connection data
+  local host = host or os.getenv "DBGP_IDEHOST" or "127.0.0.1"
+  local port = port or os.getenv "DBGP_IDEPORT" or "10000"
+  local idekey = idekey or os.getenv("DBGP_IDEKEY") or "luaidekey"
+
+  -- init plaform module
+  local executionplatform = executionplatform or os.getenv("DBGP_PLATFORM") or nil
+  local workingdirectory = workingdirectory or os.getenv("DBGP_WORKINGDIR") or nil
+  platform.init(executionplatform,workingdirectory)
+
+  -- get transport layer
+  local transportpath = transport or os.getenv("DBGP_TRANSPORT") or "debugger.transport.luasocket"
+  local transport = require(transportpath)
+
+  -- nb retry for connection
+  local nbRetry = nbRetry or os.getenv("DBGP_NBRETRY") or 10
+  nbRetry = math.max(nbRetry,1)
+
+  -- install base64 functions into util
+  util.b64, util.rawb64, util.unb64 = transport.b64, transport.rawb64, transport.unb64
+
+  -- get the debugger and transport layer URI
+  debugger_uri = platform.get_uri(debug.getinfo(1).source)
+  transportmodule_uri = platform.get_uri(debug.getinfo(transport.create).source)
+
+  -- try to connect several times: if IDE launches both process and server at same time, first connect attempts may fail
+  local skt,ok, err
+  print(string.format("Debugger v%s", DBGP_CLIENT_VERSION))
+  print(string.format("Debugger: Trying to connect to %s:%s ... ", host, port))
+
+  local timeelapsed = 0
+  for i=1,nbRetry do
+    -- try to connect to DBGP server
+    skt = assert(transport.create())
+    skt:settimeout(nil)
+    ok, err = skt:connect(host, port)
+    if ok then
+      sendInitPacket(skt,idekey)
+      -- test if socket is closed
+      ok, err = skt:receive(0)
+      if err == nil then print("Debugger: Connection succeed.") break end
+    end
+
+    if err ~= nil then
+      -- failed to connect
+      print(string.format("Debugger: Failed to connect to %s:%s (%s)", host, port, err))
+      skt:close()
+
+      -- wait&retry
+      local timetowait = math.min(3, math.max(timeelapsed/2, 0.25))
+      if i < nbRetry then 
+        print(string.format("Debugger: Retrying to connect to %s:%s in %.2fs ... ", host, port,timetowait))
+        transport.sleep(timetowait)
+        timeelapsed  = timeelapsed+timetowait
+      end
+    end
+  end
+  if err then error(string.format("Cannot connect to %s:%d : %s", host, port, err)) end  
 
   --FIXME util.CurrentThread(corunning) => util.CurrentThread(corunning()) WHAT DOES IT FIXES ??
   local sess = { skt = skt, state = "starting", id = sessionid, coro = util.CurrentThread(corunning) }
