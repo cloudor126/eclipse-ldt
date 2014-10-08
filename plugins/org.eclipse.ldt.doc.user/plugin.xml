@@ -17,6 +17,9 @@
             file="help/toc.xml"
             primary="true">
       </toc>
+      <index
+            path="index">
+      </index>
    </extension>
 
 </plugin>
