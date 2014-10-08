@@ -18,6 +18,7 @@
 --------------------------------------------------------------------------------
 
 local M = require "package" -- extend Lua's basic "package" module
+local checks = require 'checks'
 
 M.metalua_extension_prefix = 'metalua.extension.'
 
@@ -51,9 +52,9 @@ function M.findfile(name, path_string)
       --printf('path = %s, rpath_mark=%s, name=%s', path, resc(path_mark), name)
       local filename = path:gsub (resc (path_mark), name)
       --printf('filename = %s', filename)
-      local file = io.open (filename, 'r')
+      local file = io.open (filename, 'rb')
       if file then return file, filename end
-      table.insert(errors, string.format("\tno lua file %q", filename))
+      table.insert(errors, string.format("\tno file %q", filename))
    end
    return false, '\n'..table.concat(errors, "\n")..'\n'
 end
@@ -63,6 +64,10 @@ end
 -- a more recent bytecode dump. Requires lfs
 ----------------------------------------------------------------------
 local function metalua_cache_loader(name, src_filename, src)
+    if not M.mcache:find('%?') then
+        -- This is highly suspicious...
+        print("WARNING: no '?' character in $LUA_MCACHE/package.mcache")
+    end
     local mlc          = require 'metalua.compiler'.new()
     local lfs          = require 'lfs'
     local dir_sep      = M.config:sub(1,1)
@@ -74,8 +79,8 @@ local function metalua_cache_loader(name, src_filename, src)
     local delta        = dst_date - src_date
     local bytecode, file, msg
     if delta <= 0 then
-       print "NEED TO RECOMPILE"
-       bytecode = mlc :src_to_bytecode (src, name)
+       --print ("(need to recompile "..src_filename.." into "..dst_filename..")")
+       bytecode = mlc :src_to_bytecode (src, '@'..src_filename)
        for x in dst_filename :gmatch('()'..dir_sep) do
           lfs.mkdir(dst_filename:sub(1,x))
        end
@@ -89,7 +94,7 @@ local function metalua_cache_loader(name, src_filename, src)
        bytecode = file :read '*a'
        file :close()
     end
-    return mlc :bytecode_to_function (bytecode)
+    return mlc :bytecode_to_function (bytecode, '@'..src_filename)
 end
 
 ----------------------------------------------------------------------
@@ -102,7 +107,7 @@ function M.metalua_loader (name)
    file:close()
    if M.mcache and pcall(require, 'lfs') then
       return metalua_cache_loader(name, filename_or_msg, luastring)
-   else return require 'metalua.compiler'.new() :src_to_function (luastring, name) end
+   else return require 'metalua.compiler'.new() :src_to_function (luastring, '@'..filename_or_msg) end
 end
 
 

@@ -38,7 +38,7 @@
 --
 --------------------------------------------------------------------------------
 
-require 'checks'
+local checks = require 'checks'
 
 local M  = { }
 
@@ -121,7 +121,7 @@ local function get_bytecode_compiler()
 end
 
 function CONV :ast_to_proto(ast, name)
-	checks('metalua.compiler', 'table', '?string')
+	--checks('metalua.compiler', 'table', '?string')
     return get_bytecode_compiler().ast_to_proto(ast, name), name
 end
 
@@ -130,7 +130,7 @@ function CONV :proto_to_bytecode(proto, name)
 end
 
 function CONV :bytecode_to_function(bc, name)
-	checks('metalua.compiler', 'string', '?string')
+	--checks('metalua.compiler', 'string', '?string')
 	return loadstring(bc, name)
 end
 
@@ -148,7 +148,7 @@ for i=1,#M.sequence do
 			table.insert (functions, f)
 		end
 		CONV[dst_name] = function(self, a, b)
-			checks('metalua.compiler', unpack(my_arg_types))
+			--checks('metalua.compiler', unpack(my_arg_types))
 			for _, f in ipairs(functions) do
 				a, b = f(self, a, b)
 			end
@@ -166,7 +166,7 @@ function CONV :function_to_bytecode(...) return string.dump(...) end
 
 function CONV :ast_to_src(...)
 	require 'metalua.loader' -- ast_to_string isn't written in plain lua
-	return require 'metalua.compiler.ast_to_src' (...)
+	return require 'metalua.compiler.ast_to_src'.new()(...)
 end
 
 local MT = { __index=CONV, __type='metalua.compiler' }
