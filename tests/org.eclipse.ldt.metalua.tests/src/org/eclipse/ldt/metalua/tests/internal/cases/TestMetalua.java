@@ -138,6 +138,18 @@ public class TestMetalua extends TestCase {
 		}
 	}
 
+	/** Run from source */
+	public void testlua52() {
+		try {
+			final StringBuffer sb = new StringBuffer("local mlc = require ('metalua.compiler').new()\n"); //$NON-NLS-1$ 
+			sb.append("ast = mlc:src_to_ast[[goto a\nprint 'hello'\n::a::]]"); //$NON-NLS-1$ 
+			state.load(sb.toString(), "metaluaCode"); //$NON-NLS-1$ 
+			state.call(0, 0);
+		} catch (LuaException e) {
+			fail(e.getMessage());
+		}
+	}
+
 	public void testSourcesPath() {
 		String path = Metalua.path();
 		assertFalse("Metalua sources path is not definded.", path.isEmpty());//$NON-NLS-1$

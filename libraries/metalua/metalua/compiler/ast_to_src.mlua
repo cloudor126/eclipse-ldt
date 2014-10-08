@@ -389,6 +389,18 @@ function M:Local (node, lhs, rhs, annots)
     end
 end
 
+function M:Goto (node, name, annots)
+    print ("node",node, name); io.flush();
+    self:acc  "goto "
+    self:acc  (name)
+end
+
+function M:Label (node, name, annots)
+    self:acc  "::"
+    self:acc  (name)
+    self:acc  "::"
+end
+
 function M:Localrec (node, lhs, rhs)
    match node with
    | `Localrec{ { `Id{name} }, { `Function{ params, body } } }
