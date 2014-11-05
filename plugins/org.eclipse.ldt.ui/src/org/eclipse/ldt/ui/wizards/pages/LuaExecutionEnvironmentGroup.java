@@ -69,10 +69,14 @@ public class LuaExecutionEnvironmentGroup extends Observable {
 	};
 
 	public LuaExecutionEnvironmentGroup(final Composite parent) {
+		this(parent, true);
+	}
+
+	public LuaExecutionEnvironmentGroup(final Composite parent, boolean showMainCheckBox) {
 		// Create group
 		final Group group = new Group(parent, SWT.NONE);
 		group.setText(Messages.LuaExecutionEnvironmentGroupTitle);
-		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).applyTo(group);
+		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(group);
 		GridLayoutFactory.swtDefaults().numColumns(3).applyTo(group);
 
 		// Button for no Execution Environment at project creation
@@ -98,16 +102,18 @@ public class LuaExecutionEnvironmentGroup extends Observable {
 		GridDataFactory.swtDefaults().align(SWT.END, SWT.CENTER).applyTo(link);
 
 		// Should we create a main.lua
-		mainCheckBox = new Button(group, SWT.CHECK);
-		mainCheckBox.setText(Messages.LuaExecutionEnvironmentGroupTemplateLabel);
-		mainCheckBox.setSelection(hasToCreateMain);
-		GridDataFactory.swtDefaults().span(3, 1).applyTo(mainCheckBox);
-		mainCheckBox.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(final SelectionEvent e) {
-				hasToCreateMain = mainCheckBox.getSelection();
-			}
-		});
+		if (showMainCheckBox) {
+			mainCheckBox = new Button(group, SWT.CHECK);
+			mainCheckBox.setText(Messages.LuaExecutionEnvironmentGroupTemplateLabel);
+			mainCheckBox.setSelection(hasToCreateMain);
+			GridDataFactory.swtDefaults().span(3, 1).applyTo(mainCheckBox);
+			mainCheckBox.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(final SelectionEvent e) {
+					hasToCreateMain = mainCheckBox.getSelection();
+				}
+			});
+		}
 
 		// Refresh list after user went to Execution Environment preferences
 		link.addSelectionListener(new SelectionAdapter() {

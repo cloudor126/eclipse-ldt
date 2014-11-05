@@ -142,6 +142,10 @@
                 id="org.eclipse.ldt.ui.buildpathcontainer.documentation"
                 name="%handler.documentation.label">
           </command>
+          <command
+                id="org.eclipse.ldt.ui.command.converttolua"
+                name="%command.converttoluaproject.name">
+          </command>
        </extension>
        <extension
              point="org.eclipse.ui.handlers">
@@ -167,6 +171,10 @@
                    </with>
                 </and>
              </activeWhen>
+          </handler>
+          <handler
+                class="org.eclipse.ldt.ui.internal.handlers.ConvertToLuaProjectHandler"
+                commandId="org.eclipse.ldt.ui.command.converttolua">
           </handler>
        </extension>
        <extension
@@ -207,6 +215,35 @@
              <command
                    commandId="org.eclipse.dltk.ui.edit.text.script.rename.element"
                    label="%rename.command.label">
+             </command>
+          </menuContribution>
+          <menuContribution
+                allPopups="false"
+                locationURI="popup:org.eclipse.ui.projectConfigure?after=additions">
+             <command
+                   commandId="org.eclipse.ldt.ui.command.converttolua"
+                   label="%command.converttoluaproject.name"
+                   style="push">
+                <visibleWhen
+                      checkEnabled="false">
+                   <with
+                         variable="selection">
+                      <count
+                            value="1">
+                      </count>
+                      <iterate>
+                         <adapt
+                               type="org.eclipse.core.resources.IProject">
+                            <not>
+                               <test
+                                     property="org.eclipse.core.resources.projectNature "
+                                     value="org.eclipse.ldt.nature">
+                               </test>
+                            </not>
+                         </adapt>
+                      </iterate>
+                   </with>
+                </visibleWhen>
              </command>
           </menuContribution>
        </extension>

@@ -1,0 +1,161 @@
+/*******************************************************************************
+ * Copyright (c) 2014 Sierra Wireless and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Sierra Wireless - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.ldt.ui.wizards;
+
+import java.lang.reflect.InvocationTargetException;
+
+import org.apache.commons.lang.ArrayUtils;
+import org.eclipse.core.resources.ICommand;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.SubMonitor;
+import org.eclipse.dltk.core.DLTKCore;
+import org.eclipse.dltk.core.IBuildpathEntry;
+import org.eclipse.dltk.core.IScriptProject;
+import org.eclipse.dltk.ui.wizards.CapabilityConfigurationPage;
+import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.resource.ImageRegistry;
+import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.ldt.core.LuaNature;
+import org.eclipse.ldt.core.internal.buildpath.LuaExecutionEnvironment;
+import org.eclipse.ldt.core.internal.buildpath.LuaExecutionEnvironmentBuildpathUtil;
+import org.eclipse.ldt.ui.internal.Activator;
+import org.eclipse.ldt.ui.internal.ImageConstants;
+import org.eclipse.ldt.ui.wizards.pages.ConvertToLuaProjectMainPage;
+import org.eclipse.osgi.util.NLS;
+
+/**
+ * @since 1.3
+ */
+public class ConvertToLuaProjectWizard extends Wizard {
+	private IProject project;
+	private ConvertToLuaProjectMainPage mainpage;
+	private CapabilityConfigurationPage buildPathpage;
+	private IScriptProject scriptProject;
+
+	public ConvertToLuaProjectWizard(IProject project) {
+		Assert.isNotNull(project);
+		this.project = project;
+		scriptProject = DLTKCore.create(project);
+
+		final ImageRegistry imageRegistry = Activator.getDefault().getImageRegistry();
+		setDefaultPageImageDescriptor(imageRegistry.getDescriptor(ImageConstants.LUA_WIZARD_BAN));
+		setWindowTitle(Messages.ConvertToLuaProjectWizard_wizardTitle);
+	}
+
+	/**
+	 * @see org.eclipse.jface.wizard.Wizard#addPages()
+	 */
+	@Override
+	public void addPages() {
+		mainpage = new ConvertToLuaProjectMainPage("mainPage", project); //$NON-NLS-1$
+		addPage(mainpage);
+		buildPathpage = new CapabilityConfigurationPage("secondPage") { //$NON-NLS-1$
+			@Override
+			protected String getScriptNature() {
+				return LuaNature.ID;
+			}
+
+			@Override
+			public void setVisible(boolean visible) {
+				if (visible) {
+					// update default buildpath
+					this.init(scriptProject, getDefaultBuildpath(), false);
+				}
+				super.setVisible(visible);
+			}
+		};
+		addPage(buildPathpage);
+	}
+
+	private IBuildpathEntry[] getDefaultBuildpath() {
+		// get build path from second page (empty the first time)
+		IBuildpathEntry[] rawBuildPath = new IBuildpathEntry[0];
+
+		// if an execution environment is selected add it to the build path (if necessary)
+		LuaExecutionEnvironment executionEnvironement = mainpage.getLuaExecutionEnvironement();
+		if (executionEnvironement != null) {
+			IPath path = LuaExecutionEnvironmentBuildpathUtil.getLuaExecutionEnvironmentContainerPath(executionEnvironement);
+			IBuildpathEntry newContainerEntry = DLTKCore.newContainerEntry(path);
+			if (!ArrayUtils.contains(rawBuildPath, newContainerEntry)) {
+				IBuildpathEntry[] newBuildPath = new IBuildpathEntry[rawBuildPath.length + 1];
+				System.arraycopy(rawBuildPath, 0, newBuildPath, 1, rawBuildPath.length);
+				newBuildPath[0] = newContainerEntry;
+
+				rawBuildPath = newBuildPath;
+			}
+		}
+		return rawBuildPath;
+	}
+
+	/**
+	 * @see org.eclipse.jface.wizard.Wizard#performFinish()
+	 */
+	@Override
+	public boolean performFinish() {
+		try {
+			getContainer().run(false, true, new IRunnableWithProgress() {
+				@Override
+				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+					SubMonitor smonitor = SubMonitor.convert(monitor, 100);
+
+					try {
+						IProjectDescription description = project.getDescription();
+
+						// Add Lua Nature
+						String[] natures = description.getNatureIds();
+						String[] newNatures = new String[natures.length + 1];
+						System.arraycopy(natures, 0, newNatures, 0, natures.length);
+						newNatures[natures.length] = LuaNature.ID;
+						description.setNatureIds(newNatures);
+
+						// Add dltk builder
+						ICommand[] commands = description.getBuildSpec();
+						ICommand[] newcommands = new ICommand[commands.length + 1];
+						System.arraycopy(commands, 0, newcommands, 0, commands.length);
+						ICommand command = description.newCommand();
+						command.setBuilderName("org.eclipse.dltk.core.scriptbuilder"); //$NON-NLS-1$
+						newcommands[commands.length] = command;
+						description.setBuildSpec(newcommands);
+						project.setDescription(description, smonitor.newChild(30));
+
+						// Update Build Path
+						if (getContainer().getCurrentPage() == buildPathpage)
+							buildPathpage.configureScriptProject(smonitor.newChild(70));
+						else
+							scriptProject.setRawBuildpath(getDefaultBuildpath(), smonitor.newChild(70));
+
+					} catch (CoreException e) {
+						throw new InvocationTargetException(e);
+					}
+				}
+			});
+		} catch (InvocationTargetException e) {
+			String message = NLS.bind(Messages.ConvertToLuaProjectWizard_convertFailedMessage, project.getName());
+			Activator.logError(message, e);
+			ErrorDialog.openError(getShell(), Messages.ConvertToLuaProjectWizard_ConvertFailedDialogTitle, null, new Status(IStatus.ERROR,
+					Activator.PLUGIN_ID, message, e.getCause()));
+			return false;
+		} catch (InterruptedException e) {
+			String message = NLS.bind(Messages.ConvertToLuaProjectWizard_convertFailedMessage, project.getName());
+			Activator.logError(message, e);
+			return false;
+		}
+		return true;
+	}
+}

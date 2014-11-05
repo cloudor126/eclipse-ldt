@@ -17,6 +17,10 @@ public class Messages extends NLS {
 
 	private static final String BUNDLE_NAME = "org.eclipse.ldt.ui.wizards.pages.messages"; //$NON-NLS-1$
 
+	/** @since 1.3 */
+	public static String ConvertToLuaProjectMainPage_title;
+	public static String ConvertToLuaProjectMainPage_defaultMessage;
+
 	/** @since 1.2 */
 	public static String DocLuaFilePage_description;
 
@@ -34,6 +38,7 @@ public class Messages extends NLS {
 	public static String LuaFilePageDescription;
 	public static String LuaFilePageTitle;
 	public static String LuaProjecSettingsPageLabel;
+
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);

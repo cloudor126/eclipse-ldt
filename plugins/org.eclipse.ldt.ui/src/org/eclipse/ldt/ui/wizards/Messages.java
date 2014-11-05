@@ -16,6 +16,11 @@ import org.eclipse.osgi.util.NLS;
 public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.eclipse.ldt.ui.wizards.messages"; //$NON-NLS-1$
 
+	/** @since 1.3 */
+	public static String ConvertToLuaProjectWizard_convertFailedMessage;
+	public static String ConvertToLuaProjectWizard_wizardTitle;
+	public static String ConvertToLuaProjectWizard_ConvertFailedDialogTitle;
+
 	/** @since 1.2 */
 	public static String DocLuaNewFileWizard_title;
 
@@ -23,6 +28,7 @@ public class Messages extends NLS {
 	public static String LuaProjectCreatorInitializingSourceFolder;
 	public static String LuaProjectWizard_warning_noSourceFolder;
 	public static String LuaProjectWizardProjectWindowTitle;
+
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
