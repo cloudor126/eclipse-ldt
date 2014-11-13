@@ -10,38 +10,27 @@
  *******************************************************************************/
 package org.eclipse.ldt.ui.internal.editor.navigation;
 
+import org.eclipse.dltk.core.IField;
 import org.eclipse.dltk.core.IMember;
-import org.eclipse.dltk.core.IType;
+import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.ModelException;
+import org.eclipse.dltk.ui.ScriptElementLabels;
+import org.eclipse.dltk.ui.viewsupport.AppearanceAwareLabelProvider;
+import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.ldt.core.internal.ast.models.LuaDLTKModelUtils;
 import org.eclipse.ldt.ui.internal.Activator;
 import org.eclipse.ldt.ui.internal.ImageConstants;
 import org.eclipse.swt.graphics.Image;
 
-public class LuaLabelProvider extends LabelProvider {
+public class LuaLabelProvider extends LabelProvider implements IStyledLabelProvider {
 
 	@Override
 	public String getText(final Object element) {
-		final IMember member = element instanceof IMember ? (IMember) element : null;
-		if (member == null)
-			return null;
-		try {
-			// Special icon for private type
-			if (member.exists()) {
-				if (LuaDLTKModelUtils.isType(member) || LuaDLTKModelUtils.isModule(member)) {
-					IType type = (IType) member;
-					if (type.getSuperClasses() != null && type.getSuperClasses().length >= 1) {
-						return type.getElementName() + " -> " + type.getSuperClasses()[0]; //$NON-NLS-1$
-					} else {
-						return type.getElementName();
-					}
-				}
-			}
-		} catch (ModelException e) {
-			Activator.logError(Messages.LuaCompletionProvidersFlags, e);
-		}
-		// DLTK default behavior
+		StyledString styledText = getStyledText(element);
+		if (styledText != null)
+			return styledText.toString();
 		return null;
 	}
 
@@ -81,6 +70,31 @@ public class LuaLabelProvider extends LabelProvider {
 			Activator.logError(Messages.LuaCompletionProvidersFlags, e);
 		}
 		// DLTK default behavior
+		return null;
+	}
+
+	@Override
+	public StyledString getStyledText(Object element) {
+		if (element instanceof IModelElement) {// get name
+			StyledString result = new StyledString();
+			StringBuffer buf = new StringBuffer(61);
+			ScriptElementLabels.getDefault().getElementLabel((IModelElement) element,
+					AppearanceAwareLabelProvider.DEFAULT_TEXTFLAGS | ScriptElementLabels.ALL_CATEGORY | ScriptElementLabels.M_APP_RETURNTYPE, buf);
+			result.append(buf.toString());
+
+			// get field type
+			if (element instanceof IField) {
+				try {
+					if (((IField) element).getType() != null)
+						result.append(new StyledString(" : " + ((IField) element).getType(), StyledString.DECORATIONS_STYLER)); //$NON-NLS-1$
+					// CHECKSTYLE:OFF
+				} catch (ModelException e) {
+					// do nothing, we just not be able to get the type
+					// CHECKSTYLE:ON
+				}
+			}
+			return result;
+		}
 		return null;
 	}
 }

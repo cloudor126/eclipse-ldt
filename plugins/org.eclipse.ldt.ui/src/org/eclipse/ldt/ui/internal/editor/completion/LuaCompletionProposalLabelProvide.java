@@ -19,14 +19,16 @@ import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.IType;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.ui.text.completion.CompletionProposalLabelProvider;
+import org.eclipse.dltk.ui.text.completion.ICompletionProposalLabelProviderExtension;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.ldt.core.internal.ast.models.LuaDLTKModelUtils;
 import org.eclipse.ldt.ui.internal.Activator;
 import org.eclipse.ldt.ui.internal.ImageConstants;
 import org.eclipse.ldt.ui.internal.editor.navigation.Messages;
 
 //TODO factorize some code with LuaLabelProvider
-public class LuaCompletionProposalLabelProvide extends CompletionProposalLabelProvider {
+public class LuaCompletionProposalLabelProvide extends CompletionProposalLabelProvider implements ICompletionProposalLabelProviderExtension {
 
 	public LuaCompletionProposalLabelProvide() {
 	}
@@ -82,21 +84,8 @@ public class LuaCompletionProposalLabelProvide extends CompletionProposalLabelPr
 
 	// TODO BUG_ECLIPSE 403751
 	protected String createFieldProposalLabel(CompletionProposal proposal) {
-		IModelElement element = proposal.getModelElement();
-		if (element != null && element.getElementType() == IModelElement.FIELD && element.exists()) {
-			final IField field = (IField) element;
-			try {
-				String type = field.getType();
-				if (type != null) {
-					return proposal.getName() + " : " + type; //$NON-NLS-1$
-				}
-				// CHECKSTYLE:OFF
-			} catch (ModelException e) {
-				// ignore
-				// CHECKSTYLE:ON
-			}
-		}
-		return proposal.getName();
+		StyledString string = createStyledFieldProposalLabel(proposal);
+		return string.toString();
 	}
 
 	/**
@@ -159,5 +148,49 @@ public class LuaCompletionProposalLabelProvide extends CompletionProposalLabelPr
 			}
 		}
 		return super.createImageDescriptor(proposal);
+	}
+
+	public StyledString createStyledFieldProposalLabel(CompletionProposal proposal) {
+		StyledString result = new StyledString(proposal.getName());
+		IModelElement element = proposal.getModelElement();
+		if (element != null && element.getElementType() == IModelElement.FIELD && element.exists()) {
+			final IField field = (IField) element;
+			try {
+				String type = field.getType();
+				if (type != null) {
+					return result.append(new StyledString(" : " + type, StyledString.DECORATIONS_STYLER)); //$NON-NLS-1$
+				}
+				// CHECKSTYLE:OFF
+			} catch (ModelException e) {
+				// ignore
+				// CHECKSTYLE:ON
+			}
+		}
+		return result;
+	}
+
+	@Override
+	public StyledString createStyledLabel(CompletionProposal fProposal) {
+		return new StyledString(createLabel(fProposal));
+	}
+
+	@Override
+	public StyledString createStyledKeywordLabel(CompletionProposal proposal) {
+		return new StyledString(createKeywordLabel(proposal));
+	}
+
+	@Override
+	public StyledString createStyledSimpleLabel(CompletionProposal proposal) {
+		return new StyledString(createSimpleLabel(proposal));
+	}
+
+	@Override
+	public StyledString createStyledTypeProposalLabel(CompletionProposal proposal) {
+		return new StyledString(createTypeProposalLabel(proposal));
+	}
+
+	@Override
+	public StyledString createStyledSimpleLabelWithType(CompletionProposal proposal) {
+		return new StyledString(createSimpleLabelWithType(proposal));
 	}
 }
