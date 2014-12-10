@@ -32,7 +32,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.ldt.core.internal.buildpath.LuaExecutionEnvironment;
+import org.eclipse.ldt.core.buildpath.LuaExecutionEnvironment;
 import org.eclipse.ldt.core.internal.buildpath.LuaExecutionEnvironmentBuildpathUtil;
 import org.eclipse.ldt.core.internal.buildpath.LuaExecutionEnvironmentConstants;
 import org.eclipse.ldt.ui.LuaExecutionEnvironmentUIManager;

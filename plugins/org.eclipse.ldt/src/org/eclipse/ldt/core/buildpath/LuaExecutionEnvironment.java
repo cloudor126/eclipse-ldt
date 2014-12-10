@@ -8,11 +8,12 @@
  * Contributors:
  *     Sierra Wireless - initial API and implementation
  *******************************************************************************/
-package org.eclipse.ldt.core.internal.buildpath;
+package org.eclipse.ldt.core.buildpath;
 
 import java.util.Map;
 
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.ldt.core.internal.buildpath.LuaExecutionEnvironmentConstants;
 
 public class LuaExecutionEnvironment implements Comparable<LuaExecutionEnvironment> {
 

@@ -34,7 +34,7 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ldt.core.LuaNature;
-import org.eclipse.ldt.core.internal.buildpath.LuaExecutionEnvironment;
+import org.eclipse.ldt.core.buildpath.LuaExecutionEnvironment;
 import org.eclipse.ldt.core.internal.buildpath.LuaExecutionEnvironmentBuildpathUtil;
 import org.eclipse.ldt.core.internal.buildpath.LuaExecutionEnvironmentConstants;
 import org.eclipse.ldt.ui.internal.Activator;

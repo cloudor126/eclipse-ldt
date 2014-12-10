@@ -20,7 +20,7 @@ import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.wizard.WizardPage;
-import org.eclipse.ldt.core.internal.buildpath.LuaExecutionEnvironment;
+import org.eclipse.ldt.core.buildpath.LuaExecutionEnvironment;
 import org.eclipse.ldt.ui.internal.Activator;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;

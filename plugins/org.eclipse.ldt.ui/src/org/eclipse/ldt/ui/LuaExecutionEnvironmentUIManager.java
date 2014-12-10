@@ -15,7 +15,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.ldt.core.internal.buildpath.LuaExecutionEnvironment;
+import org.eclipse.ldt.core.buildpath.LuaExecutionEnvironment;
 import org.eclipse.ldt.core.internal.buildpath.LuaExecutionEnvironmentManager;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.activities.IActivity;

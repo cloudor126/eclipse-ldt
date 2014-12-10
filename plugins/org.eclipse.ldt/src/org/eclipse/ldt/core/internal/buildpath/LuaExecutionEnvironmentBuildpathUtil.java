@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.dltk.core.environment.EnvironmentManager;
 import org.eclipse.dltk.core.environment.EnvironmentPathUtils;
 import org.eclipse.dltk.core.environment.IEnvironment;
+import org.eclipse.ldt.core.buildpath.LuaExecutionEnvironment;
 import org.eclipse.ldt.core.internal.Activator;
 
 public final class LuaExecutionEnvironmentBuildpathUtil {

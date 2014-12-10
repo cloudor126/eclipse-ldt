@@ -45,6 +45,7 @@ import org.eclipse.dltk.core.IBuildpathContainer;
 import org.eclipse.dltk.core.IBuildpathEntry;
 import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ModelException;
+import org.eclipse.ldt.core.buildpath.LuaExecutionEnvironment;
 import org.eclipse.ldt.core.internal.Activator;
 import org.eclipse.osgi.util.NLS;
 import org.osgi.framework.Bundle;

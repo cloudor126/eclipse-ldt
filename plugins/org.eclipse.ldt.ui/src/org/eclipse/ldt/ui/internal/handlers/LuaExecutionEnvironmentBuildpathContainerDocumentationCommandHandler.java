@@ -22,7 +22,7 @@ import org.eclipse.dltk.core.IBuildpathEntry;
 import org.eclipse.dltk.internal.ui.scriptview.BuildPathContainer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.ldt.core.internal.buildpath.LuaExecutionEnvironment;
+import org.eclipse.ldt.core.buildpath.LuaExecutionEnvironment;
 import org.eclipse.ldt.core.internal.buildpath.LuaExecutionEnvironmentBuildpathUtil;
 import org.eclipse.ldt.core.internal.buildpath.LuaExecutionEnvironmentConstants;
 import org.eclipse.ui.PartInitException;

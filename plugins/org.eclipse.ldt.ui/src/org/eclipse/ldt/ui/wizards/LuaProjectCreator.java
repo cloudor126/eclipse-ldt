@@ -34,7 +34,7 @@ import org.eclipse.dltk.ui.wizards.IProjectWizard;
 import org.eclipse.dltk.ui.wizards.ProjectCreator;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.ldt.core.LuaConstants;
-import org.eclipse.ldt.core.internal.buildpath.LuaExecutionEnvironment;
+import org.eclipse.ldt.core.buildpath.LuaExecutionEnvironment;
 import org.eclipse.ldt.core.internal.buildpath.LuaExecutionEnvironmentBuildpathUtil;
 import org.eclipse.ldt.ui.internal.Activator;
 import org.eclipse.ldt.ui.wizards.pages.LuaProjectSettingsPage;

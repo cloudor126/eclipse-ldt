@@ -24,7 +24,7 @@ import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ldt.core.LuaConstants;
 import org.eclipse.ldt.core.LuaNature;
-import org.eclipse.ldt.core.internal.buildpath.LuaExecutionEnvironment;
+import org.eclipse.ldt.core.buildpath.LuaExecutionEnvironment;
 import org.eclipse.ldt.ui.internal.Activator;
 import org.eclipse.ldt.ui.internal.ImageConstants;
 import org.eclipse.ldt.ui.wizards.pages.LuaProjectSettingsPage;

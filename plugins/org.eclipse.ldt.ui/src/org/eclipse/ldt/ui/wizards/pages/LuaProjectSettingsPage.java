@@ -14,7 +14,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 import org.eclipse.dltk.ui.wizards.ProjectWizardFirstPage;
-import org.eclipse.ldt.core.internal.buildpath.LuaExecutionEnvironment;
+import org.eclipse.ldt.core.buildpath.LuaExecutionEnvironment;
 import org.eclipse.swt.widgets.Composite;
 
 /**
