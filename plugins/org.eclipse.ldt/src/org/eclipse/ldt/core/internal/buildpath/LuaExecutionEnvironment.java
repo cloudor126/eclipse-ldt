@@ -54,7 +54,7 @@ public class LuaExecutionEnvironment implements Comparable<LuaExecutionEnvironme
 			templates = null;
 	}
 
-	protected void setEmbedded(final boolean embeddedEE) {
+	public void setEmbedded(final boolean embeddedEE) {
 		this.embedded = embeddedEE;
 	}
 

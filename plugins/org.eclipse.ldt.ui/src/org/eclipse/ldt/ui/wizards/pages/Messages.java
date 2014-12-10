@@ -21,6 +21,10 @@ public class Messages extends NLS {
 	public static String ConvertToLuaProjectMainPage_title;
 	public static String ConvertToLuaProjectMainPage_defaultMessage;
 
+	public static String ConvertToLuaProjectMainPage_linkToMigrationPage;
+
+	public static String ConvertToLuaProjectMainPage_migrationMessage;
+
 	/** @since 1.2 */
 	public static String DocLuaFilePage_description;
 

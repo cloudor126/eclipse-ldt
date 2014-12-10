@@ -42,6 +42,14 @@
       </language>
    </extension>
    <extension
+         point="org.eclipse.dltk.core.language">
+      <language
+            class="org.eclipse.ldt.core.internal.LuaLanguageToolkit"
+            nature="org.eclipse.koneki.ldt.nature"
+            priority="0">
+      </language>
+   </extension>
+   <extension
          point="org.eclipse.dltk.core.buildpathContainerInitializer">
       <buildpathContainerInitializer
             class="org.eclipse.ldt.core.internal.buildpath.LuaExecutionEnvironmentBuildpathContainerInitializer"

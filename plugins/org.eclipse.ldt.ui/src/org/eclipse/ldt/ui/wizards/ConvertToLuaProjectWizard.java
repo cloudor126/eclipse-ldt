@@ -21,11 +21,13 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IBuildpathEntry;
 import org.eclipse.dltk.core.IScriptProject;
+import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.ui.wizards.CapabilityConfigurationPage;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -34,6 +36,7 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ldt.core.LuaNature;
 import org.eclipse.ldt.core.internal.buildpath.LuaExecutionEnvironment;
 import org.eclipse.ldt.core.internal.buildpath.LuaExecutionEnvironmentBuildpathUtil;
+import org.eclipse.ldt.core.internal.buildpath.LuaExecutionEnvironmentConstants;
 import org.eclipse.ldt.ui.internal.Activator;
 import org.eclipse.ldt.ui.internal.ImageConstants;
 import org.eclipse.ldt.ui.wizards.pages.ConvertToLuaProjectMainPage;
@@ -43,6 +46,9 @@ import org.eclipse.osgi.util.NLS;
  * @since 1.3
  */
 public class ConvertToLuaProjectWizard extends Wizard {
+
+	private static final Object KONEKI_CONTAINER_PATH_START = "org.eclipse.koneki.ldt.ExecutionEnvironmentContainer"; //$NON-NLS-1$
+
 	private IProject project;
 	private ConvertToLuaProjectMainPage mainpage;
 	private CapabilityConfigurationPage buildPathpage;
@@ -75,7 +81,7 @@ public class ConvertToLuaProjectWizard extends Wizard {
 			public void setVisible(boolean visible) {
 				if (visible) {
 					// update default buildpath
-					this.init(scriptProject, getDefaultBuildpath(), false);
+					this.init(scriptProject, getDefaultBuildpath(), true);
 				}
 				super.setVisible(visible);
 			}
@@ -84,8 +90,28 @@ public class ConvertToLuaProjectWizard extends Wizard {
 	}
 
 	private IBuildpathEntry[] getDefaultBuildpath() {
-		// get build path from second page (empty the first time)
 		IBuildpathEntry[] rawBuildPath = new IBuildpathEntry[0];
+
+		// if this is a koneki migration, use koneki buildpath
+		if (mainpage.isKonekiMigration()) {
+			try {
+				IBuildpathEntry[] konekiRawBuildPath = scriptProject.getRawBuildpath();
+				rawBuildPath = new IBuildpathEntry[konekiRawBuildPath.length];
+				for (int i = 0; i < konekiRawBuildPath.length; i++) {
+					// convert koneki lua execution environment path to ldt environment path
+					IPath konekiPath = konekiRawBuildPath[i].getPath();
+					if (isValidKonekiExecutionEnvironmentBuildPath(konekiPath)) {
+						String ldtpath = konekiPath.toString().replaceAll("org\\.eclipse\\.koneki\\.ldt\\.ExecutionEnvironmentContainer", //$NON-NLS-1$
+								LuaExecutionEnvironmentConstants.CONTAINER_PATH_START);
+						rawBuildPath[i] = DLTKCore.newContainerEntry(new Path(ldtpath));
+					} else {
+						rawBuildPath[i] = konekiRawBuildPath[i];
+					}
+				}
+			} catch (ModelException e) {
+				Activator.logWarning("unable to get koneki buildpath for project", e); //$NON-NLS-1$
+			}
+		}
 
 		// if an execution environment is selected add it to the build path (if necessary)
 		LuaExecutionEnvironment executionEnvironement = mainpage.getLuaExecutionEnvironement();
@@ -101,6 +127,14 @@ public class ConvertToLuaProjectWizard extends Wizard {
 			}
 		}
 		return rawBuildPath;
+	}
+
+	private static boolean isValidKonekiExecutionEnvironmentBuildPath(final IPath eePath) {
+		if (eePath == null)
+			return false;
+
+		final String[] segments = eePath.segments();
+		return (segments.length == 3) && KONEKI_CONTAINER_PATH_START.equals(segments[0]);
 	}
 
 	/**
