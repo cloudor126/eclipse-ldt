@@ -12,6 +12,7 @@
 
 <plugin>
    <extension-point id="executionEnvironment" name="%extension-point.executionenvironement.name" schema="schema/executionEnvironment.exsd"/>
+   <extension-point id="luaGrammar" name="%extension-point.luagrammar.name" schema="schema/luaGrammar.exsd"/>
    <extension
          id="nature"
          name="%extension.name"

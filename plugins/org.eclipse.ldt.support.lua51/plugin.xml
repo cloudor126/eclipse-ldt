@@ -39,4 +39,11 @@
             name="Lua 5.1 on JNLua">
       </interpreterInstall>
    </extension>
+   <extension
+         point="org.eclipse.ldt.luaGrammar">
+      <grammar
+            name="Lua-5.1"
+            validator="org.eclipse.ldt.support.lua51.internal.validator.Lua51SourceValidator">
+      </grammar>
+   </extension>
 </plugin>

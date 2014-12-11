@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Map;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.parser.AbstractSourceParser;
 import org.eclipse.dltk.ast.parser.IModuleDeclaration;
@@ -25,14 +27,18 @@ import org.eclipse.dltk.core.ElementChangedEvent;
 import org.eclipse.dltk.core.IElementChangedListener;
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.IModelElementDelta;
+import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.ldt.core.LuaUtils;
+import org.eclipse.ldt.core.grammar.IGrammar;
+import org.eclipse.ldt.core.grammar.ILuaSourceValidator;
 import org.eclipse.ldt.core.internal.Activator;
 import org.eclipse.ldt.core.internal.ast.models.LuaDLTKModelUtils;
 import org.eclipse.ldt.core.internal.ast.models.api.LuaFileAPI;
 import org.eclipse.ldt.core.internal.ast.models.common.LuaSourceRoot;
 import org.eclipse.ldt.core.internal.ast.models.file.LuaInternalContent;
+import org.eclipse.ldt.core.internal.grammar.LuaGrammarManager;
 import org.eclipse.osgi.util.NLS;
 
 /**
@@ -110,31 +116,33 @@ public class LuaSourceParser extends AbstractSourceParser {
 
 		synchronized (LuaSourceParser.class) {
 			try {
-				// remove Byte Order Mark :
+				// Remove Byte Order Mark :
 				if (source.startsWith("\ufeff")) { //$NON-NLS-1$
 					source = source.substring(1);
 				}
 
+				// Valid source code
+				ILuaSourceValidator sourceValidator = getValidator(getProject(input));
+				String cleanedSource = sourceValidator.valid(source, module);
+
 				// Build AST
-				module = astBuilder.buildAST(source, moduleName);
+				if (cleanedSource != null)
+					astBuilder.buildAST(cleanedSource, moduleName, module);
 
 				// Fix AST
-				if (module != null)
-					module.traverse(new EncodingVisitor(fixer));
+				module.traverse(new EncodingVisitor(fixer));
 			}
 			// CHECKSTYLE:OFF
 			catch (final Exception e) {
 				// CHECKSTYLE:ON
 				Activator.logWarning(NLS.bind("Unable to parse file {0}.", input.getFileName()), e); //$NON-NLS-1$
 				// the module is probably on error.
-				if (module == null)
-					module = new LuaSourceRoot(source.length());
 				module.setProblem(1, 1, 0, 0, "This file probably contains a syntax error."); //$NON-NLS-1$
 			}
 
 			// Deal with errors on Lua side
 			if (module != null) {
-				// if module contains a syntax error
+				// If module contains a syntax error
 				if (module.hasError()) {
 					// add error to reporter
 					final DefaultProblem problem = module.getProblem();
@@ -181,5 +189,32 @@ public class LuaSourceParser extends AbstractSourceParser {
 			}
 		}
 		return module;
+	}
+
+	private ILuaSourceValidator getValidator(IProject project) throws CoreException {
+		String grammarName = null;
+		// TODO get grammar link to this project
+		// if (project != null)
+
+		if (grammarName == null)
+			grammarName = "Lua-5.1"; //$NON-NLS-1$
+
+		// get grammar
+		IGrammar grammar = LuaGrammarManager.getAvailableGrammar(grammarName);
+		if (grammar != null)
+			return grammar.getValidator();
+		return null;
+	}
+
+	private IProject getProject(IModuleSource input) {
+		if (input == null)
+			return null;
+		IModelElement modelElement = input.getModelElement();
+		if (modelElement == null)
+			return null;
+		IScriptProject scriptProject = modelElement.getScriptProject();
+		if (scriptProject == null)
+			return null;
+		return scriptProject.getProject();
 	}
 }
