@@ -17,5 +17,6 @@ Require-Bundle: org.eclipse.core.runtime,
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.eclipse.ldt.support.lua51.internal;x-internal:=true,
- org.eclipse.ldt.support.lua51.internal.interpreter;x-internal:=true
+ org.eclipse.ldt.support.lua51.internal.interpreter;x-internal:=true,
+ org.eclipse.ldt.support.lua51.internal.validator;x-internal:=true
 

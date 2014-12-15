@@ -10,9 +10,14 @@
  *******************************************************************************/
 package org.eclipse.ldt.core.grammar;
 
-import org.eclipse.ldt.core.internal.ast.models.common.LuaSourceRoot;
 
 public interface ILuaSourceValidator {
 
-	String valid(String source, LuaSourceRoot root);
+	boolean valid(String source);
+
+	String getCleanedSource();
+
+	String getErrorMessage();
+
+	int getLineIndex();
 }

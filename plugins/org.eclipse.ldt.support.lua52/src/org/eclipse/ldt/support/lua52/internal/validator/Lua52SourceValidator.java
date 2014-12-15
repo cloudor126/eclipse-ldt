@@ -1,19 +1,19 @@
-package org.eclipse.ldt.support.lua51.internal.validator;
+package org.eclipse.ldt.support.lua52.internal.validator;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.ldt.core.grammar.ILuaSourceValidator;
-import org.eclipse.ldt.support.lua51.internal.Activator;
+import org.eclipse.ldt.support.lua52.internal.Activator;
 
 import com.naef.jnlua.LuaRuntimeException;
 import com.naef.jnlua.LuaState;
 import com.naef.jnlua.eclipse.AbstractLuaModule;
 
-public class Lua51SourceValidator extends AbstractLuaModule implements ILuaSourceValidator {
+public class Lua52SourceValidator extends AbstractLuaModule implements ILuaSourceValidator {
 
 	private static final String VALIDATOR_PATH = "script/internal"; //$NON-NLS-1$
-	private static final String MODULE_NAME = "lua51validator"; //$NON-NLS-1$
+	private static final String MODULE_NAME = "lua52validator"; //$NON-NLS-1$
 	private static final String VALIDATION_FUNCTION = "valid"; //$NON-NLS-1$
 
 	private LuaState lua;
@@ -22,7 +22,7 @@ public class Lua51SourceValidator extends AbstractLuaModule implements ILuaSourc
 	private String errorMessage;
 	private int lineIndex;
 
-	public Lua51SourceValidator() {
+	public Lua52SourceValidator() {
 	}
 
 	@Override
@@ -37,7 +37,7 @@ public class Lua51SourceValidator extends AbstractLuaModule implements ILuaSourc
 		try {
 			lua.call(1, 3);
 		} catch (final LuaRuntimeException e) {
-			Activator.logWarning("validation 5.1 failed", e); //$NON-NLS-1$
+			Activator.logWarning("validation 5.2 failed", e); //$NON-NLS-1$
 			cleanedSource = null;
 			errorMessage = "Unexpected error ..."; //$NON-NLS-1$
 			lineIndex = 1;

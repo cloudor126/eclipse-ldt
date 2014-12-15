@@ -16,6 +16,7 @@ import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.parser.AbstractSourceParser;
 import org.eclipse.dltk.ast.parser.IModuleDeclaration;
@@ -38,6 +39,7 @@ import org.eclipse.ldt.core.internal.ast.models.LuaDLTKModelUtils;
 import org.eclipse.ldt.core.internal.ast.models.api.LuaFileAPI;
 import org.eclipse.ldt.core.internal.ast.models.common.LuaSourceRoot;
 import org.eclipse.ldt.core.internal.ast.models.file.LuaInternalContent;
+import org.eclipse.ldt.core.internal.buildpath.LuaExecutionEnvironmentBuildpathUtil;
 import org.eclipse.ldt.core.internal.grammar.LuaGrammarManager;
 import org.eclipse.osgi.util.NLS;
 
@@ -123,7 +125,10 @@ public class LuaSourceParser extends AbstractSourceParser {
 
 				// Valid source code
 				ILuaSourceValidator sourceValidator = getValidator(getProject(input));
-				String cleanedSource = sourceValidator.valid(source, module);
+				boolean valid = sourceValidator.valid(source);
+				String cleanedSource = sourceValidator.getCleanedSource();
+				if (!valid)
+					module.setProblem(sourceValidator.getLineIndex(), -1, -1, -1, sourceValidator.getErrorMessage());
 
 				// Build AST
 				if (cleanedSource != null)
@@ -193,11 +198,16 @@ public class LuaSourceParser extends AbstractSourceParser {
 
 	private ILuaSourceValidator getValidator(IProject project) throws CoreException {
 		String grammarName = null;
-		// TODO get grammar link to this project
-		// if (project != null)
-
-		if (grammarName == null)
-			grammarName = "Lua-5.1"; //$NON-NLS-1$
+		// get grammar link to this project
+		if (project != null) {
+			IPath eePath = LuaUtils.getLuaExecutionEnvironmentPath(DLTKCore.create(project));
+			String eeid = LuaExecutionEnvironmentBuildpathUtil.getEEID(eePath);
+			String eeVersion = LuaExecutionEnvironmentBuildpathUtil.getEEVersion(eePath);
+			if ("lua".equals(eeid) && "5.2".equals(eeVersion))
+				grammarName = "Lua-5.2"; //$NON-NLS-1$
+			else
+				grammarName = "Lua-5.1"; //$NON-NLS-1$
+		}
 
 		// get grammar
 		IGrammar grammar = LuaGrammarManager.getAvailableGrammar(grammarName);

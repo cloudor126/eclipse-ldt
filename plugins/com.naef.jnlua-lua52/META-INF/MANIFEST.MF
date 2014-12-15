@@ -12,6 +12,7 @@ Eclipse-BuddyPolicy: dependent
 Bundle-ActivationPolicy: lazy
 Export-Package: com.naef.jnlua,
  com.naef.jnlua.console,
+ com.naef.jnlua.eclipse,
  com.naef.jnlua.internal.osgi,
  com.naef.jnlua.script,
  com.naef.jnlua.util

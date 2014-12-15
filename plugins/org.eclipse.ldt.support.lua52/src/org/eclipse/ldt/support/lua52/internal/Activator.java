@@ -18,7 +18,7 @@ import org.osgi.framework.BundleContext;
 public class Activator extends Plugin {
 
 	/** The plug-in ID */
-	public static final String PLUGIN_ID = "org.eclipse.ldt.support.lua51"; //$NON-NLS-1$
+	public static final String PLUGIN_ID = "org.eclipse.ldt.support.lua52"; //$NON-NLS-1$
 
 	/** The shared instance */
 	private static Activator plugin;
