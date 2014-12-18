@@ -125,17 +125,22 @@ public class LuaSourceParser extends AbstractSourceParser {
 
 				// Valid source code
 				ILuaSourceValidator sourceValidator = getValidator(getProject(input));
-				boolean valid = sourceValidator.valid(source);
-				String cleanedSource = sourceValidator.getCleanedSource();
-				if (!valid)
-					module.setProblem(sourceValidator.getLineIndex(), -1, -1, -1, sourceValidator.getErrorMessage());
+				if (sourceValidator == null) {
+					Activator.logWarning(NLS.bind("No validator found for input {0}.", input.getFileName())); //$NON-NLS-1$
+					module.setProblem(1, 1, 0, 0, "No validator have have been found for this file."); //$NON-NLS-1$
+				} else {
+					boolean valid = sourceValidator.valid(source);
+					String cleanedSource = sourceValidator.getCleanedSource();
+					if (!valid)
+						module.setProblem(sourceValidator.getLineIndex(), -1, -1, -1, sourceValidator.getErrorMessage());
 
-				// Build AST
-				if (cleanedSource != null)
-					astBuilder.buildAST(cleanedSource, moduleName, module);
+					// Build AST
+					if (cleanedSource != null)
+						astBuilder.buildAST(cleanedSource, moduleName, module);
 
-				// Fix AST
-				module.traverse(new EncodingVisitor(fixer));
+					// Fix AST
+					module.traverse(new EncodingVisitor(fixer));
+				}
 			}
 			// CHECKSTYLE:OFF
 			catch (final Exception e) {
@@ -203,7 +208,7 @@ public class LuaSourceParser extends AbstractSourceParser {
 			IPath eePath = LuaUtils.getLuaExecutionEnvironmentPath(DLTKCore.create(project));
 			String eeid = LuaExecutionEnvironmentBuildpathUtil.getEEID(eePath);
 			String eeVersion = LuaExecutionEnvironmentBuildpathUtil.getEEVersion(eePath);
-			if ("lua".equals(eeid) && "5.2".equals(eeVersion))
+			if ("lua".equals(eeid) && "5.2".equals(eeVersion)) //$NON-NLS-1$ //$NON-NLS-2$
 				grammarName = "Lua-5.2"; //$NON-NLS-1$
 			else
 				grammarName = "Lua-5.1"; //$NON-NLS-1$

@@ -49,14 +49,14 @@
 
    <element name="grammar">
       <complexType>
-         <attribute name="name" type="string">
+         <attribute name="name" type="string" use="required">
             <annotation>
                <documentation>
                   
                </documentation>
             </annotation>
          </attribute>
-         <attribute name="validator" type="string">
+         <attribute name="validator" type="string" use="required">
             <annotation>
                <documentation>
                   
