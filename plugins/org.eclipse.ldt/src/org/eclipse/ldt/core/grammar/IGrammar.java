@@ -10,10 +10,14 @@
  *******************************************************************************/
 package org.eclipse.ldt.core.grammar;
 
+import java.util.List;
+
 public interface IGrammar {
 
 	String getName();
 
 	ILuaSourceValidator getValidator();
+
+	List<String> getKeywords();
 
 }

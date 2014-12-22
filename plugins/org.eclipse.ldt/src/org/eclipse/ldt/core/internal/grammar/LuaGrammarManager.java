@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.ldt.core.internal.grammar;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
@@ -21,6 +24,8 @@ public final class LuaGrammarManager {
 	private static final String EXTENSION_POINT_ID = "org.eclipse.ldt.luaGrammar"; //$NON-NLS-1$
 	private static final String ATTRIBUTE_NAME = "name"; //$NON-NLS-1$
 	private static final String ATTRIBUTE_VALIDATOR = "validator"; //$NON-NLS-1$
+	private static final String ATTRIBUTE_KEYWORDS = "keywords"; //$NON-NLS-1$
+	private static final String KEYWORDS_SEPARATOR = ","; //$NON-NLS-1$
 
 	private LuaGrammarManager() {
 	}
@@ -45,6 +50,17 @@ public final class LuaGrammarManager {
 
 			final ILuaSourceValidator validator = (ILuaSourceValidator) grammarContribution.createExecutableExtension(ATTRIBUTE_VALIDATOR);
 
+			final String keywordsAttribute = grammarContribution.getAttribute(ATTRIBUTE_KEYWORDS);
+			final List<String> keywords = new ArrayList<String>();
+			if (keywordsAttribute != null) {
+				for (String word : keywordsAttribute.split(KEYWORDS_SEPARATOR)) {
+					// TODO validate the keyword ? no special char, ...
+					String cleanWord = word.trim();
+					if (!cleanWord.isEmpty())
+						keywords.add(cleanWord);
+				}
+			}
+
 			return new IGrammar() {
 
 				@Override
@@ -55,6 +71,11 @@ public final class LuaGrammarManager {
 				@Override
 				public String getName() {
 					return name;
+				}
+
+				@Override
+				public List<String> getKeywords() {
+					return keywords;
 				}
 			};
 		}

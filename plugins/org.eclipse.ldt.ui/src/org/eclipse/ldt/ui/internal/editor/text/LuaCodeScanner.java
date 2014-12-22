@@ -14,6 +14,9 @@ package org.eclipse.ldt.ui.internal.editor.text;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.dltk.core.IModelElement;
+import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.ui.text.AbstractScriptScanner;
 import org.eclipse.dltk.ui.text.IColorManager;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -26,18 +29,25 @@ import org.eclipse.jface.text.rules.NumberRule;
 import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.rules.WhitespaceRule;
 import org.eclipse.jface.text.rules.WordRule;
+import org.eclipse.ldt.core.grammar.IGrammar;
+import org.eclipse.ldt.core.internal.grammar.LuaGrammarManager;
+import org.eclipse.ldt.ui.internal.editor.LuaEditor;
+import org.eclipse.ui.texteditor.ITextEditor;
 
 public class LuaCodeScanner extends AbstractScriptScanner {
 
 	@SuppressWarnings("nls")
-	private static String[] fgKeywords = { "and", "break", "do", "else", "elseif", "end", "false", "for", "function", "if", "in", "local", "nil",
+	private static String[] staticKeywords = { "and", "break", "do", "else", "elseif", "end", "false", "for", "function", "if", "in", "local", "nil",
 			"not", "or", "repeat", "return", "then", "true", "until", "while" };
 
 	private static String[] fgTokenProperties = new String[] { ILuaColorConstants.LUA_NUMBER, ILuaColorConstants.LUA_DEFAULT,
 			ILuaColorConstants.LUA_KEYWORD };
 
-	public LuaCodeScanner(IColorManager manager, IPreferenceStore store) {
+	private ITextEditor editor;
+
+	public LuaCodeScanner(IColorManager manager, IPreferenceStore store, ITextEditor editor) {
 		super(manager, store);
+		this.editor = editor;
 		this.initialize();
 	}
 
@@ -56,8 +66,26 @@ public class LuaCodeScanner extends AbstractScriptScanner {
 
 		// Add word rule for keywords.
 		final WordRule wordRule = new WordRule(new LuaWordDetector(), other);
-		for (int i = 0; i < fgKeywords.length; i++) {
-			wordRule.addWord(fgKeywords[i], keyword);
+		for (int i = 0; i < staticKeywords.length; i++) {
+			wordRule.addWord(staticKeywords[i], keyword);
+		}
+		try {
+			LuaEditor luaEditor = (LuaEditor) editor;
+			IModelElement editorInput = luaEditor.getInputModelElement();
+			if (editorInput != null) {
+				IScriptProject project = editorInput.getScriptProject();
+			}
+			// TODO use the EE/project to find grammar as in org.eclipse.ldt.core.internal.ast.parser.LuaSourceParser.getValidator(IProject)
+			IGrammar grammar = LuaGrammarManager.getAvailableGrammar("Lua-5.2");
+			if (grammar != null) {
+				for (String word : grammar.getKeywords()) {
+					wordRule.addWord(word, keyword);
+				}
+			}
+			// CHECKSTYLE:OFF
+		} catch (CoreException e) {
+			// CHECKSTYLE:ON
+			// nothing, as additional keyword are optional
 		}
 		rules.add(wordRule);
 

@@ -66,6 +66,13 @@
                </appinfo>
             </annotation>
          </attribute>
+         <attribute name="keywords" type="string">
+            <annotation>
+               <documentation>
+                  Grammar keywords separated with comma.
+               </documentation>
+            </annotation>
+         </attribute>
       </complexType>
    </element>
 

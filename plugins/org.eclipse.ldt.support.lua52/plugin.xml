@@ -42,6 +42,7 @@
    <extension
          point="org.eclipse.ldt.luaGrammar">
       <grammar
+            keywords="goto"
             name="Lua-5.2"
             validator="org.eclipse.ldt.support.lua52.internal.validator.Lua52SourceValidator">
       </grammar>
