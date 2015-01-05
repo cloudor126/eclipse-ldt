@@ -40,13 +40,13 @@ public class Lua52SourceValidator extends AbstractLuaModule implements ILuaSourc
 			Activator.logWarning("validation 5.2 failed", e); //$NON-NLS-1$
 			cleanedSource = null;
 			errorMessage = "Unexpected error ..."; //$NON-NLS-1$
-			lineIndex = 1;
+			lineIndex = 0;
 			return false;
 		}
 
 		cleanedSource = lua.toString(-3);
 		errorMessage = lua.toString(-2);
-		lineIndex = Math.max(lua.toInteger(-1) - 1, 1);
+		lineIndex = Math.max(lua.toInteger(-1) - 1, 0);
 
 		return errorMessage == null;
 	}
