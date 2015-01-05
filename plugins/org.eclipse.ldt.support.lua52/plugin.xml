@@ -42,7 +42,7 @@
    <extension
          point="org.eclipse.ldt.luaGrammar">
       <grammar
-            keywords="goto"
+            keywords="goto,::,and,break,do,else,elseif,end,false,for,function,if,in,local,nil,not,or,repeat,return,then,true,until,while"
             name="Lua-5.2"
             validator="org.eclipse.ldt.support.lua52.internal.validator.Lua52SourceValidator">
       </grammar>

@@ -42,6 +42,7 @@
    <extension
          point="org.eclipse.ldt.luaGrammar">
       <grammar
+            keywords="and,break,do,else,elseif,end,false,for,function,if,in,local,nil,not,or,repeat,return,then,true,until,while"
             name="Lua-5.1"
             validator="org.eclipse.ldt.support.lua51.internal.validator.Lua51SourceValidator">
       </grammar>

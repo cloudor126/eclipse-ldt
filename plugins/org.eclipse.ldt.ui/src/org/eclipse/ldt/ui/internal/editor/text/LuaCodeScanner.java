@@ -36,10 +36,6 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 public class LuaCodeScanner extends AbstractScriptScanner {
 
-	@SuppressWarnings("nls")
-	private static String[] staticKeywords = { "and", "break", "do", "else", "elseif", "end", "false", "for", "function", "if", "in", "local", "nil",
-			"not", "or", "repeat", "return", "then", "true", "until", "while" };
-
 	private static String[] fgTokenProperties = new String[] { ILuaColorConstants.LUA_NUMBER, ILuaColorConstants.LUA_DEFAULT,
 			ILuaColorConstants.LUA_KEYWORD };
 
@@ -64,11 +60,8 @@ public class LuaCodeScanner extends AbstractScriptScanner {
 		// Add generic whitespace rule.
 		rules.add(new WhitespaceRule(new LuaWhitespaceDetector()));
 
-		// Add word rule for keywords.
+		// Add word rule for each keywords of grammar
 		final WordRule wordRule = new WordRule(new LuaWordDetector(), other);
-		for (int i = 0; i < staticKeywords.length; i++) {
-			wordRule.addWord(staticKeywords[i], keyword);
-		}
 		try {
 			LuaEditor luaEditor = (LuaEditor) editor;
 			IModelElement editorInput = luaEditor.getInputModelElement();
