@@ -31,6 +31,7 @@ import org.eclipse.jface.text.rules.WhitespaceRule;
 import org.eclipse.jface.text.rules.WordRule;
 import org.eclipse.ldt.core.grammar.IGrammar;
 import org.eclipse.ldt.core.internal.grammar.LuaGrammarManager;
+import org.eclipse.ldt.ui.internal.Activator;
 import org.eclipse.ldt.ui.internal.editor.LuaEditor;
 import org.eclipse.ui.texteditor.ITextEditor;
 
@@ -60,25 +61,47 @@ public class LuaCodeScanner extends AbstractScriptScanner {
 		// Add generic whitespace rule.
 		rules.add(new WhitespaceRule(new LuaWhitespaceDetector()));
 
-		// Add word rule for each keywords of grammar
-		final WordRule wordRule = new WordRule(new LuaWordDetector(), other);
-		try {
+		// Find grammar
+		IGrammar grammar = null;
+
+		if (this.editor != null) {
 			LuaEditor luaEditor = (LuaEditor) editor;
 			IModelElement editorInput = luaEditor.getInputModelElement();
 			if (editorInput != null) {
 				IScriptProject project = editorInput.getScriptProject();
 			}
+
 			// TODO use the EE/project to find grammar as in org.eclipse.ldt.core.internal.ast.parser.LuaSourceParser.getValidator(IProject)
-			IGrammar grammar = LuaGrammarManager.getAvailableGrammar("Lua-5.2");
-			if (grammar != null) {
-				for (String word : grammar.getKeywords()) {
-					wordRule.addWord(word, keyword);
+			String grammarName = null;
+
+			try {
+				grammar = LuaGrammarManager.getAvailableGrammar(grammarName);
+				if (grammar == null) {
+					Activator.logWarning(String.format("Unable to find grammar for %s", grammarName)); //$NON-NLS-1$
 				}
+			} catch (CoreException e) {
+				Activator.logWarning(String.format("Unable to find grammar for %s", grammarName), e); //$NON-NLS-1$
 			}
-			// CHECKSTYLE:OFF
-		} catch (CoreException e) {
-			// CHECKSTYLE:ON
-			// nothing, as additional keyword are optional
+		}
+
+		if (grammar == null) {
+			// Use Lua 5.1 grammar per default
+			try {
+				grammar = LuaGrammarManager.getAvailableGrammar("Lua-5.1"); //$NON-NLS-1$
+				if (grammar == null) {
+					Activator.logWarning("Unable to find Lua5.1 default grammar"); //$NON-NLS-1$
+				}
+			} catch (CoreException e) {
+				Activator.logWarning("Unable to find Lua5.1 default grammar", e); //$NON-NLS-1$
+			}
+		}
+
+		// Add word rule for each keywords of grammar
+		final WordRule wordRule = new WordRule(new LuaWordDetector(), other);
+		if (grammar != null) {
+			for (String word : grammar.getKeywords()) {
+				wordRule.addWord(word, keyword);
+			}
 		}
 		rules.add(wordRule);
 
