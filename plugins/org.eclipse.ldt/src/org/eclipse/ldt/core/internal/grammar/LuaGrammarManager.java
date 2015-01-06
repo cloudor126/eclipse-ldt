@@ -31,12 +31,15 @@ public final class LuaGrammarManager {
 	}
 
 	private static IConfigurationElement getGrammarContribution(String name) throws CoreException {
+		if (name == null)
+			return null;
+
 		// search plug-in contribution
 		IConfigurationElement[] contributions = Platform.getExtensionRegistry().getConfigurationElementsFor(EXTENSION_POINT_ID);
 		for (int i = 0; i < contributions.length; i++) {
 			String nameAttribute = contributions[i].getAttribute(ATTRIBUTE_NAME);
 
-			if (name != null && name.equals(nameAttribute)) {
+			if (name.equals(nameAttribute)) {
 				return contributions[i];
 			}
 		}
@@ -84,5 +87,21 @@ public final class LuaGrammarManager {
 
 	public static IGrammar getAvailableGrammar(String name) throws CoreException {
 		return getGrammarFromContribution(name);
+	}
+
+	public static List<String> getAvailableGrammars() {
+		List<String> grammars = new ArrayList<String>();
+
+		// search plug-in contribution
+		IConfigurationElement[] contributions = Platform.getExtensionRegistry().getConfigurationElementsFor(EXTENSION_POINT_ID);
+		for (int i = 0; i < contributions.length; i++) {
+			String nameAttribute = contributions[i].getAttribute(ATTRIBUTE_NAME);
+
+			if (nameAttribute != null && !nameAttribute.isEmpty()) {
+				grammars.add(nameAttribute);
+			}
+		}
+
+		return grammars;
 	}
 }

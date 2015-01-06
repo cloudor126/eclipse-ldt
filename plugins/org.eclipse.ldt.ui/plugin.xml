@@ -35,6 +35,12 @@
             class="org.eclipse.ldt.ui.internal.preferences.LuaTodoTaskPreferencePage"
             id="org.eclipse.ldt.ui.todo"
             name="%preference.page.name.todotasks"/>
+      <page
+            category="org.eclipse.ldt.ui.globalpreferencepage"
+            class="org.eclipse.ldt.ui.internal.preferences.LuaGrammarPreferencePage"
+            id="org.eclipse.ldt.ui.grammarpreferencepage"
+            name="Grammars">
+      </page>
    </extension>
       <extension
          point="org.eclipse.ui.ide.projectNatureImages">

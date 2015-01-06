@@ -17,6 +17,9 @@ import org.eclipse.ui.preferences.ScopedPreferenceStore;
 public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
 	public static final String EE_DEFAULT_ID = "EE__default_id"; //$NON-NLS-1$
+	public static final String EE_DEFAULT_ID_VALUE = "lua-5.1"; //$NON-NLS-1$
+	public static final String GRAMMAR_DEFAULT_ID = "Grammar__default_id"; //$NON-NLS-1$
+	public static final String GRAMMAR_DEFAULT_ID_VALUE = "lua-5.1"; //$NON-NLS-1$
 	public static final String USE_GLOBAL_VAR_IN_LDT = "USE_GLOBAL_VAR_IN_LDT"; //$NON-NLS-1$
 
 	@Override
@@ -24,7 +27,8 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		ScopedPreferenceStore preferenceStore = new ScopedPreferenceStore(DefaultScope.INSTANCE, LuaLanguageToolkit.getDefault()
 				.getPreferenceQualifier());
 
-		preferenceStore.setDefault(EE_DEFAULT_ID, "lua-5.1"); //$NON-NLS-1$
+		preferenceStore.setDefault(EE_DEFAULT_ID, EE_DEFAULT_ID_VALUE); //$NON-NLS-1$
+		preferenceStore.setDefault(GRAMMAR_DEFAULT_ID, GRAMMAR_DEFAULT_ID_VALUE); //$NON-NLS-1$
 		preferenceStore.setDefault(USE_GLOBAL_VAR_IN_LDT, true);
 	}
 }

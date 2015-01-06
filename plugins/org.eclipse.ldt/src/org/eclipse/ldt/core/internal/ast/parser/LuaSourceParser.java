@@ -15,8 +15,11 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IScopeContext;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.parser.AbstractSourceParser;
 import org.eclipse.dltk.ast.parser.IModuleDeclaration;
@@ -35,11 +38,12 @@ import org.eclipse.ldt.core.LuaUtils;
 import org.eclipse.ldt.core.grammar.IGrammar;
 import org.eclipse.ldt.core.grammar.ILuaSourceValidator;
 import org.eclipse.ldt.core.internal.Activator;
+import org.eclipse.ldt.core.internal.LuaLanguageToolkit;
+import org.eclipse.ldt.core.internal.PreferenceInitializer;
 import org.eclipse.ldt.core.internal.ast.models.LuaDLTKModelUtils;
 import org.eclipse.ldt.core.internal.ast.models.api.LuaFileAPI;
 import org.eclipse.ldt.core.internal.ast.models.common.LuaSourceRoot;
 import org.eclipse.ldt.core.internal.ast.models.file.LuaInternalContent;
-import org.eclipse.ldt.core.internal.buildpath.LuaExecutionEnvironmentBuildpathUtil;
 import org.eclipse.ldt.core.internal.grammar.LuaGrammarManager;
 import org.eclipse.osgi.util.NLS;
 
@@ -202,17 +206,18 @@ public class LuaSourceParser extends AbstractSourceParser {
 	}
 
 	private ILuaSourceValidator getValidator(IProject project) throws CoreException {
-		String grammarName = "Lua-5.1"; //$NON-NLS-1$;
-		// get grammar link to this project
-		if (project != null) {
-			IPath eePath = LuaUtils.getLuaExecutionEnvironmentPath(DLTKCore.create(project));
-			String eeid = LuaExecutionEnvironmentBuildpathUtil.getEEID(eePath);
-			String eeVersion = LuaExecutionEnvironmentBuildpathUtil.getEEVersion(eePath);
-			if ("lua".equals(eeid) && "5.2".equals(eeVersion)) //$NON-NLS-1$ //$NON-NLS-2$
-				grammarName = "Lua-5.2"; //$NON-NLS-1$
-		}
+		// Create context
+		IScopeContext[] context;
+		if (project != null)
+			context = new IScopeContext[] { new ProjectScope(project), InstanceScope.INSTANCE };
+		else
+			context = new IScopeContext[] { InstanceScope.INSTANCE };
 
-		// get grammar
+		// Get grammarName
+		String grammarName = Platform.getPreferencesService().getString(LuaLanguageToolkit.getDefault().getPreferenceQualifier(),
+				PreferenceInitializer.GRAMMAR_DEFAULT_ID, PreferenceInitializer.GRAMMAR_DEFAULT_ID_VALUE, context);
+
+		// Get grammar
 		IGrammar grammar = LuaGrammarManager.getAvailableGrammar(grammarName);
 		if (grammar != null)
 			return grammar.getValidator();
