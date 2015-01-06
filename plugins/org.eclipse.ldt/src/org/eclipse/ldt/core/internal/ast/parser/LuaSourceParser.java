@@ -202,7 +202,7 @@ public class LuaSourceParser extends AbstractSourceParser {
 	}
 
 	private ILuaSourceValidator getValidator(IProject project) throws CoreException {
-		String grammarName = null;
+		String grammarName = "Lua-5.1"; //$NON-NLS-1$;
 		// get grammar link to this project
 		if (project != null) {
 			IPath eePath = LuaUtils.getLuaExecutionEnvironmentPath(DLTKCore.create(project));
@@ -210,8 +210,6 @@ public class LuaSourceParser extends AbstractSourceParser {
 			String eeVersion = LuaExecutionEnvironmentBuildpathUtil.getEEVersion(eePath);
 			if ("lua".equals(eeid) && "5.2".equals(eeVersion)) //$NON-NLS-1$ //$NON-NLS-2$
 				grammarName = "Lua-5.2"; //$NON-NLS-1$
-			else
-				grammarName = "Lua-5.1"; //$NON-NLS-1$
 		}
 
 		// get grammar
