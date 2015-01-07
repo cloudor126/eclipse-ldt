@@ -27,8 +27,8 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		ScopedPreferenceStore preferenceStore = new ScopedPreferenceStore(DefaultScope.INSTANCE, LuaLanguageToolkit.getDefault()
 				.getPreferenceQualifier());
 
-		preferenceStore.setDefault(EE_DEFAULT_ID, EE_DEFAULT_ID_VALUE); //$NON-NLS-1$
-		preferenceStore.setDefault(GRAMMAR_DEFAULT_ID, GRAMMAR_DEFAULT_ID_VALUE); //$NON-NLS-1$
+		preferenceStore.setDefault(EE_DEFAULT_ID, EE_DEFAULT_ID_VALUE);
+		preferenceStore.setDefault(GRAMMAR_DEFAULT_ID, GRAMMAR_DEFAULT_ID_VALUE);
 		preferenceStore.setDefault(USE_GLOBAL_VAR_IN_LDT, true);
 	}
 }

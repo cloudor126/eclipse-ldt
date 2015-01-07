@@ -57,6 +57,8 @@ public class LuaCodeScanner extends AbstractScriptScanner {
 
 		// Get grammarName
 		String grammarName = getPreferenceStore().getString(PreferenceInitializer.GRAMMAR_DEFAULT_ID);
+		if (grammarName == null || grammarName.isEmpty())
+			grammarName = PreferenceInitializer.GRAMMAR_DEFAULT_ID_VALUE;
 
 		// Get grammar
 		IGrammar grammar = null;
