@@ -39,7 +39,7 @@
             category="org.eclipse.ldt.ui.globalpreferencepage"
             class="org.eclipse.ldt.ui.internal.preferences.LuaGrammarPreferencePage"
             id="org.eclipse.ldt.ui.grammarpreferencepage"
-            name="Grammars">
+            name="%preference.page.name.grammars">
       </page>
    </extension>
       <extension
@@ -97,6 +97,21 @@
           <test property="org.eclipse.core.resources.projectNature" value="org.eclipse.ldt.nature"/>
         </adapt>
       </enabledWhen>
+    </page>
+    <page
+          category="org.eclipse.ldt.ui.lua.page"
+          class="org.eclipse.ldt.ui.internal.properties.GrammarPropertyPage"
+          id="org.eclipse.ldt.ui.page1"
+          name="%property.page.name.grammar">
+       <enabledWhen>
+          <adapt
+                type="org.eclipse.core.resources.IProject">
+             <test
+                   property="org.eclipse.core.resources.projectNature"
+                   value="org.eclipse.ldt.nature">
+             </test>
+          </adapt>
+       </enabledWhen>
     </page>
  </extension>
      <extension
