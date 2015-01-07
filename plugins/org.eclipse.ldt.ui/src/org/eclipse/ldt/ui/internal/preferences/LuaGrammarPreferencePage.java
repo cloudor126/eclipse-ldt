@@ -41,7 +41,8 @@ public class LuaGrammarPreferencePage extends PreferencePage implements IWorkben
 
 	@Override
 	public void init(IWorkbench workbench) {
-		setDescription("Select the default Lua grammar.");
+		setDescription(Messages.LuaGrammarPreferencePage_page_description);
+		noDefaultAndApplyButton();
 		setPreferenceStore(new ScopedPreferenceStore(InstanceScope.INSTANCE, LuaLanguageToolkit.getDefault().getPreferenceQualifier()));
 	}
 
@@ -101,7 +102,7 @@ public class LuaGrammarPreferencePage extends PreferencePage implements IWorkben
 
 	public void validateGrammar() {
 		if (eeTreeViewer.getCheckedElements().length == 0) {
-			setMessage("No default Grammar.", WARNING);
+			setMessage(Messages.LuaGrammarPreferencePage_Warning_no_grammar, WARNING);
 			return;
 		}
 		setMessage(null);
