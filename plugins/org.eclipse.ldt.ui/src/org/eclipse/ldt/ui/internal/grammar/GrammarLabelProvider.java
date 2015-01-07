@@ -10,9 +10,10 @@
  *******************************************************************************/
 package org.eclipse.ldt.ui.internal.grammar;
 
-import org.eclipse.dltk.ui.DLTKPluginImages;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.ldt.ui.internal.Activator;
+import org.eclipse.ldt.ui.internal.ImageConstants;
 import org.eclipse.swt.graphics.Image;
 
 public class GrammarLabelProvider implements ILabelProvider {
@@ -36,7 +37,7 @@ public class GrammarLabelProvider implements ILabelProvider {
 
 	@Override
 	public Image getImage(Object element) {
-		return DLTKPluginImages.get(DLTKPluginImages.IMG_OBJS_LIBRARY);
+		return Activator.getDefault().getImageRegistry().get(ImageConstants.GRAMMAR_OBJ16);
 	}
 
 	@Override
