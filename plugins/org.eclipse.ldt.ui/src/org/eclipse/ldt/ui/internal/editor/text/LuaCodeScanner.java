@@ -14,14 +14,7 @@ package org.eclipse.ldt.ui.internal.editor.text;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.preferences.IScopeContext;
-import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.eclipse.dltk.core.IModelElement;
-import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.ui.text.AbstractScriptScanner;
 import org.eclipse.dltk.ui.text.IColorManager;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -35,23 +28,17 @@ import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.rules.WhitespaceRule;
 import org.eclipse.jface.text.rules.WordRule;
 import org.eclipse.ldt.core.grammar.IGrammar;
-import org.eclipse.ldt.core.internal.LuaLanguageToolkit;
 import org.eclipse.ldt.core.internal.PreferenceInitializer;
 import org.eclipse.ldt.core.internal.grammar.LuaGrammarManager;
 import org.eclipse.ldt.ui.internal.Activator;
-import org.eclipse.ldt.ui.internal.editor.LuaEditor;
-import org.eclipse.ui.texteditor.ITextEditor;
 
 public class LuaCodeScanner extends AbstractScriptScanner {
 
 	private static String[] fgTokenProperties = new String[] { ILuaColorConstants.LUA_NUMBER, ILuaColorConstants.LUA_DEFAULT,
 			ILuaColorConstants.LUA_KEYWORD };
 
-	private ITextEditor editor;
-
-	public LuaCodeScanner(IColorManager manager, IPreferenceStore store, ITextEditor editor) {
+	public LuaCodeScanner(IColorManager manager, IPreferenceStore store) {
 		super(manager, store);
-		this.editor = editor;
 		this.initialize();
 	}
 
@@ -68,28 +55,8 @@ public class LuaCodeScanner extends AbstractScriptScanner {
 		// Add generic whitespace rule.
 		rules.add(new WhitespaceRule(new LuaWhitespaceDetector()));
 
-		// Get project
-		IProject project = null;
-		if (this.editor instanceof LuaEditor) {
-			LuaEditor luaEditor = (LuaEditor) editor;
-			IModelElement editorInput = luaEditor.getInputModelElement();
-			if (editorInput != null) {
-				IScriptProject scriptProject = editorInput.getScriptProject();
-				if (scriptProject != null)
-					project = scriptProject.getProject();
-			}
-		}
-
-		// Create context
-		IScopeContext[] context;
-		if (project != null)
-			context = new IScopeContext[] { new ProjectScope(project), InstanceScope.INSTANCE };
-		else
-			context = new IScopeContext[] { InstanceScope.INSTANCE };
-
 		// Get grammarName
-		String grammarName = Platform.getPreferencesService().getString(LuaLanguageToolkit.getDefault().getPreferenceQualifier(),
-				PreferenceInitializer.GRAMMAR_DEFAULT_ID, PreferenceInitializer.GRAMMAR_DEFAULT_ID_VALUE, context);
+		String grammarName = getPreferenceStore().getString(PreferenceInitializer.GRAMMAR_DEFAULT_ID);
 
 		// Get grammar
 		IGrammar grammar = null;

@@ -28,7 +28,7 @@ public class LuaCodeScannerTestCase extends AbstractScannerTestCase {
 
 	@Override
 	protected ITokenScanner createScanner() {
-		return new LuaCodeScanner(new DLTKColorManager(true), EditorsPlugin.getDefault().getPreferenceStore(), null) {
+		return new LuaCodeScanner(new DLTKColorManager(true), EditorsPlugin.getDefault().getPreferenceStore()) {
 			@Override
 			public Token getToken(String key) {
 				Token token = super.getToken(key);

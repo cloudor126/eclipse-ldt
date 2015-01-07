@@ -134,7 +134,7 @@ public class LuaSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 	 */
 	protected void initializeScanners() {
 		// This is our code scanner
-		this.fCodeScanner = new LuaCodeScanner(this.getColorManager(), this.fPreferenceStore, getEditor());
+		this.fCodeScanner = new LuaCodeScanner(this.getColorManager(), this.fPreferenceStore);
 
 		// This is default scanners for String partitions.
 		this.fStringScanner = new SingleTokenScriptScanner(this.getColorManager(), this.fPreferenceStore, ILuaColorConstants.LUA_STRING);
