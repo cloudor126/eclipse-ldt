@@ -27,6 +27,7 @@ import org.eclipse.jface.text.rules.NumberRule;
 import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.rules.WhitespaceRule;
 import org.eclipse.jface.text.rules.WordRule;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ldt.core.grammar.IGrammar;
 import org.eclipse.ldt.core.internal.PreferenceInitializer;
 import org.eclipse.ldt.core.internal.grammar.LuaGrammarManager;
@@ -87,6 +88,26 @@ public class LuaCodeScanner extends AbstractScriptScanner {
 		// Default case
 		this.setDefaultReturnToken(other);
 		return rules;
+	}
+
+	/**
+	 * @see org.eclipse.dltk.ui.text.AbstractScriptScanner#affectsBehavior(org.eclipse.jface.util.PropertyChangeEvent)
+	 */
+	@Override
+	public boolean affectsBehavior(PropertyChangeEvent event) {
+		return PreferenceInitializer.GRAMMAR_DEFAULT_ID.equals(event.getProperty()) || super.affectsBehavior(event);
+	}
+
+	/**
+	 * @see org.eclipse.dltk.ui.text.AbstractScriptScanner#adaptToPreferenceChange(org.eclipse.jface.util.PropertyChangeEvent)
+	 */
+	@Override
+	public void adaptToPreferenceChange(PropertyChangeEvent event) {
+		if (PreferenceInitializer.GRAMMAR_DEFAULT_ID.equals(event.getProperty())) {
+			initialize();
+		} else {
+			super.adaptToPreferenceChange(event);
+		}
 	}
 
 	/**
