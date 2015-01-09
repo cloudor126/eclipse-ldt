@@ -27,6 +27,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 public class GrammarGroup {
 
@@ -77,8 +78,10 @@ public class GrammarGroup {
 		availableGrammarComboViewer.setInput(availableGrammars);
 
 		// Set default interpreter
-		String defaultGrammar = InstanceScope.INSTANCE.getNode(LuaLanguageToolkit.getDefault().getPreferenceQualifier()).get(
-				PreferenceInitializer.GRAMMAR_DEFAULT_ID, null);
-		availableGrammarComboViewer.setSelection(new StructuredSelection(defaultGrammar));
+		ScopedPreferenceStore preferenceStore = new ScopedPreferenceStore(InstanceScope.INSTANCE, LuaLanguageToolkit.getDefault()
+				.getPreferenceQualifier());
+		String defaultGrammar = preferenceStore.getString(PreferenceInitializer.GRAMMAR_DEFAULT_ID);
+		if (defaultGrammar != null)
+			availableGrammarComboViewer.setSelection(new StructuredSelection(defaultGrammar));
 	}
 }
