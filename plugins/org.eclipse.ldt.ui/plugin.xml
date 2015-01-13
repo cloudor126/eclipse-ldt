@@ -101,7 +101,7 @@
     <page
           category="org.eclipse.ldt.ui.lua.page"
           class="org.eclipse.ldt.ui.internal.properties.GrammarPropertyPage"
-          id="org.eclipse.ldt.ui.page1"
+          id="org.eclipse.ldt.ui.lua.grammar"
           name="%property.page.name.grammar">
        <enabledWhen>
           <adapt

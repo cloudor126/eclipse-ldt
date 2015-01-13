@@ -64,7 +64,7 @@ public class LuaProjectCreator extends ProjectCreator {
 		if (createSourceFolderStep != null)
 			addStep(IProjectCreateStep.KIND_FINISH, 0, createSourceFolderStep, (IWizardPage) locationGroup);
 
-		ProjectCreateStep setGrammarStep = createGrammaStep();
+		ProjectCreateStep setGrammarStep = createGrammarStep();
 		if (setGrammarStep != null)
 			addStep(IProjectCreateStep.KIND_FINISH, 0, setGrammarStep, (IWizardPage) locationGroup);
 	}
@@ -227,7 +227,7 @@ public class LuaProjectCreator extends ProjectCreator {
 		return new CreateDefaultSourceFolderProjectCreateStep();
 	}
 
-	protected ProjectCreateStep createGrammaStep() {
+	protected ProjectCreateStep createGrammarStep() {
 		return new SetGrammarStep();
 	}
 }
