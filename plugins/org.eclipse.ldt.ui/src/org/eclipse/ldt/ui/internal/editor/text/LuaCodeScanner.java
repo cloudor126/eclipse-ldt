@@ -14,6 +14,7 @@ package org.eclipse.ldt.ui.internal.editor.text;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.dltk.ui.text.AbstractScriptScanner;
 import org.eclipse.dltk.ui.text.IColorManager;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -26,12 +27,13 @@ import org.eclipse.jface.text.rules.NumberRule;
 import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.rules.WhitespaceRule;
 import org.eclipse.jface.text.rules.WordRule;
+import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.ldt.core.grammar.IGrammar;
+import org.eclipse.ldt.core.internal.PreferenceInitializer;
+import org.eclipse.ldt.core.internal.grammar.LuaGrammarManager;
+import org.eclipse.ldt.ui.internal.Activator;
 
 public class LuaCodeScanner extends AbstractScriptScanner {
-
-	@SuppressWarnings("nls")
-	private static String[] fgKeywords = { "and", "break", "do", "else", "elseif", "end", "false", "for", "function", "if", "in", "local", "nil",
-			"not", "or", "repeat", "return", "then", "true", "until", "while" };
 
 	private static String[] fgTokenProperties = new String[] { ILuaColorConstants.LUA_NUMBER, ILuaColorConstants.LUA_DEFAULT,
 			ILuaColorConstants.LUA_KEYWORD };
@@ -54,10 +56,28 @@ public class LuaCodeScanner extends AbstractScriptScanner {
 		// Add generic whitespace rule.
 		rules.add(new WhitespaceRule(new LuaWhitespaceDetector()));
 
-		// Add word rule for keywords.
+		// Get grammarName
+		String grammarName = getPreferenceStore().getString(PreferenceInitializer.GRAMMAR_DEFAULT_ID);
+		if (grammarName == null || grammarName.isEmpty())
+			grammarName = PreferenceInitializer.GRAMMAR_DEFAULT_ID_VALUE;
+
+		// Get grammar
+		IGrammar grammar = null;
+		try {
+			grammar = LuaGrammarManager.getAvailableGrammar(grammarName);
+			if (grammar == null) {
+				Activator.logWarning(String.format("Unable to find grammar for %s", grammarName)); //$NON-NLS-1$
+			}
+		} catch (CoreException e) {
+			Activator.logWarning(String.format("Unable to find grammar for %s", grammarName), e); //$NON-NLS-1$
+		}
+
+		// Add word rule for each keywords of grammar
 		final WordRule wordRule = new WordRule(new LuaWordDetector(), other);
-		for (int i = 0; i < fgKeywords.length; i++) {
-			wordRule.addWord(fgKeywords[i], keyword);
+		if (grammar != null) {
+			for (String word : grammar.getKeywords()) {
+				wordRule.addWord(word, keyword);
+			}
 		}
 		rules.add(wordRule);
 
@@ -68,6 +88,26 @@ public class LuaCodeScanner extends AbstractScriptScanner {
 		// Default case
 		this.setDefaultReturnToken(other);
 		return rules;
+	}
+
+	/**
+	 * @see org.eclipse.dltk.ui.text.AbstractScriptScanner#affectsBehavior(org.eclipse.jface.util.PropertyChangeEvent)
+	 */
+	@Override
+	public boolean affectsBehavior(PropertyChangeEvent event) {
+		return PreferenceInitializer.GRAMMAR_DEFAULT_ID.equals(event.getProperty()) || super.affectsBehavior(event);
+	}
+
+	/**
+	 * @see org.eclipse.dltk.ui.text.AbstractScriptScanner#adaptToPreferenceChange(org.eclipse.jface.util.PropertyChangeEvent)
+	 */
+	@Override
+	public void adaptToPreferenceChange(PropertyChangeEvent event) {
+		if (PreferenceInitializer.GRAMMAR_DEFAULT_ID.equals(event.getProperty())) {
+			initialize();
+		} else {
+			super.adaptToPreferenceChange(event);
+		}
 	}
 
 	/**

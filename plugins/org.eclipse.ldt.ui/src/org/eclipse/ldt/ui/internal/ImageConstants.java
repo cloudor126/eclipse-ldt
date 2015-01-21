@@ -34,4 +34,6 @@ public interface ImageConstants {
 
 	String DOCLUA_OVERLAY = "icons/ovr16/doclua.png"; //$NON-NLS-1$
 	String DOCLUA_FILE_WIZARD_BAN = "icons/wizban/doclua_newfile_wiz.png"; //$NON-NLS-1$
+
+	String GRAMMAR_OBJ16 = "icons/obj16/grammar.png"; //$NON-NLS-1$
 }

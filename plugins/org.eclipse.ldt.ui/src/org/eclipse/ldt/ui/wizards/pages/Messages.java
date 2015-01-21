@@ -31,6 +31,8 @@ public class Messages extends NLS {
 	/** @since 1.2 */
 	public static String DocLuaFilePage_title;
 
+	public static String GrammarGroup_group_name;
+
 	/** @since 1.1 */
 	public static String LuaExecutionEnvironmentGroupTemplateLabel;
 

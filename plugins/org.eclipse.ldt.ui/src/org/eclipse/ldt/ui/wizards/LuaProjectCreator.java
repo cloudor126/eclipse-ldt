@@ -23,10 +23,12 @@ import org.apache.commons.io.FileUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IBuildpathEntry;
 import org.eclipse.dltk.ui.wizards.ILocationGroup;
@@ -35,9 +37,12 @@ import org.eclipse.dltk.ui.wizards.ProjectCreator;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.ldt.core.LuaConstants;
 import org.eclipse.ldt.core.buildpath.LuaExecutionEnvironment;
+import org.eclipse.ldt.core.internal.LuaLanguageToolkit;
+import org.eclipse.ldt.core.internal.PreferenceInitializer;
 import org.eclipse.ldt.core.internal.buildpath.LuaExecutionEnvironmentBuildpathUtil;
 import org.eclipse.ldt.ui.internal.Activator;
 import org.eclipse.ldt.ui.wizards.pages.LuaProjectSettingsPage;
+import org.osgi.service.prefs.BackingStoreException;
 
 public class LuaProjectCreator extends ProjectCreator {
 
@@ -58,6 +63,10 @@ public class LuaProjectCreator extends ProjectCreator {
 		ProjectCreateStep createSourceFolderStep = createSourceFolderStep();
 		if (createSourceFolderStep != null)
 			addStep(IProjectCreateStep.KIND_FINISH, 0, createSourceFolderStep, (IWizardPage) locationGroup);
+
+		ProjectCreateStep setGrammarStep = createGrammarStep();
+		if (setGrammarStep != null)
+			addStep(IProjectCreateStep.KIND_FINISH, 0, setGrammarStep, (IWizardPage) locationGroup);
 	}
 
 	/**
@@ -121,6 +130,23 @@ public class LuaProjectCreator extends ProjectCreator {
 		final List<IBuildpathEntry> entries = new ArrayList<IBuildpathEntry>(getDefaultBuildpathEntries());
 		monitor.done();
 		return entries.toArray(new IBuildpathEntry[entries.size()]);
+	}
+
+	private class SetGrammarStep extends ProjectCreateStep {
+
+		@Override
+		public void execute(IProject project, IProgressMonitor monitor) throws CoreException, InterruptedException {
+			String grammar = luaProjectSettingPage.getGrammar();
+			try {
+				IEclipsePreferences node = new ProjectScope(project).getNode(LuaLanguageToolkit.getDefault().getPreferenceQualifier());
+				node.put(PreferenceInitializer.GRAMMAR_DEFAULT_ID, grammar);
+				node.flush();
+			} catch (BackingStoreException e) {
+				Activator.logError(MessageFormat.format("Unable store grammar version {0} for project {1}", grammar, project.getName()), e); //$NON-NLS-1$
+			}
+			monitor.done();
+		}
+
 	}
 
 	/**
@@ -199,5 +225,9 @@ public class LuaProjectCreator extends ProjectCreator {
 
 	protected ProjectCreateStep createSourceFolderStep() {
 		return new CreateDefaultSourceFolderProjectCreateStep();
+	}
+
+	protected ProjectCreateStep createGrammarStep() {
+		return new SetGrammarStep();
 	}
 }

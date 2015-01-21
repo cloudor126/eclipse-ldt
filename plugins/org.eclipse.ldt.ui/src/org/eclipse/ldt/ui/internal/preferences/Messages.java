@@ -43,6 +43,8 @@ public class Messages extends NLS {
 	public static String LuaFormatterModifyDialogIndentation;
 	public static String LuaFoldingPreferencePage_initiallyFoldLevelOneBlocks;
 	public static String LuaFoldingPreferencePage_initiallyFoldDoc;
+	public static String LuaGrammarPreferencePage_page_description;
+	public static String LuaGrammarPreferencePage_Warning_no_grammar;
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);

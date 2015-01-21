@@ -27,6 +27,7 @@ import org.eclipse.swt.widgets.Composite;
 public class LuaProjectSettingsPage extends ProjectWizardFirstPage implements Observer {
 
 	private LuaExecutionEnvironmentGroup luaExecutionEnvironmentGroup;
+	private GrammarGroup grammarGroup;
 
 	public LuaProjectSettingsPage() {
 		setTitle(Messages.LuaProjecSettingsPageLabel);
@@ -55,11 +56,15 @@ public class LuaProjectSettingsPage extends ProjectWizardFirstPage implements Ob
 
 	protected void createCustomGroups(final Composite composite) {
 		luaExecutionEnvironmentGroup = createExecutionEnvironmentGroup(composite);
+		grammarGroup = createGrammarGroup(composite);
+	}
+
+	protected GrammarGroup createGrammarGroup(Composite composite) {
+		return new GrammarGroup(composite);
 	}
 
 	protected LuaExecutionEnvironmentGroup createExecutionEnvironmentGroup(final Composite composite) {
-		final LuaExecutionEnvironmentGroup eeGroup = new LuaExecutionEnvironmentGroup(composite);
-		return eeGroup;
+		return new LuaExecutionEnvironmentGroup(composite);
 	}
 
 	/**
@@ -76,6 +81,12 @@ public class LuaProjectSettingsPage extends ProjectWizardFirstPage implements Ob
 	public LuaExecutionEnvironment getExecutionEnvironment() {
 		if (luaExecutionEnvironmentGroup != null)
 			return luaExecutionEnvironmentGroup.getSelectedLuaExecutionEnvironment();
+		return null;
+	}
+
+	public String getGrammar() {
+		if (grammarGroup != null)
+			return grammarGroup.getSelectedGrammar();
 		return null;
 	}
 
