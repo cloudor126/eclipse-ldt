@@ -29,7 +29,7 @@
 		<download-publish-relativepath>updates-nightly</download-publish-relativepath>
 		<download-publish-maintenance-relativepath>updates-nightly-maintenance</download-publish-maintenance-relativepath>
 		<download-publish-path>${download-publish-rootpath}${download-publish-relativepath}</download-publish-path>
-		<eclipse-site>http://download.eclipse.org/releases/luna</eclipse-site>
+		<eclipse-site>http://download.eclipse.org/releases/mars</eclipse-site>
 		<tycho.scmUrl>scm:git:https://git.eclipse.org/gitroot/ldt/org.eclipse.ldt.git</tycho.scmUrl>
 	</properties>
 
@@ -109,6 +109,18 @@
 			</activation>
 			<properties>
 				<eclipse-site>http://download.eclipse.org/releases/luna</eclipse-site>
+			</properties>
+		</profile>
+		<profile>
+			<id>platform-mars</id>
+			<activation>
+				<property>
+					<name>platform-version-name</name>
+					<value>mars</value>
+				</property>
+			</activation>
+			<properties>
+				<eclipse-site>http://download.eclipse.org/releases/mars</eclipse-site>
 			</properties>
 		</profile>
 		<profile>
