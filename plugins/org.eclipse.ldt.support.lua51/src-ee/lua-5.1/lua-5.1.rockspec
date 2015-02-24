@@ -1,5 +1,6 @@
 package = "lua"
 version = "5.1"
+grammar = "lua-5.1"
 flags = { ee = true }
 description = {
    summary = "Lua 5.1 Execution Environment",

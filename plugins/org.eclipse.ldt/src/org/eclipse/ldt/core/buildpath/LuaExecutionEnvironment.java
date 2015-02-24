@@ -26,14 +26,17 @@ public class LuaExecutionEnvironment implements Comparable<LuaExecutionEnvironme
 	private final IPath path;
 	private final IPath oldTemplate;
 	private final IPath templates;
+	private final String luaGrammar;
 	private boolean embedded;
 	private Map<?, ?> templatesInfo;
 
-	public LuaExecutionEnvironment(final String identifier, final String eeversion, final Map<?, ?> templatesInfo, final IPath pathToEE) {
+	public LuaExecutionEnvironment(final String identifier, final String eeversion, final Map<?, ?> templatesInfo, final IPath pathToEE,
+			final String grammar) {
 		id = identifier;
 		version = eeversion;
 		path = pathToEE;
 		embedded = false;
+		luaGrammar = grammar;
 		this.templatesInfo = templatesInfo;
 
 		// Old template folder (supported for legacy only)
@@ -163,5 +166,9 @@ public class LuaExecutionEnvironment implements Comparable<LuaExecutionEnvironme
 		if (templatesPath == null)
 			return null;
 		return templatesPath.append(LuaExecutionEnvironment.DEFAULT_TEMPLATE);
+	}
+
+	public String getLuaGrammar() {
+		return luaGrammar;
 	}
 }

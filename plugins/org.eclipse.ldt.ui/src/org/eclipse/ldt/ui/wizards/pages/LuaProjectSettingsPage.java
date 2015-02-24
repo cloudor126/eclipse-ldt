@@ -15,6 +15,7 @@ import java.util.Observer;
 
 import org.eclipse.dltk.ui.wizards.ProjectWizardFirstPage;
 import org.eclipse.ldt.core.buildpath.LuaExecutionEnvironment;
+import org.eclipse.ldt.core.internal.grammar.LuaGrammarManager;
 import org.eclipse.swt.widgets.Composite;
 
 /**
@@ -57,6 +58,8 @@ public class LuaProjectSettingsPage extends ProjectWizardFirstPage implements Ob
 	protected void createCustomGroups(final Composite composite) {
 		luaExecutionEnvironmentGroup = createExecutionEnvironmentGroup(composite);
 		grammarGroup = createGrammarGroup(composite);
+		String defaultGrammar = LuaGrammarManager.getDefaultGrammarFor(getExecutionEnvironment()).getName();
+		grammarGroup.setDefaultGrammar(defaultGrammar);
 	}
 
 	protected GrammarGroup createGrammarGroup(Composite composite) {
@@ -109,6 +112,14 @@ public class LuaProjectSettingsPage extends ProjectWizardFirstPage implements Ob
 	public void createControl(Composite parent) {
 		super.createControl(parent);
 		fLocationGroup.addObserver(this);
+		luaExecutionEnvironmentGroup.addObserver(new Observer() {
+
+			@Override
+			public void update(Observable o, Object arg) {
+				LuaExecutionEnvironment ee = getExecutionEnvironment();
+				grammarGroup.setDefaultGrammar(LuaGrammarManager.getDefaultGrammarFor(ee).getName());
+			}
+		});
 	}
 
 	@Override

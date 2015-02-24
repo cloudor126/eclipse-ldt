@@ -62,6 +62,7 @@ public final class LuaExecutionEnvironmentManager {
 
 	private static final String MANIFEST_NAME = "package"; //$NON-NLS-1$
 	private static final String MANIFEST_VERSION = "version"; //$NON-NLS-1$
+	private static final String MANIFEST_GRAMMAR = "grammar"; //$NON-NLS-1$
 	private static final String MANIFEST_TEMPLATES = "templates"; //$NON-NLS-1$
 
 	private static final String INSTALLATION_FOLDER = "ee"; //$NON-NLS-1$
@@ -231,6 +232,9 @@ public final class LuaExecutionEnvironmentManager {
 			luaState.getGlobal(MANIFEST_VERSION);
 			String version = luaState.toString(-1);
 
+			luaState.getGlobal(MANIFEST_GRAMMAR);
+			String grammar = luaState.toString(-1);
+
 			// Create object representing a valid Execution Environment
 			if (name == null || version == null) {
 				throwException("Manifest from given file has no package name or version.", null, IStatus.ERROR); //$NON-NLS-1$
@@ -242,7 +246,7 @@ public final class LuaExecutionEnvironmentManager {
 			if (luatemplates != null)
 				templates = createJavaCopy(luatemplates);
 
-			return new LuaExecutionEnvironment(name, version, templates, installDirectory);
+			return new LuaExecutionEnvironment(name, version, templates, installDirectory, grammar);
 		} catch (LuaException e) {
 			luaState.close();
 			throwException("Error while loading the manifest", e, IStatus.ERROR); //$NON-NLS-1$

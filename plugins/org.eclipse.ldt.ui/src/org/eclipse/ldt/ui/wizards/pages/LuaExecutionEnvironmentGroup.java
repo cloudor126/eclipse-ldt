@@ -19,7 +19,9 @@ import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ldt.core.buildpath.LuaExecutionEnvironment;
 import org.eclipse.ldt.core.internal.LuaLanguageToolkit;
@@ -65,6 +67,9 @@ public class LuaExecutionEnvironmentGroup extends Observable {
 				isListAvailable = false;
 			}
 			installedEEsComboViewer.getCombo().setEnabled(isListAvailable);
+
+			setChanged();
+			notifyObservers();
 		}
 	};
 
@@ -93,6 +98,13 @@ public class LuaExecutionEnvironmentGroup extends Observable {
 		// Execution Environment actual list
 		installedEEsComboViewer = new ComboViewer(group, SWT.READ_ONLY | SWT.BORDER);
 		installedEEsComboViewer.setContentProvider(new LuaExecutionEnvironmentContentProvider());
+		installedEEsComboViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+			@Override
+			public void selectionChanged(SelectionChangedEvent event) {
+				setChanged();
+				notifyObservers();
+			}
+		});
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.BEGINNING).grab(true, false).applyTo(installedEEsComboViewer.getControl());
 
 		// Set link to define a new execution environment

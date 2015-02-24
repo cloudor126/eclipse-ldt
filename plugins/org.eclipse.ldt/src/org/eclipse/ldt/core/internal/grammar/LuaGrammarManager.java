@@ -16,8 +16,14 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.ldt.core.buildpath.LuaExecutionEnvironment;
 import org.eclipse.ldt.core.grammar.IGrammar;
 import org.eclipse.ldt.core.grammar.ILuaSourceValidator;
+import org.eclipse.ldt.core.internal.Activator;
+import org.eclipse.ldt.core.internal.LuaLanguageToolkit;
+import org.eclipse.ldt.core.internal.PreferenceInitializer;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 public final class LuaGrammarManager {
 
@@ -103,5 +109,50 @@ public final class LuaGrammarManager {
 		}
 
 		return grammars;
+	}
+
+	public static IGrammar getDefaultGrammar() {
+		// get in preference the default grammar
+		ScopedPreferenceStore preferenceStore = new ScopedPreferenceStore(InstanceScope.INSTANCE, LuaLanguageToolkit.getDefault()
+				.getPreferenceQualifier());
+		String defaultGrammarID = preferenceStore.getString(PreferenceInitializer.GRAMMAR_DEFAULT_ID);
+
+		// check the grammar is available
+		try {
+			IGrammar defaultGrammar = getAvailableGrammar(defaultGrammarID);
+			if (defaultGrammar != null)
+				return defaultGrammar;
+		} catch (CoreException e) {
+			String message = String.format("The default grammar %s is not available.", defaultGrammarID);//$NON-NLS-1$
+			Activator.logWarning(message, e);
+		}
+
+		// use grammar 5.1 by default
+		try {
+			return getAvailableGrammar("lua-5.1"); //$NON-NLS-1$
+		} catch (CoreException e) {
+			String message = "The lua 5.1 grammar must be available. Check if you have the org.eclise.ldt.support.lua51 installed!"; //$NON-NLS-1$
+			Activator.logError(message, e);
+			throw new RuntimeException(message, e);
+		}
+	}
+
+	public static IGrammar getDefaultGrammarFor(LuaExecutionEnvironment ee) {
+		// if ee has no grammar defined use the default one
+		if (ee == null || ee.getLuaGrammar() == null)
+			return getDefaultGrammar();
+
+		// check the grammar is available
+		try {
+			IGrammar availableGrammar = getAvailableGrammar(ee.getLuaGrammar());
+			if (availableGrammar != null)
+				return availableGrammar;
+		} catch (CoreException e) {
+			String message = String.format(
+					"The default grammar %s for the execution environment %s is not available.", ee.getLuaGrammar(), ee.getEEIdentifier());//$NON-NLS-1$
+			Activator.logWarning(message, e);
+			// use default grammar instead...
+		}
+		return getDefaultGrammar();
 	}
 }
