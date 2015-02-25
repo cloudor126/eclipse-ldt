@@ -16,6 +16,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -24,6 +25,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IBuildpathEntry;
 import org.eclipse.dltk.core.IScriptProject;
@@ -35,17 +37,22 @@ import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ldt.core.LuaNature;
 import org.eclipse.ldt.core.buildpath.LuaExecutionEnvironment;
+import org.eclipse.ldt.core.internal.LuaLanguageToolkit;
+import org.eclipse.ldt.core.internal.PreferenceInitializer;
 import org.eclipse.ldt.core.internal.buildpath.LuaExecutionEnvironmentBuildpathUtil;
 import org.eclipse.ldt.core.internal.buildpath.LuaExecutionEnvironmentConstants;
 import org.eclipse.ldt.ui.internal.Activator;
 import org.eclipse.ldt.ui.internal.ImageConstants;
 import org.eclipse.ldt.ui.wizards.pages.ConvertToLuaProjectMainPage;
 import org.eclipse.osgi.util.NLS;
+import org.osgi.service.prefs.BackingStoreException;
 
 /**
  * @since 1.3
  */
 public class ConvertToLuaProjectWizard extends Wizard {
+
+	private static final String DLTK_BUILDER_ID = "org.eclipse.dltk.core.scriptbuilder"; //$NON-NLS-1$
 
 	private static final Object KONEKI_CONTAINER_PATH_START = "org.eclipse.koneki.ldt.ExecutionEnvironmentContainer"; //$NON-NLS-1$
 
@@ -158,14 +165,25 @@ public class ConvertToLuaProjectWizard extends Wizard {
 						newNatures[natures.length] = LuaNature.ID;
 						description.setNatureIds(newNatures);
 
-						// Add dltk builder
+						// Add dltk builder if needed.
 						ICommand[] commands = description.getBuildSpec();
-						ICommand[] newcommands = new ICommand[commands.length + 1];
-						System.arraycopy(commands, 0, newcommands, 0, commands.length);
-						ICommand command = description.newCommand();
-						command.setBuilderName("org.eclipse.dltk.core.scriptbuilder"); //$NON-NLS-1$
-						newcommands[commands.length] = command;
-						description.setBuildSpec(newcommands);
+						boolean needToAdd = true;
+						for (int i = 0; i < commands.length && needToAdd; i++) {
+							if (DLTK_BUILDER_ID.equals(commands[i].getBuilderName())) {
+								needToAdd = false;
+							}
+						}
+
+						if (needToAdd) {
+							ICommand[] newcommands = new ICommand[commands.length + 1];
+							System.arraycopy(commands, 0, newcommands, 0, commands.length);
+							ICommand command = description.newCommand();
+							command.setBuilderName(DLTK_BUILDER_ID);
+							newcommands[commands.length] = command;
+							description.setBuildSpec(newcommands);
+						} else {
+							description.setBuildSpec(commands);
+						}
 						project.setDescription(description, smonitor.newChild(30));
 
 						// Update Build Path
@@ -174,7 +192,14 @@ public class ConvertToLuaProjectWizard extends Wizard {
 						else
 							scriptProject.setRawBuildpath(getDefaultBuildpath(), smonitor.newChild(70));
 
+						// Update Grammar
+						String grammar = mainpage.getGrammar();
+						IEclipsePreferences node = new ProjectScope(project).getNode(LuaLanguageToolkit.getDefault().getPreferenceQualifier());
+						node.put(PreferenceInitializer.GRAMMAR_DEFAULT_ID, grammar);
+						node.flush();
 					} catch (CoreException e) {
+						throw new InvocationTargetException(e);
+					} catch (BackingStoreException e) {
 						throw new InvocationTargetException(e);
 					}
 				}

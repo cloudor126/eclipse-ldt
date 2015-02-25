@@ -12,6 +12,8 @@ package org.eclipse.ldt.ui.wizards.pages;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Observable;
+import java.util.Observer;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -21,6 +23,8 @@ import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.ldt.core.buildpath.LuaExecutionEnvironment;
+import org.eclipse.ldt.core.grammar.IGrammar;
+import org.eclipse.ldt.core.internal.grammar.LuaGrammarManager;
 import org.eclipse.ldt.ui.internal.Activator;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
@@ -38,6 +42,7 @@ public class ConvertToLuaProjectMainPage extends WizardPage {
 
 	private boolean isKonekiMigration = false;
 	private LuaExecutionEnvironmentGroup luaExecutionEnvironmentGroup;
+	private GrammarGroup grammarGroup;
 
 	public ConvertToLuaProjectMainPage(String pageName, IProject project) {
 		super(pageName);
@@ -89,6 +94,20 @@ public class ConvertToLuaProjectMainPage extends WizardPage {
 
 		// Create Lua execution environment group
 		luaExecutionEnvironmentGroup = new LuaExecutionEnvironmentGroup(composite, false);
+		luaExecutionEnvironmentGroup.addObserver(new Observer() {
+
+			@Override
+			public void update(Observable o, Object arg) {
+				LuaExecutionEnvironment ee = luaExecutionEnvironmentGroup.getSelectedLuaExecutionEnvironment();
+				grammarGroup.setDefaultGrammar(LuaGrammarManager.getDefaultGrammarFor(ee).getName());
+			}
+		});
+
+		// Create Grammar group
+		grammarGroup = new GrammarGroup(composite);
+		IGrammar grammar = LuaGrammarManager.getDefaultGrammarFor(getLuaExecutionEnvironement());
+		if (grammar != null)
+			grammarGroup.setDefaultGrammar(grammar.getName());
 
 		setControl(composite);
 		Dialog.applyDialogFont(composite);
@@ -96,6 +115,10 @@ public class ConvertToLuaProjectMainPage extends WizardPage {
 
 	public LuaExecutionEnvironment getLuaExecutionEnvironement() {
 		return luaExecutionEnvironmentGroup.getSelectedLuaExecutionEnvironment();
+	}
+
+	public String getGrammar() {
+		return grammarGroup.getSelectedGrammar();
 	}
 
 	public boolean isKonekiMigration() {
