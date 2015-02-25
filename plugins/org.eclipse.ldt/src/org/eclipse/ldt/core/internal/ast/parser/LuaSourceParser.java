@@ -15,11 +15,7 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.preferences.IScopeContext;
-import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.parser.AbstractSourceParser;
 import org.eclipse.dltk.ast.parser.IModuleDeclaration;
@@ -38,8 +34,6 @@ import org.eclipse.ldt.core.LuaUtils;
 import org.eclipse.ldt.core.grammar.IGrammar;
 import org.eclipse.ldt.core.grammar.ILuaSourceValidator;
 import org.eclipse.ldt.core.internal.Activator;
-import org.eclipse.ldt.core.internal.LuaLanguageToolkit;
-import org.eclipse.ldt.core.internal.PreferenceInitializer;
 import org.eclipse.ldt.core.internal.ast.models.LuaDLTKModelUtils;
 import org.eclipse.ldt.core.internal.ast.models.api.LuaFileAPI;
 import org.eclipse.ldt.core.internal.ast.models.common.LuaSourceRoot;
@@ -206,19 +200,8 @@ public class LuaSourceParser extends AbstractSourceParser {
 	}
 
 	private ILuaSourceValidator getValidator(IProject project) throws CoreException {
-		// Create context
-		IScopeContext[] context;
-		if (project != null)
-			context = new IScopeContext[] { new ProjectScope(project), InstanceScope.INSTANCE };
-		else
-			context = new IScopeContext[] { InstanceScope.INSTANCE };
-
-		// Get grammarName
-		String grammarName = Platform.getPreferencesService().getString(LuaLanguageToolkit.getDefault().getPreferenceQualifier(),
-				PreferenceInitializer.GRAMMAR_DEFAULT_ID, PreferenceInitializer.GRAMMAR_DEFAULT_ID_VALUE, context);
-
 		// Get grammar
-		IGrammar grammar = LuaGrammarManager.getAvailableGrammar(grammarName);
+		IGrammar grammar = LuaGrammarManager.getDefaultGrammarFor(project);
 		if (grammar != null)
 			return grammar.getValidator();
 		return null;

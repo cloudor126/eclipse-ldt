@@ -13,9 +13,12 @@ package org.eclipse.ldt.core.internal.grammar;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.ldt.core.buildpath.LuaExecutionEnvironment;
 import org.eclipse.ldt.core.grammar.IGrammar;
@@ -111,19 +114,14 @@ public final class LuaGrammarManager {
 		return grammars;
 	}
 
-	public static IGrammar getDefaultGrammar() {
-		// get in preference the default grammar
-		ScopedPreferenceStore preferenceStore = new ScopedPreferenceStore(InstanceScope.INSTANCE, LuaLanguageToolkit.getDefault()
-				.getPreferenceQualifier());
-		String defaultGrammarID = preferenceStore.getString(PreferenceInitializer.GRAMMAR_DEFAULT_ID);
-
+	private static IGrammar getGrammarWithLua51GrammarFallback(String name) {
 		// check the grammar is available
 		try {
-			IGrammar defaultGrammar = getAvailableGrammar(defaultGrammarID);
+			IGrammar defaultGrammar = getAvailableGrammar(name);
 			if (defaultGrammar != null)
 				return defaultGrammar;
 		} catch (CoreException e) {
-			String message = String.format("The default grammar %s is not available.", defaultGrammarID);//$NON-NLS-1$
+			String message = String.format("The default grammar %s is not available.", name);//$NON-NLS-1$
 			Activator.logWarning(message, e);
 		}
 
@@ -135,6 +133,31 @@ public final class LuaGrammarManager {
 			Activator.logError(message, e);
 			throw new RuntimeException(message, e);
 		}
+	}
+
+	public static IGrammar getDefaultGrammar() {
+		// get in preference the default grammar
+		ScopedPreferenceStore preferenceStore = new ScopedPreferenceStore(InstanceScope.INSTANCE, LuaLanguageToolkit.getDefault()
+				.getPreferenceQualifier());
+		String defaultGrammarID = preferenceStore.getString(PreferenceInitializer.GRAMMAR_DEFAULT_ID);
+
+		return getGrammarWithLua51GrammarFallback(defaultGrammarID);
+	}
+
+	public static IGrammar getDefaultGrammarFor(IProject project) {
+		// Create context
+		IScopeContext[] context;
+		if (project != null)
+			context = new IScopeContext[] { new ProjectScope(project), InstanceScope.INSTANCE };
+		else
+			context = new IScopeContext[] { InstanceScope.INSTANCE };
+
+		// Get grammarName
+		String grammarName = Platform.getPreferencesService().getString(LuaLanguageToolkit.getDefault().getPreferenceQualifier(),
+				PreferenceInitializer.GRAMMAR_DEFAULT_ID, PreferenceInitializer.GRAMMAR_DEFAULT_ID_VALUE, context);
+
+		// Get grammar
+		return getGrammarWithLua51GrammarFallback(grammarName);
 	}
 
 	public static IGrammar getDefaultGrammarFor(LuaExecutionEnvironment ee) {

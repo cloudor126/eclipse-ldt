@@ -322,10 +322,6 @@ end
 --------------------------------------------------------------------------------
 local function getindentlevel(source, indenttable)
 
-  if not loadstring(source, 'CheckingFormatterSource') then
-    return
-  end
-
   -----------------------------------------------------------------------------
   -- Walk through AST
   --
@@ -513,10 +509,6 @@ function M.indentcode(source, delimiter,indenttable, ...)
     -- Simply comment shebang when formating
     source = table.concat({COMMENT, source})
   end
-
-  -- Check code validity
-  local status, message = loadstring(source,"isCodeValid")
-  if not status then return status, message end
 
   --
   -- Seek for delimiters positions

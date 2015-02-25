@@ -12,22 +12,27 @@ package org.eclipse.ldt.ui.internal.editor.formatter;
 
 import java.util.Map;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.dltk.formatter.AbstractScriptFormatter;
 import org.eclipse.dltk.ui.formatter.FormatterException;
+import org.eclipse.dltk.ui.formatter.IScriptFormatterExtension;
 import org.eclipse.dltk.ui.text.util.TabStyle;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
+import org.eclipse.ldt.core.grammar.IGrammar;
+import org.eclipse.ldt.core.grammar.ILuaSourceValidator;
 import org.eclipse.ldt.core.internal.formatter.LuaFormatterException;
 import org.eclipse.ldt.core.internal.formatter.LuaFormatterModule;
+import org.eclipse.ldt.core.internal.grammar.LuaGrammarManager;
 import org.eclipse.ldt.ui.internal.Activator;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.text.edits.ReplaceEdit;
 import org.eclipse.text.edits.TextEdit;
 
-public class LuaFormatter extends AbstractScriptFormatter {
+public class LuaFormatter extends AbstractScriptFormatter implements IScriptFormatterExtension {
 	static final String ID = "org.eclipse.ldt.formatter"; //$NON-NLS-1$
 	private final TabStyle tabPolicy;
 	private final int tabSize;
@@ -35,6 +40,7 @@ public class LuaFormatter extends AbstractScriptFormatter {
 	private final String delimiter;
 	private final String tabulation;
 	private final boolean formatTableValues;
+	private IProject project;
 
 	private static final LuaFormatterModule LUA_FORMAT_MODULE = new LuaFormatterModule();
 
@@ -70,11 +76,29 @@ public class LuaFormatter extends AbstractScriptFormatter {
 		}
 	}
 
+	private ILuaSourceValidator getValidator() {
+		// Get grammar
+		IGrammar grammar = LuaGrammarManager.getDefaultGrammarFor(project);
+		if (grammar != null)
+			return grammar.getValidator();
+		return null;
+	}
+
 	/**
 	 * @see org.eclipse.dltk.ui.formatter.IScriptFormatter#format(String, int, int, int)
 	 */
 	@Override
 	public TextEdit format(final String source, final int offset, final int length, final int indentationLevel) throws FormatterException {
+
+		// valid lua code
+		ILuaSourceValidator validator = getValidator();
+		if (validator != null) {
+			boolean valid = validator.valid(source);
+			if (!valid) {
+				throw new FormatterException("can not format file with error :" + validator.getErrorMessage()); //$NON-NLS-1$
+			}
+		}
+
 		/*
 		 * Format given source code
 		 */
@@ -140,5 +164,13 @@ public class LuaFormatter extends AbstractScriptFormatter {
 	@Override
 	public int detectIndentationLevel(final IDocument document, final int offset) {
 		return 0;
+	}
+
+	/**
+	 * @see org.eclipse.dltk.ui.formatter.IScriptFormatterExtension#initialize(org.eclipse.core.resources.IProject)
+	 */
+	@Override
+	public void initialize(IProject p) {
+		project = p;
 	}
 }
