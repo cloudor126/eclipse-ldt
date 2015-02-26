@@ -50,6 +50,7 @@ public class LuaExecutionEnvironmentGroup extends Observable {
 	private final Button noEEButton;
 	private boolean hasToCreateMain = true;
 	private Button mainCheckBox;
+	private LuaExecutionEnvironment defaultEE;
 
 	/**
 	 * Will make {@link #installedEEsComboViewer} available only when {@link #eeButton} is checked
@@ -78,7 +79,12 @@ public class LuaExecutionEnvironmentGroup extends Observable {
 	}
 
 	public LuaExecutionEnvironmentGroup(final Composite parent, boolean showMainCheckBox) {
-		// Create group
+		this(parent, showMainCheckBox, null);
+	}
+
+	public LuaExecutionEnvironmentGroup(final Composite parent, boolean showMainCheckBox, LuaExecutionEnvironment defaultEE) {
+		this.defaultEE = defaultEE;
+
 		final Group group = new Group(parent, SWT.NONE);
 		group.setText(Messages.LuaExecutionEnvironmentGroupTitle);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(group);
@@ -177,13 +183,18 @@ public class LuaExecutionEnvironmentGroup extends Observable {
 			// Select first execution environment when available
 			if (installedExecutionEnvironments.size() > 0) {
 
-				// look for default EE
-				ScopedPreferenceStore preferenceStore = new ScopedPreferenceStore(InstanceScope.INSTANCE, LuaLanguageToolkit.getDefault()
-						.getPreferenceQualifier());
-				String defaultEEId = preferenceStore.getString(PreferenceInitializer.EE_DEFAULT_ID);
-				for (LuaExecutionEnvironment execEnv : installedExecutionEnvironments) {
-					if (execEnv.getEEIdentifier().equals(defaultEEId))
-						installedEEsComboViewer.setSelection(new StructuredSelection(execEnv));
+				if (defaultEE != null)
+					installedEEsComboViewer.setSelection(new StructuredSelection(defaultEE));
+
+				// if no default EE given in parameters, look for default EE
+				if (installedEEsComboViewer.getSelection().isEmpty()) {
+					ScopedPreferenceStore preferenceStore = new ScopedPreferenceStore(InstanceScope.INSTANCE, LuaLanguageToolkit.getDefault()
+							.getPreferenceQualifier());
+					String defaultEEId = preferenceStore.getString(PreferenceInitializer.EE_DEFAULT_ID);
+					for (LuaExecutionEnvironment execEnv : installedExecutionEnvironments) {
+						if (execEnv.getEEIdentifier().equals(defaultEEId))
+							installedEEsComboViewer.setSelection(new StructuredSelection(execEnv));
+					}
 				}
 
 				// if no default EE were found, select the first one

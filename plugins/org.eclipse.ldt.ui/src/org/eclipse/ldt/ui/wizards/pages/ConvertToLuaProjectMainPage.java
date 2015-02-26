@@ -16,7 +16,6 @@ import java.util.Observable;
 import java.util.Observer;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -25,6 +24,7 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.ldt.core.buildpath.LuaExecutionEnvironment;
 import org.eclipse.ldt.core.grammar.IGrammar;
 import org.eclipse.ldt.core.internal.grammar.LuaGrammarManager;
+import org.eclipse.ldt.core.internal.konekimigration.KonekiMigrationUtil;
 import org.eclipse.ldt.ui.internal.Activator;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
@@ -43,14 +43,12 @@ public class ConvertToLuaProjectMainPage extends WizardPage {
 	private boolean isKonekiMigration = false;
 	private LuaExecutionEnvironmentGroup luaExecutionEnvironmentGroup;
 	private GrammarGroup grammarGroup;
+	private IProject project;
 
 	public ConvertToLuaProjectMainPage(String pageName, IProject project) {
 		super(pageName);
-		try {
-			isKonekiMigration = project.hasNature("org.eclipse.koneki.ldt.nature"); //$NON-NLS-1$
-		} catch (CoreException e) {
-			Activator.log(e.getStatus());
-		}
+		this.project = project;
+		isKonekiMigration = KonekiMigrationUtil.isKonekiProject(project);
 		setTitle(NLS.bind(Messages.ConvertToLuaProjectMainPage_title, project.getName()));
 
 		if (isKonekiMigration) {
@@ -58,7 +56,6 @@ public class ConvertToLuaProjectMainPage extends WizardPage {
 		} else {
 			setMessage(Messages.ConvertToLuaProjectMainPage_defaultMessage);
 		}
-
 	}
 
 	/**
@@ -93,7 +90,12 @@ public class ConvertToLuaProjectMainPage extends WizardPage {
 		}
 
 		// Create Lua execution environment group
-		luaExecutionEnvironmentGroup = new LuaExecutionEnvironmentGroup(composite, false);
+		// Get default EE from Koneki project
+		LuaExecutionEnvironment defaultEE = null;
+		if (isKonekiMigration) {
+			defaultEE = KonekiMigrationUtil.getKonekiExecutionEnvironment(project);
+		}
+		luaExecutionEnvironmentGroup = new LuaExecutionEnvironmentGroup(composite, false, defaultEE);
 		luaExecutionEnvironmentGroup.addObserver(new Observer() {
 
 			@Override

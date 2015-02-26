@@ -41,6 +41,7 @@ import org.eclipse.ldt.core.internal.LuaLanguageToolkit;
 import org.eclipse.ldt.core.internal.PreferenceInitializer;
 import org.eclipse.ldt.core.internal.buildpath.LuaExecutionEnvironmentBuildpathUtil;
 import org.eclipse.ldt.core.internal.buildpath.LuaExecutionEnvironmentConstants;
+import org.eclipse.ldt.core.internal.konekimigration.KonekiMigrationUtil;
 import org.eclipse.ldt.ui.internal.Activator;
 import org.eclipse.ldt.ui.internal.ImageConstants;
 import org.eclipse.ldt.ui.wizards.pages.ConvertToLuaProjectMainPage;
@@ -53,8 +54,6 @@ import org.osgi.service.prefs.BackingStoreException;
 public class ConvertToLuaProjectWizard extends Wizard {
 
 	private static final String DLTK_BUILDER_ID = "org.eclipse.dltk.core.scriptbuilder"; //$NON-NLS-1$
-
-	private static final Object KONEKI_CONTAINER_PATH_START = "org.eclipse.koneki.ldt.ExecutionEnvironmentContainer"; //$NON-NLS-1$
 
 	private IProject project;
 	private ConvertToLuaProjectMainPage mainpage;
@@ -107,7 +106,7 @@ public class ConvertToLuaProjectWizard extends Wizard {
 				for (int i = 0; i < konekiRawBuildPath.length; i++) {
 					// convert koneki lua execution environment path to ldt environment path
 					IPath konekiPath = konekiRawBuildPath[i].getPath();
-					if (isValidKonekiExecutionEnvironmentBuildPath(konekiPath)) {
+					if (KonekiMigrationUtil.isValidKonekiExecutionEnvironmentBuildPath(konekiPath)) {
 						String ldtpath = konekiPath.toString().replaceAll("org\\.eclipse\\.koneki\\.ldt\\.ExecutionEnvironmentContainer", //$NON-NLS-1$
 								LuaExecutionEnvironmentConstants.CONTAINER_PATH_START);
 						rawBuildPath[i] = DLTKCore.newContainerEntry(new Path(ldtpath));
@@ -134,14 +133,6 @@ public class ConvertToLuaProjectWizard extends Wizard {
 			}
 		}
 		return rawBuildPath;
-	}
-
-	private static boolean isValidKonekiExecutionEnvironmentBuildPath(final IPath eePath) {
-		if (eePath == null)
-			return false;
-
-		final String[] segments = eePath.segments();
-		return (segments.length == 3) && KONEKI_CONTAINER_PATH_START.equals(segments[0]);
 	}
 
 	/**

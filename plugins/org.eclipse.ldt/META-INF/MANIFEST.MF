@@ -69,6 +69,7 @@ Export-Package: org.eclipse.ldt.core,
    org.eclipse.ldt.debug.ui,
    org.eclipse.ldt.ui",
  org.eclipse.ldt.core.internal.grammar,
+ org.eclipse.ldt.core.internal.konekimigration;x-friends:="org.eclipse.ldt.ui",
  org.eclipse.ldt.core.internal.todo;
   x-friends:="org.eclipse.ldt.core.tests,
    org.eclipse.ldt.debug.core,
