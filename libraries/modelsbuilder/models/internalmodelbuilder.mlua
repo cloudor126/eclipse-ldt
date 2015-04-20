@@ -804,9 +804,8 @@ local function searchmodule(ast,file,comment2apiobj,modulename)
           end
           _identifier.definition.shortdescription = ""
           
-          -- WORKAROUND FOR BUG 421622: [outline]module selection in outline does not select it in texteditor
-          --_type.sourcerange.min = _identifier.definition.sourcerange.min
-          --_type.sourcerange.max = _identifier.definition.sourcerange.max
+          _type.sourcerange.min = _identifier.definition.sourcerange.min
+          _type.sourcerange.max = _identifier.definition.sourcerange.max
           
           -- merge the type with priority to documentation except for source range
           file:mergetype(_type,false,true)

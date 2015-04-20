@@ -220,7 +220,7 @@
 		<repository>
 			<id>dltk</id>
 			<layout>p2</layout>
-			<url>http://download.eclipse.org/technology/dltk/updates-dev/5.0</url>
+			<url>http://download.eclipse.org/technology/dltk/updates-dev/5.2</url>
 		</repository>
 		<repository>
 			<id>wikitext</id>
