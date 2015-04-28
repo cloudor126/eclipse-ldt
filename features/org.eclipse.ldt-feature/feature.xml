@@ -25,10 +25,10 @@
       <import plugin="org.eclipse.jface.text" version="3.5.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.editors" version="3.5.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.ide" version="3.5.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.dltk.debug.ui" version="3.0.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.dltk.launching" version="3.0.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.dltk.core" version="3.0.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.dltk.ui" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.dltk.debug.ui" version="5.2.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.dltk.launching" version="5.2.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.dltk.core" version="5.2.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.dltk.ui" version="5.2.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.jface.text" version="3.5.0" match="compatible"/>
       <import plugin="org.apache.commons.io"/>
       <import plugin="org.apache.commons.lang"/>
