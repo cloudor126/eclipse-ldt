@@ -34,7 +34,7 @@ public class ModelsBuilderLuaModule extends AbstractMetaLuaModule {
 
 	private LuaState lua = null;
 
-	public synchronized void buildAST(final String source, final String modulename, final LuaSourceRoot root) {
+	public synchronized void buildAST(final String source, final String modulename, final LuaSourceRoot root, final String luaGrammar) {
 		if (lua == null)
 			lua = loadLuaModule();
 
@@ -43,7 +43,8 @@ public class ModelsBuilderLuaModule extends AbstractMetaLuaModule {
 		lua.pushString(source);
 		lua.pushString(modulename);
 		lua.pushJavaObject(root);
-		lua.call(3, 0);
+		lua.pushString(luaGrammar);
+		lua.call(4, 0);
 		lua.pop(1);
 
 		// lua.close();

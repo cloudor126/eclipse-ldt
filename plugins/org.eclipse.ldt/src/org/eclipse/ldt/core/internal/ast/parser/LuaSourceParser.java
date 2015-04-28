@@ -122,7 +122,11 @@ public class LuaSourceParser extends AbstractSourceParser {
 				}
 
 				// Valid source code
-				ILuaSourceValidator sourceValidator = getValidator(getProject(input));
+				IGrammar grammar = getGrammar(getProject(input));
+				ILuaSourceValidator sourceValidator = null;
+				if (grammar != null) {
+					sourceValidator = grammar.getValidator();
+				}
 				if (sourceValidator == null) {
 					Activator.logWarning(NLS.bind("No validator found for input {0}.", input.getFileName())); //$NON-NLS-1$
 					module.setProblem(1, 1, 0, 0, "No validator have have been found for this file."); //$NON-NLS-1$
@@ -134,7 +138,7 @@ public class LuaSourceParser extends AbstractSourceParser {
 
 					// Build AST
 					if (cleanedSource != null)
-						astBuilder.buildAST(cleanedSource, moduleName, module);
+						astBuilder.buildAST(cleanedSource, moduleName, module, grammar.getName());
 
 					// Fix AST
 					module.traverse(new EncodingVisitor(fixer));
@@ -199,11 +203,11 @@ public class LuaSourceParser extends AbstractSourceParser {
 		return module;
 	}
 
-	private ILuaSourceValidator getValidator(IProject project) throws CoreException {
+	private IGrammar getGrammar(IProject project) throws CoreException {
 		// Get grammar
 		IGrammar grammar = LuaGrammarManager.getDefaultGrammarFor(project);
 		if (grammar != null)
-			return grammar.getValidator();
+			return grammar;
 		return null;
 	}
 
