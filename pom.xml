@@ -223,6 +223,11 @@
 			<url>http://download.eclipse.org/technology/dltk/updates-dev/5.2</url>
 		</repository>
 		<repository>
+			<id>orbit</id>
+			<layout>p2</layout>
+			<url>http://download.eclipse.org/tools/orbit/downloads/drops/R20150519210750/repository/</url>
+		</repository>
+		<repository>
 			<id>wikitext</id>
 			<layout>p2</layout>
 			<url>http://download.eclipse.org/mylyn/releases/latest</url>

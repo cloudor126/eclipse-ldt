@@ -46,4 +46,4 @@ Export-Package: org.eclipse.ldt.ui,
  org.eclipse.ldt.ui.internal.views;x-friends:="org.eclipse.ldt.debug.ui,org.eclipse.ldt.ui.tests",
  org.eclipse.ldt.ui.wizards,
  org.eclipse.ldt.ui.wizards.pages
-Import-Package: org.apache.commons.io;version="1.4.0"
+Import-Package: org.apache.commons.io;version="2.0.1"

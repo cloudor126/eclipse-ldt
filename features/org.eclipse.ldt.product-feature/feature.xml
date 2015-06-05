@@ -136,21 +136,21 @@ This Agreement is governed by the laws of the State of New York and the intellec
          id="org.apache.commons.io"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="2.0.1.v201105210651"
          unpack="false"/>
 
    <plugin
          id="org.apache.commons.codec"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="1.6.0.v201305230611"
          unpack="false"/>
 
    <plugin
          id="org.apache.commons.lang"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="2.6.0.v201404270220"
          unpack="false"/>
 
 </feature>
