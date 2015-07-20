@@ -485,6 +485,8 @@ local function sendInitPacket(skt,idekey)
     protocol_version = "1.0",
     fileuri = source
   } })
+  
+  return sessionid
 end
 
 local function init(host, port, idekey, transport, executionplatform, workingdirectory, nbRetry)
@@ -519,13 +521,14 @@ local function init(host, port, idekey, transport, executionplatform, workingdir
   print(string.format("Debugger: Trying to connect to %s:%s ... ", host, port))
 
   local timeelapsed = 0
+  local sessionid = nil
   for i=1,nbRetry do
     -- try to connect to DBGP server
     skt = assert(transport.create())
     skt:settimeout(nil)
     ok, err = skt:connect(host, port)
     if ok then
-      sendInitPacket(skt,idekey)
+      sessionid = sendInitPacket(skt,idekey)
       -- test if socket is closed
       ok, err = skt:receive(0)
       if err == nil then print("Debugger: Connection succeed.") break end
