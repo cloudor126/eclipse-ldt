@@ -7,6 +7,7 @@
 	<artifactId>aggregator</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
+
 	<modules>
 		<module>features</module>
 		<module>tests</module>
@@ -14,27 +15,37 @@
 	</modules>
 
 	<properties>
+		<!-- configure file encoding -->
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		
+		<!-- maven plug-ins version -->
 		<buildnumber-maven-version>1.3</buildnumber-maven-version>
-		<maven-checkstyle>2.8</maven-checkstyle>
+		<maven-checkstyle>2.16</maven-checkstyle>
 		<findbugs-maven-version>3.0.0</findbugs-maven-version>
-		<eclipse-jarsigner-version>1.1.0</eclipse-jarsigner-version>
-		<maven-antrun-plugin-version>1.7</maven-antrun-plugin-version>
+		<eclipse-jarsigner-version>1.4</eclipse-jarsigner-version>
+		<maven-antrun-plugin-version>1.8</maven-antrun-plugin-version>
 		<tycho-version>0.20.0</tycho-version>
 		<tycho-extras-version>0.20.0</tycho-extras-version>
+
+		<!-- publish repository path -->
 		<shared-publish-rootpath>/shared/tools/ldt</shared-publish-rootpath>
 		<shared-products-folder>/products</shared-products-folder>
 		<shared-publish-nightly-product>${shared-publish-rootpath}${shared-products-folder}/nightly</shared-publish-nightly-product>
 		<shared-publish-nightly-maintenance-product>${shared-publish-rootpath}${shared-products-folder}/nightly-maintenance</shared-publish-nightly-maintenance-product>
+
 		<download-publish-rootpath>/home/data/httpd/download.eclipse.org/ldt/</download-publish-rootpath>
 		<download-publish-relativepath>updates-nightly</download-publish-relativepath>
 		<download-publish-maintenance-relativepath>updates-nightly-maintenance</download-publish-maintenance-relativepath>
 		<download-publish-path>${download-publish-rootpath}${download-publish-relativepath}</download-publish-path>
+
+		<!-- default eclipse platform targeted -->
 		<eclipse-site>http://download.eclipse.org/releases/mars</eclipse-site>
+
+		<!-- Uri to git repository -->
 		<tycho.scmUrl>scm:git:https://git.eclipse.org/gitroot/ldt/org.eclipse.ldt.git</tycho.scmUrl>
 	</properties>
 
-	<!-- Precise git as scm for the buildnumber-maven-plugin plugin for the 
-		documentor build -->
+	<!-- Precise git as scm for the buildnumber-maven-plugin plugin for the documentor build -->
 	<scm>
 		<connection>scm:git:</connection>
 	</scm>
