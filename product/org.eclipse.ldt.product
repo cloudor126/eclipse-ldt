@@ -50,11 +50,11 @@ plugins\org.eclipse.equinox.launcher_1.1.1.R36x_v20101122_1400.jar
       startupMessageRect="7,265,320,20"
       startupForegroundColor="9C9696" />
    <launcher name="LuaDevelopmentTools">
-      <linux icon="../../../../plugins/org.eclipse.ldt.branding/icons/ldt.xpm"/>
-      <macosx icon="../../../../plugins/org.eclipse.ldt.branding/icons/ldt.icns"/>
+      <linux icon="../plugins/org.eclipse.ldt.branding/icons/ldt.xpm"/>
+      <macosx icon="../plugins/org.eclipse.ldt.branding/icons/ldt.icns"/>
       <solaris/>
       <win useIco="true">
-         <ico path="../../../../plugins/org.eclipse.ldt.branding/icons/ldt.ico"/>
+         <ico path="../plugins/org.eclipse.ldt.branding/icons/ldt.ico"/>
          <bmp/>
       </win>
    </launcher>

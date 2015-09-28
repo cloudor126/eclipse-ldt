@@ -16,21 +16,28 @@
 		<module>org.eclipse.ldt.lua.tests</module>
 		<module>org.eclipse.ldt.core.tests</module>
 		<module>org.eclipse.ldt.ui.tests</module>
-		
 	</modules>
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>tycho-surefire-plugin</artifactId>
+				<artifactId>target-platform-configuration</artifactId>
 				<version>${tycho-version}</version>
 				<configuration>
-					<dependencies>
-						<dependency>
-							<type>eclipse-feature</type>
-							<artifactId>org.eclipse.ldt</artifactId>
-						</dependency>
-					</dependencies>
+					<dependency-resolution>
+						<extraRequirements>
+							<requirement>
+								<type>eclipse-feature</type>
+								<id>org.eclipse.platform</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-feature</type>
+								<id>org.eclipse.ldt.core</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+						</extraRequirements>
+					</dependency-resolution>
 				</configuration>
 			</plugin>
 		</plugins>

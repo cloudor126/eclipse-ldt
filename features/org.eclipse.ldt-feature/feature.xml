@@ -18,6 +18,14 @@
       %license
    </license>
 
+   <includes
+         id="org.eclipse.ldt.core"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.ldt.lua52"
+         version="0.0.0"/>
+
    <requires>
       <import plugin="org.eclipse.ui" version="3.5.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.resources" version="3.5.0" match="greaterOrEqual"/>
@@ -33,189 +41,5 @@
       <import plugin="org.apache.commons.io"/>
       <import plugin="org.apache.commons.lang"/>
    </requires>
-
-   <plugin
-         id="org.eclipse.ldt.doc.user"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ldt.metalua"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ldt.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="com.naef.jnlua"
-         download-size="0"
-         install-size="0"
-         version="0.9.1.qualifier"
-         unpack="false"/>
-
-   <plugin
-         id="com.naef.jnlua"
-         download-size="0"
-         install-size="0"
-         version="1.0.3.qualifier"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ldt.debug.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ldt.debug.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ldt"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="com.cforcoding.jmd"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ldt.support.lua51"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ldt.support.lua52"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="com.naef.jnlua.linux"
-         os="linux"
-         arch="x86"
-         download-size="0"
-         install-size="0"
-         version="0.9.1.qualifier"
-         fragment="true"
-         unpack="false"/>
-
-   <plugin
-         id="com.naef.jnlua.linux"
-         os="linux"
-         arch="x86"
-         download-size="0"
-         install-size="0"
-         version="1.0.3.qualifier"
-         fragment="true"
-         unpack="false"/>
-
-   <plugin
-         id="com.naef.jnlua.linux64"
-         os="linux"
-         arch="x86_64"
-         download-size="0"
-         install-size="0"
-         version="0.9.1.qualifier"
-         fragment="true"
-         unpack="false"/>
-
-   <plugin
-         id="com.naef.jnlua.linux64"
-         os="linux"
-         arch="x86_64"
-         download-size="0"
-         install-size="0"
-         version="1.0.3.qualifier"
-         fragment="true"
-         unpack="false"/>
-
-   <plugin
-         id="com.naef.jnlua.macosx"
-         os="macosx"
-         arch="x86_64"
-         download-size="0"
-         install-size="0"
-         version="0.9.1.qualifier"
-         fragment="true"
-         unpack="false"/>
-
-   <plugin
-         id="com.naef.jnlua.macosx"
-         os="macosx"
-         arch="x86_64"
-         download-size="0"
-         install-size="0"
-         version="1.0.3.qualifier"
-         fragment="true"
-         unpack="false"/>
-
-   <plugin
-         id="com.naef.jnlua.windows"
-         os="win32"
-         arch="x86"
-         download-size="0"
-         install-size="0"
-         version="0.9.1.qualifier"
-         fragment="true"
-         unpack="false"/>
-
-   <plugin
-         id="com.naef.jnlua.windows"
-         os="win32"
-         arch="x86"
-         download-size="0"
-         install-size="0"
-         version="1.0.3.qualifier"
-         fragment="true"
-         unpack="false"/>
-
-   <plugin
-         id="com.naef.jnlua.windows64"
-         os="win32"
-         arch="x86_64"
-         download-size="0"
-         install-size="0"
-         version="0.9.1.qualifier"
-         fragment="true"
-         unpack="false"/>
-
-   <plugin
-         id="com.naef.jnlua.windows64"
-         os="win32"
-         arch="x86_64"
-         download-size="0"
-         install-size="0"
-         version="1.0.3.qualifier"
-         fragment="true"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ldt.branding"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
 
 </feature>

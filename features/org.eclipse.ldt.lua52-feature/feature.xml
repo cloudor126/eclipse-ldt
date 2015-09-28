@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.eclipse.ldt.lua52"
+      label="%featureName"
+      version="1.4.0.qualifier"
+      provider-name="%providerName"
+      plugin="org.eclipse.ldt.branding">
+
+   <description>
+      %description
+   </description>
+
+   <copyright>
+      %copyright
+   </copyright>
+
+   <license url="license.html">
+      %license
+   </license>
+
+   <requires>
+      <import feature="org.eclipse.ldt.core" version="1.3.1.qualifier"/>
+   </requires>
+
+   <plugin
+         id="com.naef.jnlua"
+         download-size="0"
+         install-size="0"
+         version="1.0.3.qualifier"
+         unpack="false"/>
+
+   <plugin
+         id="com.naef.jnlua.linux"
+         os="linux"
+         arch="x86"
+         download-size="0"
+         install-size="0"
+         version="1.0.3.qualifier"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="com.naef.jnlua.linux64"
+         os="linux"
+         arch="x86_64"
+         download-size="0"
+         install-size="0"
+         version="1.0.3.qualifier"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="com.naef.jnlua.macosx"
+         os="macosx"
+         arch="x86_64"
+         download-size="0"
+         install-size="0"
+         version="1.0.3.qualifier"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="com.naef.jnlua.windows"
+         os="win32"
+         arch="x86"
+         download-size="0"
+         install-size="0"
+         version="1.0.3.qualifier"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="com.naef.jnlua.windows64"
+         os="win32"
+         arch="x86_64"
+         download-size="0"
+         install-size="0"
+         version="1.0.3.qualifier"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.ldt.support.lua52"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>

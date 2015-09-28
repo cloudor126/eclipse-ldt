@@ -13,7 +13,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.dltk.core;bundle-version="[5.2.0,6.0.0)",
  org.eclipse.ldt;bundle-version="0.9.0",
  org.eclipse.ldt.ui;bundle-version="0.9.0",
- org.apache.commons.io;bundle-version="2.0.1"
+ org.apache.commons.io;bundle-version="2.0.1",
+ org.eclipse.ldt.support.lua51;bundle-version="1.1.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.ldt.ui.tests,

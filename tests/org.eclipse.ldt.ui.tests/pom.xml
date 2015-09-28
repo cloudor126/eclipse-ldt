@@ -27,12 +27,6 @@
 					<includes>
 						<include>**/AllUIIntegrationTests.*</include>
 					</includes>
-					<dependencies>
-						<dependency>
-							<type>p2-installable-unit</type>
-							<artifactId>org.eclipse.ldt.feature.group</artifactId>
-						</dependency>
-					</dependencies>
 				</configuration>
 			</plugin>
 		</plugins>

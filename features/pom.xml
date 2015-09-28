@@ -20,8 +20,10 @@
 				<activeByDefault>true</activeByDefault>
 			</activation>
 			<modules>
-				<module>org.eclipse.ldt-feature</module>
+				<module>org.eclipse.ldt.core-feature</module>
+				<module>org.eclipse.ldt.lua52-feature</module>
 				<module>org.eclipse.ldt.remote-feature</module>
+				<module>org.eclipse.ldt-feature</module>
 			</modules>
 		</profile>
 		<profile>
