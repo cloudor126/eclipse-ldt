@@ -39,7 +39,7 @@
 		<download-publish-path>${download-publish-rootpath}${download-publish-relativepath}</download-publish-path>
 
 		<!-- default eclipse platform targeted -->
-		<eclipse-site>http://download.eclipse.org/releases/mars</eclipse-site>
+		<eclipse-site>http://download.eclipse.org/releases/neon</eclipse-site>
 
 		<!-- Uri to git repository -->
 		<tycho.scmUrl>scm:git:https://git.eclipse.org/gitroot/ldt/org.eclipse.ldt.git</tycho.scmUrl>
@@ -132,6 +132,18 @@
 			</activation>
 			<properties>
 				<eclipse-site>http://download.eclipse.org/releases/mars</eclipse-site>
+			</properties>
+		</profile>
+		<profile>
+			<id>platform-neon</id>
+			<activation>
+				<property>
+					<name>platform-version-name</name>
+					<value>neon</value>
+				</property>
+			</activation>
+			<properties>
+				<eclipse-site>http://download.eclipse.org/releases/neon</eclipse-site>
 			</properties>
 		</profile>
 		<profile>
@@ -231,12 +243,12 @@
 		<repository>
 			<id>dltk</id>
 			<layout>p2</layout>
-			<url>http://download.eclipse.org/technology/dltk/updates-dev/5.2</url>
+			<url>http://download.eclipse.org/technology/dltk/updates-dev/5.3</url>
 		</repository>
 		<repository>
 			<id>orbit</id>
 			<layout>p2</layout>
-			<url>http://download.eclipse.org/tools/orbit/downloads/drops/R20150519210750/repository/</url>
+			<url>http://download.eclipse.org/tools/orbit/downloads/drops/R20150821153341/repository/</url>
 		</repository>
 		<repository>
 			<id>wikitext</id>
