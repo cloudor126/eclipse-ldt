@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Lua Development Tools Product" uid="org.eclipse.ldt.product-product" id="org.eclipse.ldt.branding.product" application="org.eclipse.ui.ide.workbench" version="1.3.0.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="Lua Development Tools Product" uid="org.eclipse.ldt.product-product" id="org.eclipse.ldt.branding.product" application="org.eclipse.ui.ide.workbench" version="1.4.0.qualifier" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/org.eclipse.ldt.branding/ldt_about.png"/>
@@ -25,15 +25,21 @@ Visit http://www.eclipse.org/ldt for more information.
 --launcher.XXMaxPermSize
 256m
 --launcher.defaultAction
-openFile</programArgs>
+openFile
+      </programArgs>
       <programArgsLin>-startup
-plugins/org.eclipse.equinox.launcher_1.1.1.R36x_v20101122_1400.jar</programArgsLin>
+plugins/org.eclipse.equinox.launcher_1.1.1.R36x_v20101122_1400.jar
+      </programArgsLin>
       <programArgsMac>-startup
-../../../plugins/org.eclipse.equinox.launcher_1.1.1.R36x_v20101122_1400.jar</programArgsMac>
+../../../plugins/org.eclipse.equinox.launcher_1.1.1.R36x_v20101122_1400.jar
+      </programArgsMac>
       <programArgsWin>-startup
-plugins\org.eclipse.equinox.launcher_1.1.1.R36x_v20101122_1400.jar</programArgsWin>
-      <vmArgs>-XX:PermSize=512M -XX:MaxPermSize=512M -Xms40m -Xmx512m</vmArgs>
-      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
+plugins\org.eclipse.equinox.launcher_1.1.1.R36x_v20101122_1400.jar
+      </programArgsWin>
+      <vmArgs>-XX:PermSize=512M -XX:MaxPermSize=512M -Xms40m -Xmx512m
+      </vmArgs>
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
+      </vmArgsMac>
    </launcherArgs>
 
    <windowImages i16="/org.eclipse.ldt.branding/icons/LDT_16.png" i32="/org.eclipse.ldt.branding/icons/LDT_32.png" i48="/org.eclipse.ldt.branding/icons/LDT_48.png" i64="/org.eclipse.ldt.branding/icons/LDT_64.png" i128="/org.eclipse.ldt.branding/icons/LDT_128.png"/>
@@ -53,7 +59,6 @@ plugins\org.eclipse.equinox.launcher_1.1.1.R36x_v20101122_1400.jar</programArgsW
       </win>
    </launcher>
 
-
    <vm>
    </vm>
 
@@ -61,7 +66,7 @@ plugins\org.eclipse.equinox.launcher_1.1.1.R36x_v20101122_1400.jar</programArgsW
    </plugins>
 
    <features>
-      <feature id="org.eclipse.ldt.product" version="1.3.0.qualifier"/>
+      <feature id="org.eclipse.ldt.product" version="1.4.0.qualifier"/>
    </features>
 
    <configurations>

@@ -12,7 +12,7 @@ package org.eclipse.ldt.debug.ui.internal;
 
 public interface DocumentationLinksConstants {
 
-	String BASE_URL = "/org.eclipse.ldt.doc.user/help/LDT/User_Area/User_Guides/User_Guide_1.3/"; //$NON-NLS-1$
+	String BASE_URL = "/org.eclipse.ldt.doc.user/help/LDT/User_Area/User_Guides/User_Guide_1.4/"; //$NON-NLS-1$
 	String SOURCE_MAPPING = BASE_URL + "Concepts.html#Source_Mapping"; //$NON-NLS-1$
 	String ATTACH_DEBUG = BASE_URL + "Tasks.html#Attach_session"; //$NON-NLS-1$
 }
