@@ -66,16 +66,17 @@ plugins\org.eclipse.equinox.launcher_1.1.1.R36x_v20101122_1400.jar
    </plugins>
 
    <features>
-      <feature id="org.eclipse.ldt.product" version="1.4.0.qualifier"/>
+      <feature id="org.eclipse.ldt.product"/>
+      <feature id="org.eclipse.ldt" installMode="root"/>
    </features>
 
    <configurations>
-      <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="4" />
+      <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="2" />
-      <plugin id="org.eclipse.equinox.p2.reconciler.dropins" autoStart="true" startLevel="4" />
+      <plugin id="org.eclipse.equinox.event" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.p2.reconciler.dropins" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
-      <plugin id="org.eclipse.update.configurator" autoStart="true" startLevel="4" />
       <property name="org.eclipse.update.reconcile" value="false" />
    </configurations>
 

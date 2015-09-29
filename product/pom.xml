@@ -19,9 +19,6 @@
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-p2-repository-plugin</artifactId>
 				<version>${tycho-version}</version>
-				<configuration>
-					<includeAllDependencies>true</includeAllDependencies>
-				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
@@ -74,16 +71,6 @@
 								</goals>
 								<configuration>
 									<tasks>
-										<delete includeemptydirs="false">
-											<fileset dir="${download-publish-path}">
-												<include name="**" />
-											</fileset>
-										</delete>
-										<copy includeemptydirs="false" todir="${download-publish-path}">
-											<fileset dir="target/repository">
-												<include name="**" />
-											</fileset>
-										</copy>
 										<delete includeemptydirs="false">
 											<fileset dir="${shared-publish-nightly-product}">
 												<include name="**" />
