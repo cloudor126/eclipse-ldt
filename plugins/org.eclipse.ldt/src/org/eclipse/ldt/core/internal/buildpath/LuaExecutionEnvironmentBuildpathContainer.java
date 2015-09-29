@@ -16,7 +16,6 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.dltk.core.DLTKCore;
-import org.eclipse.dltk.core.IAccessRule;
 import org.eclipse.dltk.core.IBuildpathAttribute;
 import org.eclipse.dltk.core.IBuildpathContainer;
 import org.eclipse.dltk.core.IBuildpathEntry;
@@ -41,7 +40,7 @@ public class LuaExecutionEnvironmentBuildpathContainer implements IBuildpathCont
 			final ArrayList<IBuildpathEntry> arrayList = new ArrayList<IBuildpathEntry>(eeBuildPathes.size());
 			if (!eeBuildPathes.isEmpty()) {
 				for (final IPath buildPath : eeBuildPathes) {
-					final IBuildpathEntry libEntry = DLTKCore.newLibraryEntry(buildPath, IAccessRule.EMPTY_RULES, new IBuildpathAttribute[0],
+					final IBuildpathEntry libEntry = DLTKCore.newLibraryEntry(buildPath, BuildpathEntry.NO_ACCESS_RULES, new IBuildpathAttribute[0],
 							BuildpathEntry.INCLUDE_ALL, BuildpathEntry.EXCLUDE_NONE, false, true);
 					arrayList.add(libEntry);
 				}
