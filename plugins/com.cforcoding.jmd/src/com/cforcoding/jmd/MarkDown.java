@@ -120,7 +120,7 @@ public class MarkDown {
         for (int i = 0; i < ESCAPE_CHARACTERS.length(); i++) {
             char c = ESCAPE_CHARACTERS.charAt(i);
             String ch = Character.toString(c);
-            String code = Integer.toString(ch.hashCode());
+            String code = "\u001A" + Integer.toString(ch.hashCode()) + "\u001A";
             escape.put(ch, code);
             backslashEscape.put("\\" + ch, code);
         }
