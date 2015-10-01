@@ -20,7 +20,6 @@
 		
 		<!-- maven plug-ins version -->
 		<buildnumber-maven-version>1.3</buildnumber-maven-version>
-		<maven-checkstyle>2.16</maven-checkstyle>
 		<findbugs-maven-version>3.0.0</findbugs-maven-version>
 		<eclipse-jarsigner-version>1.4</eclipse-jarsigner-version>
 		<maven-antrun-plugin-version>1.8</maven-antrun-plugin-version>
@@ -334,17 +333,6 @@
 					<version>${tycho-extras-version}</version>
 					</dependency>
 				</dependencies>
-			</plugin>
-			
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-checkstyle-plugin</artifactId>
-				<version>${maven-checkstyle}</version>
-				<configuration>
-					<configLocation>http://download.eclipse.org/ldt/releng/checkstyle.xml</configLocation>
-					<sourceDirectory>src</sourceDirectory>
-					<excludes>**/com/naef/jnlua/**/*</excludes>
-				</configuration>
 			</plugin>
 
 			<plugin>
