@@ -52,18 +52,25 @@ end
 
 		<loadfile property="documentation" srcFile="${antFileFolder}/debugger/readme.txt" />
 		<echo file="${debuggerFile}" append="true" message="${documentation}" />
-		
+
 		<echo file="${debuggerFile}" append="true" message="${header}" />
 	</target>
 
 	<!--Find a path from a lua module name -->
 	<target name="findPath" unless="path">
-		<script language="javascript">
-		    var module = project.getProperty("module");
-		    project.setProperty("path", module.replace(".", "/") + ".lua");
-		</script>
+		<loadresource property="tmppath">
+			<propertyresource name="module" />
+			<filterchain>
+				<tokenfilter>
+					<filetokenizer />
+					<replacestring from="." to="/" />
+					
+				</tokenfilter>
+			</filterchain>
+		</loadresource>
+		<property name="path" value="${tmppath}.lua"/>
 	</target>
-	
+
 	<!--Append a module in the file -->
 	<target name="appendModule" depends="findPath">
 		<antcall target="findPath"/>
@@ -91,7 +98,7 @@ end
 	 -->
 	<target name="build">
 		<antcall target="createDebugger" />
-		
+
 		<antcall target="appendModule">
 			<param name="module" value="debugger.transport.apr" />
 		</antcall>
