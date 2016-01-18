@@ -20,9 +20,9 @@ local util = require "debugger.util"
 local LOCAL, UPVAL, GLOBAL, EVAL, STORE, HANDLE = {}, {}, {}, {}, {}, {}
 
 local getglobals
-if _VERSION == "Lua 5.1" then
+if DBGP_CLIENT_LUA_VERSION == "Lua 5.1" then
   getglobals = function(f) return getfenv(f) end
-elseif _VERSION == "Lua 5.2" then
+elseif DBGP_CLIENT_LUA_VERSION == "Lua 5.2" then
   getglobals = function(f, cxt)
     -- 'global' environment: this is either the local _ENV or upvalue _ENV. A special case happen when a
     -- function does not reference any global variable: the upvalue _ENV may not exist at all. In this case,

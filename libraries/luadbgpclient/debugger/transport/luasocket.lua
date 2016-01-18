@@ -15,7 +15,7 @@
 -- directly (to no add yet another layer)
 
 --FIXME: remove this hack as soon as luasocket officially support 5.2
-if _VERSION == "Lua 5.2" then
+if DBGP_CLIENT_LUA_VERSION == "Lua 5.2" then
   table.getn = function(t) return t and #t end
 end
 

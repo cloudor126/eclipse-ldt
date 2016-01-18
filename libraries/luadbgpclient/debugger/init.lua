@@ -10,6 +10,11 @@
 -------------------------------------------------------------------------------
 
 local DBGP_CLIENT_VERSION = "1.4.0"
+DBGP_CLIENT_LUA_VERSION = os.getenv "LUA_VERSION" or _VERSION
+if DBGP_CLIENT_LUA_VERSION ~= "Lua 5.1" and DBGP_CLIENT_LUA_VERSION ~= "Lua 5.2" then
+  print(DBGP_CLIENT_LUA_VERSION .. " is not supported. As fallback, debugger will behave as if it runs on Lua 5.2 vm. You could also try to force it to behave as a Lua 5.1 vm by setting the LUA_VERSION environment variable to 'Lua 5.1'")
+  DBGP_CLIENT_LUA_VERSION = "Lua 5.2"
+end
 
 local debug = require "debug"
 
@@ -45,14 +50,14 @@ core.active_coroutines = { n = 0, from_id = setmetatable({ }, { __mode = "v" }),
 
 -- "BEGIN VERSION DEPENDENT CODE"
 local setbpenv     -- set environment of a breakpoint (compiled function)
-if _VERSION == "Lua 5.1" then
+if DBGP_CLIENT_LUA_VERSION == "Lua 5.1" then
   local setfenv = setfenv
   setbpenv = setfenv
-elseif _VERSION == "Lua 5.2" then
+elseif DBGP_CLIENT_LUA_VERSION == "Lua 5.2" then
   local setupvalue = debug.setupvalue
   -- _ENV is the first upvalue
   setbpenv = function(f, t) return setupvalue(f, 1, t) end
-else error(_VERSION .. "is not supported.") end
+end
 -- "END VERSION DEPENDENT CODE"
 
 -------------------------------------------------------------------------------

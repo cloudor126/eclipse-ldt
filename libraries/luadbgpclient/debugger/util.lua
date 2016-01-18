@@ -89,7 +89,7 @@ function M.CurrentThread(coro) return setmetatable({ coro }, CurrentThreadMT) en
 
 
 -- Some version dependant functions
-if _VERSION == "Lua 5.1" then
+if DBGP_CLIENT_LUA_VERSION == "Lua 5.1" then
   local loadstring, getfenv, setfenv, debug_getinfo, MainThread =
     loadstring, getfenv, setfenv, debug.getinfo, nil
 
@@ -153,7 +153,7 @@ if _VERSION == "Lua 5.1" then
     __index = function(self, func) return getfenv(func) end,
     __newindex = function(self, func, env) return setfenv(func, env) end,
   })
-elseif _VERSION == "Lua 5.2" then
+elseif DBGP_CLIENT_LUA_VERSION == "Lua 5.2" then
   local load, debug_getinfo = load, debug.getinfo
   function M.getinfo(coro, level, what)
     if coro then return debug_getinfo(coro, level, what)
