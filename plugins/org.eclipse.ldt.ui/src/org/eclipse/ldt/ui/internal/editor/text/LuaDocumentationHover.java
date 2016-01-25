@@ -59,8 +59,8 @@ public class LuaDocumentationHover extends DocumentationHover {
 				if (fImageProvider == null) {
 					fImageProvider = new ScriptElementImageProvider();
 				}
-				return fImageProvider.getScriptImageDescriptor(modelElement, ScriptElementImageProvider.OVERLAY_ICONS
-						| ScriptElementImageProvider.SMALL_ICONS);
+				return fImageProvider.getScriptImageDescriptor(modelElement,
+						ScriptElementImageProvider.OVERLAY_ICONS | ScriptElementImageProvider.SMALL_ICONS);
 			}
 			return null;
 		}
@@ -96,8 +96,10 @@ public class LuaDocumentationHover extends DocumentationHover {
 				// TODO BUG_ECLIPSE 399414 and/or 399468
 				// Because DLTK have a default tooltip really hard to remove, the only way to
 				// don't have a tooltip is to kill the thread responsible to display the hover by throwing an exception.
-				throw new RuntimeException("Exception to avoid to create a tooltip, currently a workaround for dltk"); //$NON-NLS-1$
-				// return null;
+				// This could be cleaner to raise a RuntimeException but pratically throwing ArrayIndexOutOfBounds avoid unneeded log because,
+				// this is nicely handle here : org.eclipse.jface.text.TextViewerHoverManager.computeInformation()
+				throw new ArrayIndexOutOfBoundsException("Exception to avoid to create a tooltip, currently a workaround for dltk"); //$NON-NLS-1$
+				//return null;
 			}
 			return LuaDocumentationHelper.generatePage(htmlContent);
 		}
