@@ -460,7 +460,7 @@ public final class LuaASTUtils {
 	}
 
 	private static Definition getDefinition(TypeResolution recordTypeResolution, String fieldname, Set<TypeResolution> cache) {
-		if (recordTypeResolution.getTypeDef() instanceof RecordTypeDef) {
+		if (recordTypeResolution != null && recordTypeResolution.getTypeDef() instanceof RecordTypeDef) {
 			// search field with the given field name
 			RecordTypeDef recordtypedef = (RecordTypeDef) recordTypeResolution.getTypeDef();
 			Item item = recordtypedef.getFields().get(fieldname);
