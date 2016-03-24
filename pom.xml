@@ -242,7 +242,7 @@
 		<repository>
 			<id>dltk</id>
 			<layout>p2</layout>
-			<url>http://download.eclipse.org/technology/dltk/updates-dev/5.4</url>
+			<url>http://download.eclipse.org/technology/dltk/updates-dev/5.5</url>
 		</repository>
 		<repository>
 			<id>orbit</id>
