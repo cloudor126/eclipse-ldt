@@ -15,13 +15,13 @@ import java.io.IOException;
 import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.dltk.annotations.Internal;
 import org.eclipse.dltk.core.IModelElement;
-import org.eclipse.dltk.internal.ui.text.HTMLPrinter;
 import org.eclipse.dltk.internal.ui.text.hover.DocumentationHover;
 import org.eclipse.dltk.ui.ScriptElementImageProvider;
 import org.eclipse.dltk.ui.ScriptElementLabels;
 import org.eclipse.dltk.ui.documentation.IDocumentationResponse;
 import org.eclipse.dltk.ui.documentation.IScriptDocumentationTitleAdapter;
 import org.eclipse.dltk.ui.documentation.ScriptDocumentationAccess;
+import org.eclipse.dltk.ui.text.completion.HTMLPrinter;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.ldt.ui.internal.LuaDocumentationHelper;
@@ -99,7 +99,7 @@ public class LuaDocumentationHover extends DocumentationHover {
 				// This could be cleaner to raise a RuntimeException but pratically throwing ArrayIndexOutOfBounds avoid unneeded log because,
 				// this is nicely handle here : org.eclipse.jface.text.TextViewerHoverManager.computeInformation()
 				throw new ArrayIndexOutOfBoundsException("Exception to avoid to create a tooltip, currently a workaround for dltk"); //$NON-NLS-1$
-				//return null;
+				// return null;
 			}
 			return LuaDocumentationHelper.generatePage(htmlContent);
 		}
