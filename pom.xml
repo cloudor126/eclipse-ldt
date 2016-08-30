@@ -23,8 +23,8 @@
 		<findbugs-maven-version>3.0.0</findbugs-maven-version>
 		<eclipse-jarsigner-version>1.1.0</eclipse-jarsigner-version>
 		<maven-antrun-plugin-version>1.8</maven-antrun-plugin-version>
-		<tycho-version>0.24.0</tycho-version>
-		<tycho-extras-version>0.24.0</tycho-extras-version>
+		<tycho-version>0.26.0</tycho-version>
+		<tycho-extras-version>0.26.0</tycho-extras-version>
 
 		<!-- publish repository path -->
 		<shared-publish-rootpath>/shared/tools/ldt</shared-publish-rootpath>
