@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Lua Development Tools Product" uid="org.eclipse.ldt.product-product" id="org.eclipse.ldt.branding.product" application="org.eclipse.ui.ide.workbench" version="1.4.0.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="Lua Development Tools Product" uid="org.eclipse.ldt.product-product" id="org.eclipse.ldt.branding.product" application="org.eclipse.ui.ide.workbench" version="1.4.1.qualifier" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/org.eclipse.ldt.branding/ldt_about.png"/>

@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.eclipse.ldt_1.4.0.qualifier.jar" id="org.eclipse.ldt" version="1.4.0.qualifier">
+   <feature url="features/org.eclipse.ldt_1.4.1.qualifier.jar" id="org.eclipse.ldt" version="1.4.1.qualifier">
       <category name="ldt"/>
    </feature>
-   <feature url="features/org.eclipse.ldt.source_1.4.0.qualifier.jar" id="org.eclipse.ldt.source" version="1.4.0.qualifier">
+   <feature url="features/org.eclipse.ldt.source_1.4.1.qualifier.jar" id="org.eclipse.ldt.source" version="1.4.1.qualifier">
       <category name="ldt"/>
    </feature>
-   <feature url="features/org.eclipse.ldt.remote_1.4.0.qualifier.jar" id="org.eclipse.ldt.remote" version="1.4.0.qualifier">
+   <feature url="features/org.eclipse.ldt.remote_1.4.1.qualifier.jar" id="org.eclipse.ldt.remote" version="1.4.1.qualifier">
       <category name="ldt"/>
    </feature>
-   <feature url="features/org.eclipse.ldt.remote.source_1.4.0.qualifier.jar" id="org.eclipse.ldt.remote.source" version="1.4.0.qualifier">
+   <feature url="features/org.eclipse.ldt.remote.source_1.4.1.qualifier.jar" id="org.eclipse.ldt.remote.source" version="1.4.1.qualifier">
       <category name="ldt"/>
    </feature>
    <category-def name="ldt" label="Lua Development Tools"/>
