@@ -125,7 +125,7 @@ local function createblock(block, parent)
   match block with
     | `Function{param, body}
     | `Do{...}
-    | `Fornum {identifier, min, max, body}
+    | `Fornum {...}
     | `Forin {identifiers, exprs, body}
     | `Repeat {body, expr} ->
         _block.sourcerange.min = block.lineinfo.first.offset
