@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?pde version="3.8"?><target name="Lua Development Tools - Neon" sequenceNumber="70">
+<locations>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.platform.sdk" version="4.7.0.I20170518-1030"/>
+<unit id="org.eclipse.rse.feature.group" version="3.7.3.201704251225"/>
+<repository location="http://download.eclipse.org/releases/oxygen"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.wst.jsdt.feature.feature.group" version="2.0.0.v201608301904"/>
+<unit id="org.eclipse.jdt.feature.group" version="3.13.0.v20170518-1110"/>
+<repository location="http://download.eclipse.org/releases/oxygen"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.junit" version="4.12.0.v201504281640"/>
+<unit id="org.apache.commons.math" version="2.1.0.v201105210652"/>
+<unit id="org.apache.commons.lang.source" version="2.6.0.v201404270220"/>
+<unit id="org.junit.source" version="4.12.0.v201504281640"/>
+<unit id="org.apache.commons.collections.source" version="3.2.2.v201511171945"/>
+<unit id="org.apache.commons.compress.source" version="1.6.0.v201310281400"/>
+<unit id="org.apache.commons.collections" version="3.2.2.v201511171945"/>
+<unit id="org.apache.commons.lang" version="2.6.0.v201404270220"/>
+<unit id="org.apache.commons.compress" version="1.6.0.v201310281400"/>
+<unit id="org.apache.commons.math.source" version="2.1.0.v201105210652"/>
+<unit id="org.apache.commons.io" version="2.2.0.v201405211200"/>
+<unit id="org.apache.commons.io.source" version="2.2.0.v201405211200"/>
+<repository location="http://download.eclipse.org/tools/orbit/R-builds/R20170516192513/repository"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.dltk.core.index.sdk.feature.group" version="5.8.0.201705301110"/>
+<unit id="org.eclipse.dltk.rse.sdk.feature.group" version="5.8.0.201705301110"/>
+<unit id="org.eclipse.dltk.xotcl.sdk.feature.group" version="5.8.0.201705301110"/>
+<unit id="org.eclipse.dltk.javascript.sdk.feature.group" version="5.8.0.201705301110"/>
+<unit id="org.eclipse.dltk.ruby.sdk.feature.group" version="5.8.0.201705301110"/>
+<unit id="org.eclipse.dltk.core.sdk.feature.group" version="5.8.0.201705301110"/>
+<unit id="org.eclipse.dltk.mylyn.sdk.feature.group" version="5.8.0.201705301110"/>
+<unit id="org.eclipse.dltk.itcl.sdk.feature.group" version="5.8.0.201705301110"/>
+<unit id="org.eclipse.dltk.python.sdk.feature.group" version="5.8.0.201705301110"/>
+<unit id="org.eclipse.dltk.tcl.sdk.feature.group" version="5.8.0.201705301110"/>
+<repository location="http://download.eclipse.org/technology/dltk/updates-dev/milestone/5.8rc2"/>
+</location>
+</locations>
+</target>
