@@ -38,7 +38,7 @@
 		<download-publish-path>${download-publish-rootpath}${download-publish-relativepath}</download-publish-path>
 
 		<!-- default eclipse platform targeted -->
-		<eclipse-site>http://download.eclipse.org/releases/neon</eclipse-site>
+		<eclipse-site>http://download.eclipse.org/releases/oxygen</eclipse-site>
 
 		<!-- Uri to git repository -->
 		<tycho.scmUrl>scm:git:https://git.eclipse.org/gitroot/ldt/org.eclipse.ldt.git</tycho.scmUrl>
@@ -143,6 +143,18 @@
 			</activation>
 			<properties>
 				<eclipse-site>http://download.eclipse.org/releases/neon</eclipse-site>
+			</properties>
+		</profile>
+		<profile>
+			<id>platform-oxygen</id>
+			<activation>
+				<property>
+					<name>platform-version-name</name>
+					<value>oxygen</value>
+				</property>
+			</activation>
+			<properties>
+				<eclipse-site>http://download.eclipse.org/releases/oxygen</eclipse-site>
 			</properties>
 		</profile>
 		<profile>
