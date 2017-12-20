@@ -38,7 +38,7 @@
 		<download-publish-path>${download-publish-rootpath}${download-publish-relativepath}</download-publish-path>
 
 		<!-- default eclipse platform targeted -->
-		<eclipse-site>http://download.eclipse.org/releases/oxygen</eclipse-site>
+		<eclipse-site>http://download.eclipse.org/releases/photon</eclipse-site>
 
 		<!-- Uri to git repository -->
 		<tycho.scmUrl>scm:git:https://git.eclipse.org/gitroot/ldt/org.eclipse.ldt.git</tycho.scmUrl>
@@ -158,6 +158,18 @@
 			</properties>
 		</profile>
 		<profile>
+			<id>platform-proton</id>
+			<activation>
+				<property>
+					<name>platform-version-name</name>
+					<value>proton</value>
+				</property>
+			</activation>
+			<properties>
+				<eclipse-site>http://download.eclipse.org/releases/proton</eclipse-site>
+			</properties>
+		</profile>
+		<profile>
 			<id>platform-staging</id>
 			<activation>
 				<property>
@@ -254,7 +266,7 @@
 		<repository>
 			<id>dltk</id>
 			<layout>p2</layout>
-			<url>http://download.eclipse.org/technology/dltk/updates-dev/5.7</url>
+			<url>http://download.eclipse.org/technology/dltk/updates-dev/5.9</url>
 		</repository>
 		<repository>
 			<id>orbit</id>
