@@ -158,6 +158,7 @@ public class LuaApplicationLaunchShortcut extends AbstractScriptLaunchShortcut {
 			wc.setAttribute(ScriptLaunchConfigurationConstants.ATTR_PROJECT_NAME, script.getProject().getName());
 			wc.setAttribute(ScriptLaunchConfigurationConstants.ATTR_MAIN_SCRIPT_NAME, script.getProjectRelativePath().toPortableString());
 			wc.setAttribute(DebugPlugin.ATTR_PROCESS_FACTORY_ID, ScriptRuntimeProcessFactory.PROCESS_FACTORY_ID);
+			wc.setAttribute(ScriptLaunchConfigurationConstants.ATTR_DEBUG_CONSOLE, false);
 
 			// Manage interpreters.
 			IInterpreterInstall guessInterpreter = findBestInterpreter(script);
@@ -304,8 +305,8 @@ public class LuaApplicationLaunchShortcut extends AbstractScriptLaunchShortcut {
 	 * 
 	 * see {@link org.eclipse.dltk.internal.debug.ui.launcher.AbstractScriptLaunchShortcut.getScriptResources(Object[], IProgressMonitor)}
 	 */
-	private List<ILaunchConfiguration> filterConfig(Object selection, List<ILaunchConfiguration> candidateConfigs) throws InterruptedException,
-			CoreException {
+	private List<ILaunchConfiguration> filterConfig(Object selection, List<ILaunchConfiguration> candidateConfigs)
+			throws InterruptedException, CoreException {
 		IResource[] scripts = findScripts(new Object[] { selection }, PlatformUI.getWorkbench().getProgressService());
 		return filterConfig(Arrays.asList(scripts), candidateConfigs);
 	}
@@ -317,10 +318,11 @@ public class LuaApplicationLaunchShortcut extends AbstractScriptLaunchShortcut {
 		List<ILaunchConfiguration> candidateConfigs = new ArrayList<ILaunchConfiguration>();
 		for (ILaunchConfiguration config : configs) {
 			for (IResource script : scripts) {
-				if (config.getAttribute(ScriptLaunchConfigurationConstants.ATTR_MAIN_SCRIPT_NAME, Util.EMPTY_STRING).equals(
-						script.getProjectRelativePath().toString())
-						&& config.getAttribute(ScriptLaunchConfigurationConstants.ATTR_PROJECT_NAME, Util.EMPTY_STRING).equals(
-								script.getProject().getName()) && config.getType().equals(getConfigurationType())) {
+				if (config.getAttribute(ScriptLaunchConfigurationConstants.ATTR_MAIN_SCRIPT_NAME, Util.EMPTY_STRING)
+						.equals(script.getProjectRelativePath().toString())
+						&& config.getAttribute(ScriptLaunchConfigurationConstants.ATTR_PROJECT_NAME, Util.EMPTY_STRING)
+								.equals(script.getProject().getName())
+						&& config.getType().equals(getConfigurationType())) {
 					candidateConfigs.add(config);
 				}
 			}
