@@ -21,7 +21,9 @@ import org.eclipse.core.variables.IStringVariableManager;
 import org.eclipse.core.variables.VariablesPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.debug.core.Launch;
 import org.eclipse.dltk.compiler.util.Util;
+import org.eclipse.dltk.debug.core.DLTKDebugLaunchConstants;
 import org.eclipse.dltk.internal.launching.DLTKLaunchingPlugin;
 import org.eclipse.dltk.launching.AbstractScriptLaunchConfigurationDelegate;
 import org.eclipse.dltk.launching.IInterpreterInstall;
@@ -50,6 +52,16 @@ public class LuaLaunchConfigurationDelegate extends AbstractScriptLaunchConfigur
 	public IInterpreterInstall verifyInterpreterInstall(ILaunchConfiguration configuration) throws CoreException {
 		// TODO reactivate verification
 		return getInterpreterInstall(configuration);
+	}
+
+	// TODO Workaround for BUG ECLIPSE 419273
+	@Override
+	protected void setDebugConsoleAttributes(Launch launch, ILaunchConfiguration configuration) throws CoreException {
+		if (!configuration.getAttribute(ScriptLaunchConfigurationConstants.ATTR_DEBUG_CONSOLE, true)) {
+			launch.setAttribute(DLTKDebugLaunchConstants.ATTR_DEBUG_CONSOLE, DLTKDebugLaunchConstants.FALSE);
+		} else {
+			launch.setAttribute(DLTKDebugLaunchConstants.ATTR_DEBUG_CONSOLE, DLTKDebugLaunchConstants.TRUE);
+		}
 	}
 
 	/**
