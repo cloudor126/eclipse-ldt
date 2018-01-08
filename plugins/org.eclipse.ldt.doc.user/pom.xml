@@ -51,6 +51,7 @@
 							<url>${eclipse-site}</url>
 						</repository>
 					</repositories>
+					<executionEnvironment>JavaSE-1.8</executionEnvironment>
 					<dependencies>
 						<dependency>
 							<artifactId>org.apache.ant</artifactId>
