@@ -171,7 +171,17 @@ function M.new_comment(lines)
     local first = lines[1].lineinfo.first
     local last  = lines[#lines].lineinfo.last
     local lineinfo = M.new_lineinfo(first, last)
-    return setmetatable({lineinfo=lineinfo, unpack(lines)}, MT.comment)
+    -- 8000 is the limit to use unpack 
+    -- because of C variable LUAI_MAXCSTACK
+    if #lines < 8000 then
+      return setmetatable({lineinfo=lineinfo, unpack(lines)}, MT.comment)
+    else
+      local t = {lineinfo=lineinfo}
+      for i=1,#lines do
+      	t[i]=lines[i]
+      end
+      return setmetatable(t, MT.comment)
+    end
 end
 
 function MT.comment :text()
