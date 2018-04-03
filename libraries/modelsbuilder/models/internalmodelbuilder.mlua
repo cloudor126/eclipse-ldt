@@ -549,6 +549,22 @@ getitem = function (binder, itemname, comment2apiobj, file)
                 end
               end
             end
+          else
+            -- this is the case where we have
+            -- function expr.f(self) or  function expr:f()
+            -- we suppose the type of self is the type of "expr" 
+            if itemname == "self" and i==1 and binder.parent.tag == "Set" then
+              match binder.parent with
+              |`Set   { {`Index { right , string}}, {...}} ->
+                  -- if node is an expression supported
+                  local supportedexpr = expreto_expression[right]
+                  if supportedexpr then
+                    -- create expression type ref
+                    local selftype = apimodel._exprtyperef(supportedexpr,1)
+                    return createitem(itemname,id,selftype)
+                  end
+              end
+            end
           end              
           return createitem(itemname,id)
         end
