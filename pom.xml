@@ -158,15 +158,15 @@
 			</properties>
 		</profile>
 		<profile>
-			<id>platform-proton</id>
+			<id>platform-photon</id>
 			<activation>
 				<property>
 					<name>platform-version-name</name>
-					<value>proton</value>
+					<value>photon</value>
 				</property>
 			</activation>
 			<properties>
-				<eclipse-site>http://download.eclipse.org/releases/proton</eclipse-site>
+				<eclipse-site>http://download.eclipse.org/releases/photon</eclipse-site>
 			</properties>
 		</profile>
 		<profile>
@@ -267,6 +267,11 @@
 			<id>dltk</id>
 			<layout>p2</layout>
 			<url>http://download.eclipse.org/technology/dltk/updates-dev/5.9</url>
+		</repository>
+		<repository>
+			<id>rse</id>
+			<layout>p2</layout>
+			<url>http://download.eclipse.org/tm/updates/3.7.100-SNAPSHOT/repository/</url>
 		</repository>
 		<repository>
 			<id>orbit</id>

@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="Lua Development Tools - Neon" sequenceNumber="72">
+<?pde version="3.8"?><target name="Lua Development Tools - Photon" sequenceNumber="76">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.platform.sdk" version="4.8.0.I20171206-2000"/>
-<unit id="org.eclipse.rse.feature.group" version="3.7.3.201704251225"/>
+<unit id="org.eclipse.platform.sdk" version="4.8.0.I20180308-0630"/>
 <repository location="http://download.eclipse.org/releases/photon"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.jdt.feature.group" version="3.14.0.v20171206-2000"/>
-<unit id="org.eclipse.wst.jsdt.feature.feature.group" version="2.1.0.v201706011953"/>
+<unit id="org.eclipse.jdt.feature.group" version="3.14.0.v20180308-0630"/>
+<unit id="org.eclipse.wst.jsdt.feature.feature.group" version="2.1.1.v201801040050"/>
 <repository location="http://download.eclipse.org/releases/photon"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
@@ -27,17 +26,21 @@
 <repository location="http://download.eclipse.org/tools/orbit/downloads/drops/S20171130170529/repository"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.dltk.core.index.sdk.feature.group" version="5.9.0.201709190929"/>
-<unit id="org.eclipse.dltk.core.sdk.feature.group" version="5.9.0.201709190929"/>
-<unit id="org.eclipse.dltk.itcl.sdk.feature.group" version="5.9.0.201709190929"/>
-<unit id="org.eclipse.dltk.javascript.sdk.feature.group" version="5.9.0.201709190929"/>
-<unit id="org.eclipse.dltk.mylyn.sdk.feature.group" version="5.9.0.201709190929"/>
-<unit id="org.eclipse.dltk.python.sdk.feature.group" version="5.9.0.201709190929"/>
-<unit id="org.eclipse.dltk.rse.sdk.feature.group" version="5.9.0.201709190929"/>
-<unit id="org.eclipse.dltk.ruby.sdk.feature.group" version="5.9.0.201709190929"/>
-<unit id="org.eclipse.dltk.tcl.sdk.feature.group" version="5.9.0.201709190929"/>
-<unit id="org.eclipse.dltk.xotcl.sdk.feature.group" version="5.9.0.201709190929"/>
+<unit id="org.eclipse.dltk.core.index.sdk.feature.group" version="5.9.0.201803230529"/>
+<unit id="org.eclipse.dltk.core.sdk.feature.group" version="5.9.0.201803230529"/>
+<unit id="org.eclipse.dltk.itcl.sdk.feature.group" version="5.9.0.201803230529"/>
+<unit id="org.eclipse.dltk.javascript.sdk.feature.group" version="5.9.0.201803230529"/>
+<unit id="org.eclipse.dltk.mylyn.sdk.feature.group" version="5.9.0.201803230529"/>
+<unit id="org.eclipse.dltk.python.sdk.feature.group" version="5.9.0.201803230529"/>
+<unit id="org.eclipse.dltk.rse.sdk.feature.group" version="5.9.0.201803230529"/>
+<unit id="org.eclipse.dltk.ruby.sdk.feature.group" version="5.9.0.201803230529"/>
+<unit id="org.eclipse.dltk.tcl.sdk.feature.group" version="5.9.0.201803230529"/>
+<unit id="org.eclipse.dltk.xotcl.sdk.feature.group" version="5.9.0.201803230529"/>
 <repository location="http://download.eclipse.org/technology/dltk/updates-dev/5.9"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.rse.feature.group" version="3.7.100.201803021406"/>
+<repository location="http://download.eclipse.org/tm/updates/3.7.100-SNAPSHOT/repository/"/>
 </location>
 </locations>
 </target>
