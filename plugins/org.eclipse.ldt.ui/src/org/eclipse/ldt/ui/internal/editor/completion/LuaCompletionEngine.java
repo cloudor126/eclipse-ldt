@@ -185,8 +185,9 @@ public class LuaCompletionEngine extends ScriptCompletionEngine {
 			// for each global var, get the corresponding model element and create the proposal
 			for (Definition definition : othersglobalvars) {
 				List<IMember> members = LuaASTModelUtils.getIMembers(definition.getModule(), definition.getItem());
-				if (members != null)
+				if (members != null) {
 					createMemberProposal(members, cursorPosition - start.length(), cursorPosition, false, 25);
+				}
 			}
 		}
 
@@ -195,8 +196,8 @@ public class LuaCompletionEngine extends ScriptCompletionEngine {
 	private void addKeywords(String start, int cursorPosition) {
 		// TODO key word should be define in a static attribute
 		String[] keywords = new String[] { "and", "break", "do", "else", "elseif", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-				"end", "false", "for", "function", "if",//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-				"in", "local", "nil", "not", "or",//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+				"end", "false", "for", "function", "if", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+				"in", "local", "nil", "not", "or", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 				"repeat", "return", "then", "true", "until", "while" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
 
 		// create proposal for each keyword
