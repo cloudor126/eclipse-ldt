@@ -127,10 +127,19 @@ public class LuaEditor extends ScriptEditor {
 		}
 
 		// use module as title if is find else use the previous one
-		if (moduleFullName != null)
-			super.setPartName(moduleFullName);
-		else
+		if (moduleFullName != null) {
+			String shortName = moduleFullName;
+			for (int i = 0; i >= 0 && shortName.length() > 14; i = shortName.indexOf('.', i + 1) + 1) {
+				int j = shortName.indexOf('.', i + 1);
+				if (j < 0) {
+					break;
+				}
+				shortName = shortName.substring(0, i + 1) + shortName.substring(j);
+			}
+			super.setPartName(shortName);
+		} else {
 			super.setPartName(partName);
+		}
 	}
 
 	/**
