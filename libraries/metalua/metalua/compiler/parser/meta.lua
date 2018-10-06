@@ -38,7 +38,7 @@ return function(M)
         -- TODO: should there be one mlc per splice, or per parser instance?
         local mlc = require 'metalua.compiler'.new()
         local f = mlc :ast_to_function (ast, '=splice')
-        local result=f(M) -- splices act on the current parser
+        local result=f and f(M) -- splices act on the current parser
         return result
     end
 
