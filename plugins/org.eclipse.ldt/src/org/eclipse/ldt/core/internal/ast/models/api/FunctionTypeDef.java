@@ -23,12 +23,19 @@ public class FunctionTypeDef extends TypeDef {
 	private ArrayList<Parameter> parameters = new ArrayList<Parameter>();
 	private ArrayList<Return> returns = new ArrayList<Return>();
 
-	public String getDocumentation() {
-		return documentation;
+	public FunctionTypeDef() {
 	}
 
-	public void setDocumentation(String documentation) {
-		this.documentation = documentation;
+	public void addParameter(final Parameter parameter) {
+		parameters.add(parameter);
+	}
+
+	public void addReturn(final Return values) {
+		returns.add(values);
+	}
+
+	public String getDocumentation() {
+		return documentation;
 	}
 
 	public List<Parameter> getParameters() {
@@ -39,12 +46,8 @@ public class FunctionTypeDef extends TypeDef {
 		return returns;
 	}
 
-	public void addParameter(final Parameter parameter) {
-		parameters.add(parameter);
-	}
-
-	public void addReturn(final Return values) {
-		returns.add(values);
+	public void setDocumentation(String documentation) {
+		this.documentation = documentation;
 	}
 
 	/**
