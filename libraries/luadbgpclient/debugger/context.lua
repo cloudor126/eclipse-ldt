@@ -135,6 +135,7 @@ M.Context = {
 
     -- upvalues
     for i=1, math.huge do
+      if not func then break end
       local name, val = debug.getupvalue(func, i)
       if not name then break end
       upvalues[name] = i
