@@ -112,6 +112,58 @@ local typerefparser,_typerefparser
 typerefparser = function (...) return _typerefparser(...) end
 
 -- ----------------------------------------------------
+-- parse param type
+-- ----------------------------------------------------
+local functionparamparser =gg.sequence({
+    builder = function(x)
+        x[1].name = x[2] and x[2].name or nil
+        return x[1]
+    end,
+    typerefparser,
+    gg.onkeyword{ ":", idparser}
+})
+
+
+-- ----------------------------------------------------
+-- parse param types
+-- ----------------------------------------------------
+local functionparamsparser =gg.list({
+    builder = function(x)
+        return x
+    end,
+    primary = functionparamparser,
+    separators = ',',
+    terminators = ')'
+})
+
+local functionreturnsparser = gg.list({
+    builder = function(x)
+        return {
+            types = {unpack(x)},
+            tag = "return"
+        }
+    end,
+    primary = typerefparser,
+    separators = ',',
+    terminators = ')'
+})
+
+-- ----------------------------------------------------
+-- parse a function type, without the first #
+-- ----------------------------------------------------
+local sharplessfunciontyperefparser = gg.sequence({
+  builder =  function(result)
+    return {
+        tag = "typeref",
+        type = "function",
+        parameters = {unpack(result[1])},
+        returns = {result[2]}
+    }
+  end,
+  "(", functionparamsparser,")","-",">","(",functionreturnsparser,")"
+})
+
+-- ----------------------------------------------------
 -- parse a structure type, without the first #
 -- ----------------------------------------------------
 local sharplesslisttyperefparser = gg.sequence({
@@ -144,6 +196,7 @@ local sharptyperefparser = gg.sequence({
   gg.multisequence({
     sharplesslisttyperefparser,
     sharplessmaptyperefparser,
+    sharplessfunciontyperefparser,
     sharplessinternaltyperefparser
   })
 })

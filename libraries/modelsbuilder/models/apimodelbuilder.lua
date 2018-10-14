@@ -60,6 +60,7 @@ local function gettypedef(_file,name,kind,sourcerangemin,sourcerangemax)
   return nil
 end
 
+local _createreturn = {}
 
 -- create a typeref from the typref doc_tag
 local function createtyperef(dt_typeref,_file,sourcerangemin,sourcerangemax)
@@ -84,6 +85,27 @@ local function createtyperef(dt_typeref,_file,sourcerangemin,sourcerangemax)
         structuretypedef.structurekind = dt_typeref.type
         structuretypedef.name = dt_typeref.type
         _typeref = apimodel._inlinetyperef(structuretypedef)
+      elseif dt_typeref.type == "function" then
+        local functiontypedef = apimodel._functiontypedef()
+        -- manage params
+        if dt_typeref["parameters"] then
+          for _, dt_param in ipairs(dt_typeref["parameters"]) do
+            local _param = apimodel._parameter(dt_param.name or dt_param.type.._)
+            _param.type = createtyperef(dt_param,_file,dt_param.lineinfo.first.offset, dt_param.lineinfo.last.offset)
+            table.insert(functiontypedef.params,_param)
+          end
+        end
+        -- manage returns
+        if dt_typeref["returns"] then
+          for _, dt_return in ipairs(dt_typeref["returns"]) do
+            local _return = _createreturn[0](dt_return,_file,sourcerangemin,sourcerangemax)
+            table.insert(functiontypedef.returns,_return)
+          end
+        end
+
+        -- add type name
+        functiontypedef.name = M.generatefunctiontypename(functiontypedef)
+        _typeref = apimodel._inlinetyperef(functiontypedef)
       elseif primitivetypes[dt_typeref.type] then
         -- manage primitive types
         _typeref = apimodel._primitivetyperef()
@@ -118,6 +140,8 @@ local function createreturn(dt_return,_file,sourcerangemin,sourcerangemax)
   end
   return _return
 end
+
+_createreturn[0] = createreturn
 
 -- create a item from the field doc_tag
 local function createfield(dt_field,_file,sourcerangemin,sourcerangemax)
