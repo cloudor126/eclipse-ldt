@@ -20,6 +20,7 @@ import org.eclipse.ldt.core.internal.ast.models.api.InlineTypeRef;
 import org.eclipse.ldt.core.internal.ast.models.api.InternalTypeRef;
 import org.eclipse.ldt.core.internal.ast.models.api.Item;
 import org.eclipse.ldt.core.internal.ast.models.api.LuaFileAPI;
+import org.eclipse.ldt.core.internal.ast.models.api.MetaTypeRef;
 import org.eclipse.ldt.core.internal.ast.models.api.ModuleTypeRef;
 import org.eclipse.ldt.core.internal.ast.models.api.Parameter;
 import org.eclipse.ldt.core.internal.ast.models.api.PrimitiveTypeRef;
@@ -55,6 +56,7 @@ public final class APIModelFactory {
 		javaFunctions.add(itemAddOccurrence());
 		javaFunctions.add(newExternalTypeRef());
 		javaFunctions.add(newInternalTypeRef());
+		javaFunctions.add(newMetaTypeRef());
 		javaFunctions.add(newModuleTypeRef());
 		javaFunctions.add(newExprTypeRef());
 		javaFunctions.add(newPrimitiveTypeRef());
@@ -179,6 +181,25 @@ public final class APIModelFactory {
 			@Override
 			public String getName() {
 				return "newmoduletyperef"; //$NON-NLS-1$
+			}
+		};
+	}
+
+	private static NamedJavaFunction newMetaTypeRef() {
+		return new NamedJavaFunction() {
+			@Override
+			public int invoke(LuaState l) {
+				int index = l.checkInteger(1);
+
+				MetaTypeRef typeref = new MetaTypeRef(index);
+				l.pushJavaObject(typeref);
+
+				return 1;
+			}
+
+			@Override
+			public String getName() {
+				return "newmetatyperef"; //$NON-NLS-1$
 			}
 		};
 	}

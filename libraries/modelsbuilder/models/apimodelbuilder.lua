@@ -106,6 +106,8 @@ local function createtyperef(dt_typeref,_file,sourcerangemin,sourcerangemax)
         -- add type name
         functiontypedef.name = M.generatefunctiontypename(functiontypedef)
         _typeref = apimodel._inlinetyperef(functiontypedef)
+      elseif dt_typeref.type == "meta" then
+        _typeref = apimodel._metatyperef(dt_typeref["index"])
       elseif primitivetypes[dt_typeref.type] then
         -- manage primitive types
         _typeref = apimodel._primitivetyperef()

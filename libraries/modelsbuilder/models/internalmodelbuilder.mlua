@@ -443,7 +443,9 @@ getitem = function (binder, itemname, comment2apiobj, file)
                 
         -- else we use code to extract the type and description
         -- check for "local" typing
-          local type, desc = apimodelbuilder.extractlocaltype(getlinkedcommentafter(binder),file)
+          local commentafter = getlinkedcommentafter(binder)
+          if not commentafter then commentafter = getlinkedcommentafter(string) end
+          local type, desc = apimodelbuilder.extractlocaltype(commentafter,file)
           local desc = desc or (commentbefore and commentbefore[1])
         if type then
           return createitem(itemname, string, type, desc ) 
@@ -495,7 +497,9 @@ getitem = function (binder, itemname, comment2apiobj, file)
                 
         -- else we use code to extract the type and description
         -- check for "local" typing
-        local type,desc = apimodelbuilder.extractlocaltype(getlinkedcommentafter(binder),file)
+        local commentafter = getlinkedcommentafter(binder)
+        if not commentafter then commentafter = getlinkedcommentafter(ids) end
+        local type,desc = apimodelbuilder.extractlocaltype(commentafter,file)
           desc = desc or (commentbefore and commentbefore[1])
         if type then 
           return createitem(itemname, currentid, type, desc) 

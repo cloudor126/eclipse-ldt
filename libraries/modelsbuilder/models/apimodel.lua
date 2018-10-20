@@ -221,6 +221,13 @@ function M._primitivetyperef(typename)
   }
 end
 
+function M._metatyperef(index)
+  return {
+    tag            = "metatyperef",
+    index          = index          -- number
+  }
+end
+
 function M._moduletyperef(modulename,returnposition)
   return {
     tag            = "moduletyperef",

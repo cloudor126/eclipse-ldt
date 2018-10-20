@@ -1003,6 +1003,8 @@ public class LuaHeuristicScanner {
 					// create index
 					Index squareIndex = new Index();
 					squareIndex.setLeft(exp);
+					squareIndex.setStart(position);
+					squareIndex.setEnd(getPosition());
 
 					// if this is a string we try to find the right value of the index.
 					int contentbegin = getPosition();
@@ -1048,6 +1050,8 @@ public class LuaHeuristicScanner {
 					Index index = new Index();
 					index.setLeft(exp);
 					index.setRight(indexfieldname);
+					index.setStart(position);
+					index.setEnd(getPosition());
 					if (nextToken == LuaSymbols.TOKEN_EOF)
 						index.setIncomplete(true); // no identifier after the '.' this is an incomplete Index
 
@@ -1086,7 +1090,8 @@ public class LuaHeuristicScanner {
 					} else {
 						invoke.setIncomplete(true); // no left parentheses so this is an incomplete invoke
 					}
-
+					invoke.setStart(position);
+					invoke.setEnd(getPosition());
 					// update loop variable
 					exp = invoke;
 					position = getPosition();
@@ -1100,6 +1105,8 @@ public class LuaHeuristicScanner {
 					if (!eatForwardBetweenSepartor(position, start, LuaSymbols.TOKEN_LPAREN, LuaSymbols.TOKEN_RPAREN)) {
 						call.setIncomplete(true); // no right parentheses so this is an incomplete invoke
 					}
+					call.setStart(position);
+					call.setEnd(getPosition());
 
 					// update loop variable
 					exp = call;

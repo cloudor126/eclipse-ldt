@@ -43,6 +43,17 @@ local function parseword(lx)
   end
 end
 
+local function parsernumber(lx)
+  local num = lx:peek()
+  local tag = num.tag
+  if tag=='Number' then
+    lx:next()
+    return  {tag='Number', lineinfo=num.lineinfo, num[1]}
+  else
+    return gg.parse_error(lx,'Number expected')
+  end
+end
+
 -- ----------------------------------------------------
 -- parse an id
 -- return a table {name, lineinfo)
@@ -52,6 +63,17 @@ local idparser = gg.sequence({
     return { name = result[1][1] }
   end,
   parseword
+})
+
+-- ----------------------------------------------------
+-- parse a number
+-- return a table {num, lineinfo)
+-- ----------------------------------------------------
+local numparser = gg.sequence({
+  builder =  function (result)
+    return { num = result[1][1] }
+  end,
+  parsernumber
 })
 
 -- ----------------------------------------------------
@@ -112,6 +134,16 @@ local typerefparser,_typerefparser
 typerefparser = function (...) return _typerefparser(...) end
 
 -- ----------------------------------------------------
+-- parse meta type
+-- ----------------------------------------------------
+local metaparser = gg.sequence({
+    builder = function(x)
+        return {tag = "typeref", type="meta", index = x[1].num}
+    end,
+    "$", numparser
+})
+
+-- ----------------------------------------------------
 -- parse param type
 -- ----------------------------------------------------
 local functionparamparser =gg.sequence({
@@ -136,6 +168,9 @@ local functionparamsparser =gg.list({
     terminators = ')'
 })
 
+-- ----------------------------------------------------
+-- parse function return types
+-- ----------------------------------------------------
 local functionreturnsparser = gg.list({
     builder = function(x)
         return {
@@ -143,7 +178,7 @@ local functionreturnsparser = gg.list({
             tag = "return"
         }
     end,
-    primary = typerefparser,
+    primary = gg.multisequence({typerefparser,metaparser}),
     separators = ',',
     terminators = ')'
 })
