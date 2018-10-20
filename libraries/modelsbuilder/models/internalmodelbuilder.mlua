@@ -616,9 +616,11 @@ getitem = function (binder, itemname, comment2apiobj, file)
           
         -- else we use code to extract the type and description
         -- check for "local" typing
-        local type,desc = apimodelbuilder.extractlocaltype(getlinkedcommentafter(binder),file)
-          desc = desc or (commentbefore and commentbefore[1])
-          if type then 
+        local commentafter = getlinkedcommentafter(binder)
+        if not commentafter then commentafter = getlinkedcommentafter(id) end
+        local type, desc = apimodelbuilder.extractlocaltype(commentafter,file)
+        desc = desc or (commentbefore and commentbefore[1])
+        if type then 
           return createitem(itemname, id, type, desc) 
         else
           -- if no "local typing" extract type from code
@@ -680,33 +682,66 @@ local function createvardefinitions(_internalcontent,ast,file,comment2apiobj)
   local locals, globals = bindings( ast )
   
   -- create locals var
-  for binder, namesAndOccurrences in pairs(locals) do
-    for name, occurrences in pairs(namesAndOccurrences) do
-      -- get item, id 
-      local _item, id = getitem(binder, name,comment2apiobj,file)
+  for binder, namesAndOccurrences in pairs (locals) do
+    for name, occurrences in pairs (namesAndOccurrences) do
+      local _item, id = getitem (binder, name, comment2apiobj, file)
       if id then
-        -- add definition as occurence
-        -- we consider the identifier in the binder as an occurence
         local _identifierdef = idto_identifier[id]
         if _identifierdef then
-          table.insert(_item.occurrences, _identifierdef)
+          table.insert (_item.occurrences, _identifierdef)
           _identifierdef.definition = _item
         end
-          
-        -- add occurences
-        for _,occurrence in ipairs(occurrences) do
-          searchtypefield(occurrence.parent, _item,comment2apiobj,file)
+        for _, occurrence in ipairs (occurrences) do
+          searchtypefield (occurrence.parent, _item, comment2apiobj, file)
           local _identifier = idto_identifier[occurrence]
           if _identifier then
-            table.insert(_item.occurrences, _identifier)
-            _identifier.definition = _item 
-          end 
+            table.insert (_item.occurrences, _identifier)
+            _identifier.definition = _item
+          end
         end
-      
-        -- add item to block
         local _block = idto_block[id]
-        table.insert(_block.localvars,{item=_item,scope = {min=0,max=0}})
-      end  
+        table.insert (_block.localvars, {
+          item = _item,
+          scope = {
+            min = 0,
+            max = 0
+          }
+        })
+        -- fix current function param by id definition
+        if binder.tag == "Function" and _item and not _item.type then
+          if binder.parent and binder.parent[1] and binder.parent[1][1] and binder.parent[1][1].tag == "Id" then
+            local parentid = binder.parent[1][1]
+            local parentiditem = idto_identifier[parentid].definition
+            if parentiditem and parentiditem.type and parentiditem.type.def and parentiditem.type.def.params then
+              for _,param in ipairs(parentiditem.type.def.params) do
+                if param.name == name then
+                  _item.type = param.type
+                  break 
+                end
+              end
+            end
+          end
+        end
+        -- fix function param by current id definition
+        if _item and _item.type and _item.type.def and _item.type.def.tag == "functiontypedef" then
+          if binder[2] and binder[2][1] and binder[2][1].tag == "Function" then
+            local funcparamids = binder[2][1][1]
+            for _,param in ipairs(_item.type.def.params) do
+              for _,funcparamid in ipairs(funcparamids) do
+                if param.name == funcparamid[1] then
+                  local funcparamidentifier = idto_identifier[funcparamid]
+                  if funcparamidentifier and funcparamidentifier.definition then
+                    funcparamidentifier.definition.type = param.type
+                  end
+                  break
+                end
+              end
+            end
+          end
+        end
+        --
+      end
+
     end
   end
   
