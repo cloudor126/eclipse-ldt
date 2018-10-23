@@ -118,6 +118,7 @@ public class LuaSourceElementRequestorVisitor extends SourceElementRequestVisito
 			methodInfo.nameSourceStart = item.sourceStart();
 			methodInfo.nameSourceEnd = item.sourceEnd() - 1;
 			methodInfo.declarationStart = item.sourceStart();
+			methodInfo.returnType = item.getType().toReadableString();
 
 			// calculate modifiers
 			int modifiers = 0; // define kind modifier

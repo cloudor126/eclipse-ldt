@@ -22,4 +22,12 @@ public class MetaTypeRef extends LazyTypeRef {
 	public int getIndex() {
 		return index;
 	}
+
+	/**
+	 * @see org.eclipse.ldt.core.internal.ast.models.api.LazyTypeRef#toReadableString()
+	 */
+	@Override
+	public String toReadableString() {
+		return "$" + index; //$NON-NLS-1$
+	}
 }

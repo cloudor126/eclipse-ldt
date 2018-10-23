@@ -12,10 +12,10 @@ package org.eclipse.ldt.ui.internal.editor.navigation;
 
 import org.eclipse.dltk.core.IField;
 import org.eclipse.dltk.core.IMember;
+import org.eclipse.dltk.core.IMethod;
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.ui.ScriptElementLabels;
-import org.eclipse.dltk.ui.viewsupport.AppearanceAwareLabelProvider;
 import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.StyledString;
@@ -79,7 +79,10 @@ public class LuaLabelProvider extends LabelProvider implements IStyledLabelProvi
 			StyledString result = new StyledString();
 			StringBuffer buf = new StringBuffer(61);
 			ScriptElementLabels.getDefault().getElementLabel((IModelElement) element,
-					AppearanceAwareLabelProvider.DEFAULT_TEXTFLAGS | ScriptElementLabels.ALL_CATEGORY | ScriptElementLabels.M_APP_RETURNTYPE, buf);
+					ScriptElementLabels.ROOT_VARIABLE | ScriptElementLabels.M_PARAMETER_NAMES | ScriptElementLabels.M_PARAMETER_TYPES
+							| ScriptElementLabels.M_APP_TYPE_PARAMETERS | ScriptElementLabels.M_PARAMETER_INITIALIZERS
+							| ScriptElementLabels.ALL_CATEGORY,
+					buf);
 			result.append(buf.toString());
 
 			// get field type
@@ -87,6 +90,15 @@ public class LuaLabelProvider extends LabelProvider implements IStyledLabelProvi
 				try {
 					if (((IField) element).getType() != null)
 						result.append(new StyledString(" : " + ((IField) element).getType(), StyledString.DECORATIONS_STYLER)); //$NON-NLS-1$
+					// CHECKSTYLE:OFF
+				} catch (ModelException e) {
+					// do nothing, we just not be able to get the type
+					// CHECKSTYLE:ON
+				}
+			} else if (element instanceof IMethod) {
+				try {
+					if (((IMethod) element).getType() != null)
+						result.append(new StyledString(" : " + ((IMethod) element).getType(), StyledString.DECORATIONS_STYLER)); //$NON-NLS-1$
 					// CHECKSTYLE:OFF
 				} catch (ModelException e) {
 					// do nothing, we just not be able to get the type

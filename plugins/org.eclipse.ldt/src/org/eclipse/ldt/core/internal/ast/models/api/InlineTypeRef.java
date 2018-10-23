@@ -37,12 +37,29 @@ public class InlineTypeRef extends TypeRef {
 			if (recordTypeDef.getName().equals("list")) //$NON-NLS-1$
 				return String.format("#list<%s>", recordTypeDef.getDefaultvaluetyperef().toReadableString()); //$NON-NLS-1$
 			else if (recordTypeDef.getName().equals("map")) //$NON-NLS-1$
-				return String
-						.format("#map<%s,%s>", recordTypeDef.getDefaultkeytyperef().toReadableString(), recordTypeDef.getDefaultvaluetyperef().toReadableString()); //$NON-NLS-1$
+				return String.format("#map<%s,%s>", recordTypeDef.getDefaultkeytyperef().toReadableString(), //$NON-NLS-1$
+						recordTypeDef.getDefaultvaluetyperef().toReadableString());
 			else
 				return "#table"; //$NON-NLS-1$
 		} else if (definition instanceof FunctionTypeDef) {
-			return "#function"; //$NON-NLS-1$
+			FunctionTypeDef functionTypeDef = (FunctionTypeDef) definition;
+			StringBuilder sb = new StringBuilder();
+			for (Parameter param : functionTypeDef.getParameters()) {
+				if (sb.length() > 0) {
+					sb.append(',');
+				}
+				sb.append(param.getType().toReadableString());
+			}
+			String params = sb.toString();
+			sb.setLength(0);
+			for (TypeRef retRef : functionTypeDef.getReturns().get(0).getTypes()) {
+				if (sb.length() > 0) {
+					sb.append(',');
+				}
+				sb.append(retRef.toReadableString());
+			}
+			String returns = sb.toString();
+			return String.format("#(%s)->(%s)", params, returns); //$NON-NLS-1$
 		} else {
 			return null;
 		}
