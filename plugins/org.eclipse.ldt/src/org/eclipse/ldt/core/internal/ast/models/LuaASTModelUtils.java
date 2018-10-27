@@ -223,7 +223,8 @@ public final class LuaASTModelUtils {
 				for (int i = 0; i < parametersName.length; i++) {
 					parametersName[i] = functionResolvedType.getParameters().get(i).getName();
 				}
-				results.add(new FakeMethod(sourceModule, item.getName(), item.sourceStart(), item.getName().length(), parametersName, modifier, item));
+				results.add(
+						new FakeMethod(sourceModule, item.getName(), item.sourceStart(), item.getName().length(), parametersName, modifier, item));
 				return results;
 			}
 
@@ -265,7 +266,7 @@ public final class LuaASTModelUtils {
 			results.add(new FakeField(sourceModule, item.getName(), null, item.sourceStart(), item.getName().length(), Declaration.AccGlobal, item));
 			return results;
 		}
-		return null;
+		return results;
 	}
 
 	/**

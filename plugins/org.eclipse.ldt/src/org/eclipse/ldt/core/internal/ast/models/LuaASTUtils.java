@@ -28,7 +28,6 @@ import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.ASTVisitor;
 import org.eclipse.dltk.core.IScriptFolder;
 import org.eclipse.dltk.core.ISourceModule;
-import org.eclipse.dltk.core.ModelException;
 import org.eclipse.ldt.core.IProjectSourceVisitor2;
 import org.eclipse.ldt.core.LuaUtils;
 import org.eclipse.ldt.core.LuaUtils.ProjectFragmentFilter;
@@ -287,25 +286,12 @@ public final class LuaASTUtils {
 					if (types.size() >= returnposition) {
 						TypeRef type = types.get(returnposition - 1);
 						if (type instanceof MetaTypeRef) {
-							int index = ((MetaTypeRef) type).getIndex();
+							MetaTypeRef metaTypeRef = (MetaTypeRef) type;
 							try {
-								String callStr = sourceModule.getSource().substring(call.start(), call.end());
+								String callStr = sourceModule.getSource().substring(expr.start(), expr.end());
 								String[] params = callStr.substring(1, callStr.length() - 1).split(","); //$NON-NLS-1$
-								if (index > 0 && index <= params.length) {
-									String param = params[index - 1].trim();
-									if (param.matches("\".+\"") || param.matches("'.+'")) { //$NON-NLS-1$ //$NON-NLS-2$
-										String typeSpec = param.substring(1, param.length() - 1);
-										int sharpIndex = typeSpec.indexOf('#');
-										if (sharpIndex == 0) {
-											return resolveType(sourceModule, new InternalTypeRef(typeSpec.substring(1)));
-										} else if (sharpIndex > 0) {
-											return resolveType(sourceModule,
-													new ExternalTypeRef(typeSpec.substring(0, sharpIndex), typeSpec.substring(sharpIndex + 1)));
-										}
-										return null;
-									}
-								}
-							} catch (ModelException e) {
+								return resolveType(sourceModule, metaTypeRef, params);
+							} catch (Exception e) {
 								return null;
 							}
 						}
@@ -325,9 +311,48 @@ public final class LuaASTUtils {
 				if (functiontype.getReturns().size() > 0) {
 					List<TypeRef> types = functiontype.getReturns().get(0).getTypes();
 					if (types.size() >= returnposition) {
-						return resolveType(resolvedFunctionType.getModule(), types.get(returnposition - 1));
+						TypeRef type = types.get(returnposition - 1);
+						if (type instanceof MetaTypeRef) {
+							MetaTypeRef metaTypeRef = (MetaTypeRef) type;
+							try {
+								String callStr = sourceModule.getSource().substring(expr.start(), expr.end());
+								callStr = callStr.substring(callStr.indexOf('('));
+								String[] params = ("self," + callStr.substring(1, callStr.length() - 1)).split(","); //$NON-NLS-1$ //$NON-NLS-2$
+								return resolveType(sourceModule, metaTypeRef, params);
+							} catch (Exception e) {
+								return null;
+							}
+						}
+						return resolveType(resolvedFunctionType.getModule(), type);
 					}
 				}
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * @param sourceModule
+	 * @param metaTypeRef
+	 * @param call
+	 */
+	public static TypeResolution resolveType(ISourceModule sourceModule, MetaTypeRef metaTypeRef, String[] params) {
+		int index = metaTypeRef.getIndex();
+		if (index > 0 && index <= params.length) {
+			String param = params[index - 1].trim();
+			if (param.matches("\".+\"") || param.matches("'.+'")) { //$NON-NLS-1$ //$NON-NLS-2$
+				String typeSpec = param.substring(1, param.length() - 1);
+				int sharpIndex = typeSpec.indexOf('#');
+				if (sharpIndex == 0) {
+					TypeResolution result = resolveType(sourceModule, new InternalTypeRef(typeSpec.substring(1)));
+					if (result == null || result.getTypeDef() == null) {
+						result = resolveType(sourceModule, new PrimitiveTypeRef(typeSpec.substring(1)));
+					}
+					return result;
+				} else if (sharpIndex > 0) {
+					return resolveType(sourceModule, new ExternalTypeRef(typeSpec.substring(0, sharpIndex), typeSpec.substring(sharpIndex + 1)));
+				}
+				return null;
 			}
 		}
 		return null;
