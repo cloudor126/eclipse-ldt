@@ -69,6 +69,7 @@ public abstract class AbstractMetaLuaModule extends AbstractLuaModule {
 	public static void compileMetaluaFile(final LuaState luastate, final File folder, final String fileName) throws IOException {
 		final File regular = new File(folder, fileName);
 		if (regular.isFile() && regular.exists()) {
+
 			final String fileNameWithoutExtension = fileName.substring(0, fileName.lastIndexOf('.'));
 			final File build = new File(folder, fileNameWithoutExtension + ".luac"); //$NON-NLS-1$
 			// Compile metalua lib
@@ -82,8 +83,21 @@ public abstract class AbstractMetaLuaModule extends AbstractLuaModule {
 			command.append("local file = io.open([["); //$NON-NLS-1$
 			command.append(build.getPath());
 			command.append("]], 'wb') file:write(bin) file:close()\n"); //$NON-NLS-1$
-			luastate.load(command.toString(), "libraryCompilation"); //$NON-NLS-1$
-			luastate.call(0, 0);
+
+			int numRetry = 2;
+			for (int i = 0; i < numRetry; i++) {
+				try {
+					luastate.load(command.toString(), "libraryCompilation"); //$NON-NLS-1$
+					luastate.call(0, 0);
+					return;
+				} catch (RuntimeException e) {
+					if (i + 1 == numRetry) {
+						throw e;
+					}
+					// ignore
+				}
+			}
+
 		}
 	}
 
