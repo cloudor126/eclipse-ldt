@@ -209,12 +209,12 @@ M.prettynametypes = {
       return nil
     end
     if o.def.name == "list" then
-      local valuetypename = M.prettyname(o.def.defaultvaluetyperef)
-      return valuetypename and string.format('#list&lt;%s&gt;', valuetypename) or nil
+      local valuetypename = o.def.defaultvaluetyperef and M.prettyname(o.def.defaultvaluetyperef) or ''
+      return valuetypename and string.format('#list&lt;%s&gt;', valuetypename) or '#list'
     elseif o.def.name == "map" then
       local keytypename = M.prettyname(o.def.defaultkeytyperef)
       local valuetypename = M.prettyname(o.def.defaultvaluetyperef)
-      return keytypename and valuetypename and string.format('#map&lt;%s,%s&gt;', keytypename, valuetypename) or nil
+      return keytypename and valuetypename and string.format('#map&lt;%s,%s&gt;', keytypename, valuetypename) or '#map'
     else
       return string.format('#%s',o.def.name)
     end
@@ -356,11 +356,14 @@ function M.prettyname( apiobject, ... )
   local tag = apiobject.tag
   if M.prettynametypes[tag] then
     local prettyname = M.prettynametypes[tag](apiobject,...)
+    if not prettyname then
+      return nil, string.format('No pretty name for `%s.', tag)
+    end
     return M.escape(prettyname,'_')
   elseif not tag then
     return nil, 'No pretty name available as no tag has been provided.'
   end
-  return nil, string.format('No pretty name for `%s.', tag)
+  return nil, string.format('No pretty name type for `%s.', tag)
 end
 
 ---

@@ -90,6 +90,7 @@ function template.substitute(str,env)
     fn = fn()
     local out = {}
     local res,err = xpcall(function() fn(function(s)
+    	if not s then s='' end
         out[#out+1] = s
     end) end,debug.traceback)
     if not res then

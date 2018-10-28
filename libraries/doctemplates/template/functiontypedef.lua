@@ -46,6 +46,7 @@ return [[#
 #       if param.type then
 #         local link = linkto( param.type )
 #         local name = prettyname( param.type )
+#         if not name and param.type.tag=='inlinetyperef' then name = param.type.def.tag or '_' end
 #         if link then
 #           paramline = paramline .. '<a href=\"' .. link .. '\">' .. name .. "</a>"
 #         else
