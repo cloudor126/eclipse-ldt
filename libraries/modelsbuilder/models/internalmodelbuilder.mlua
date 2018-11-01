@@ -708,13 +708,19 @@ local function createvardefinitions(_internalcontent,ast,file,comment2apiobj)
           }
         })
         -- fix current function param by left definition
-        if binder.tag == "Function" and _item and not _item.type then
-          local left = binder.parent and binder.parent[1] and binder.parent[1][1]
+        local ignoreParentTags = {Call=true,Invoke=true,Table=true,Return=true}
+        if binder.tag == "Function" and _item and not _item.type and not ignoreParentTags[binder.parent.tag] then
+          local leftIndex = binder.parent and (#binder.parent-1) or 1
+          local left = binder.parent and binder.parent[leftIndex] and binder.parent[leftIndex][1]
           local lefttype
-          if left.tag == "Id" then 
+          if type(left) ~= "table" then
+            error('No left table of '..binder.parent.tag..' numChildren:'..(#binder.parent))
+          elseif left.tag == "Id" then 
             lefttype = apimodelbuilder.extractlocaltype(getlinkedcommentafter(left),file)
           elseif left.tag == "Index" then
             lefttype = apimodelbuilder.extractlocaltype(getlinkedcommentafter(left[2]),file)
+          else
+            error('Unkown tag before function, '..binder.parent.tag..'>'..left.tag)
           end
           if lefttype and lefttype.def and lefttype.def.params then
             for _,param in ipairs(lefttype.def.params) do
