@@ -10,10 +10,22 @@
  *******************************************************************************/
 package org.eclipse.ldt.core.internal.ast.models.file;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.dltk.ast.ASTVisitor;
 
 public class Call extends LuaExpression {
+	private List<LuaExpression> argList = new ArrayList<LuaExpression>();
 	private LuaExpression function;
+
+	public void addArg(LuaExpression arg) {
+		argList.add(arg);
+	}
+
+	public List<LuaExpression> getArgList() {
+		return argList;
+	}
 
 	public LuaExpression getFunction() {
 		return function;

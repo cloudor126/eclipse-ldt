@@ -984,7 +984,7 @@ public class LuaHeuristicScanner {
 			String itemname = fDocument.get(position, getPosition() - position).trim();
 			Item item = new UnknownItem();
 			item.setName(itemname);
-			Identifier identifier = new Identifier();
+			Identifier identifier = new Identifier(itemname);
 			identifier.setDefinition(item);
 			identifier.setStart(position);
 			identifier.setEnd(getPosition());

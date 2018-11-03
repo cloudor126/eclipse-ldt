@@ -244,6 +244,20 @@ function M._exprtyperef(expression,returnposition)
   }
 end
 
+function M._keyexprtyperef(expression)
+  return {
+    tag            = "keyexprtyperef",
+    expression     =  expression   -- expression (see internal model)
+  }
+end
+
+function M._valueexprtyperef(expression)
+  return {
+    tag            = "valueexprtyperef",
+    expression     =  expression   -- expression (see internal model)
+  }
+end
+
 function M._inlinetyperef(definition)
   return {
     tag            = "inlinetyperef",

@@ -10,26 +10,38 @@
  *******************************************************************************/
 package org.eclipse.ldt.core.internal.ast.models.file;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.dltk.ast.ASTVisitor;
 
 public class Invoke extends LuaExpression {
-	private LuaExpression record;
+	private List<LuaExpression> argList = new ArrayList<LuaExpression>();
 	private String functionName;
+	private LuaExpression record;
 
-	public LuaExpression getRecord() {
-		return record;
+	public void addArg(LuaExpression arg) {
+		argList.add(arg);
 	}
 
-	public void setRecord(final LuaExpression record) {
-		this.record = record;
+	public List<LuaExpression> getArgList() {
+		return argList;
 	}
 
 	public String getFunctionName() {
 		return functionName;
 	}
 
+	public LuaExpression getRecord() {
+		return record;
+	}
+
 	public void setFunctionName(final String functionName) {
 		this.functionName = functionName;
+	}
+
+	public void setRecord(final LuaExpression record) {
+		this.record = record;
 	}
 
 	@Override

@@ -139,7 +139,7 @@ function M.traverse.expr (cfg, x, ...)
          | `Pair{ k, v } -> E(k); E(v)
          | v             -> E(v)
       end end
-   | `Nil|`Dots|`True|`False|`Number{_}|`String{_} -> -- terminal node
+   | `Nil|`Dots{_}|`True|`False|`Number{_}|`String{_} -> -- terminal node
    | { tag=tag, ...} if M.tags.expr[tag]-> M.malformed (cfg, x, unpack (ancestors))
    | _ -> M.unknown (cfg, x, unpack (ancestors))
    end
@@ -188,7 +188,9 @@ function M.binder_list (cfg, id_list, ...)
          if f then f(id_node, ...) end
          if up then up(id_node, ...) end
       elseif i==#id_list and id_node.tag=='Dots' then
+         cfg.scope :set (id_node[1], { id_node, ... })
          if down then down(id_node, ...) end
+         if f then f(id_node, ...) end
          if up then up(id_node, ...) end
          -- Do nothing, those are valid `Dots
       elseif ferror then

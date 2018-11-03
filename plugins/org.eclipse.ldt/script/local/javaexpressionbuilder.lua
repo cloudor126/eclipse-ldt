@@ -17,8 +17,8 @@ local J = {}
 -- create expression java object
 function J._expression(_expr,handledexpr)
   -- search if already handled
+  if not _expr then return nil end
   if handledexpr and handledexpr[_expr] then return handledexpr[_expr] end
-
   -- else handle it
   local tag = _expr.tag
   if tag == "MIdentifier" then
@@ -29,6 +29,8 @@ function J._expression(_expr,handledexpr)
     return J._call(_expr,handledexpr)
   elseif tag == "MInvoke" then
     return J._invoke(_expr,handledexpr)
+  elseif tag == "MLiteral" then
+    return J._literal(_expr, handledexpr)
   end
   return nil
 end
@@ -38,7 +40,8 @@ end
 function J._identifier(_identifier,handledexpr)
   local jidentifier = javainternalmodelfactory.newidentifier(
     _identifier.sourcerange.min - 1,
-    _identifier.sourcerange.max
+    _identifier.sourcerange.max,
+    _identifier.name
   )
   handledexpr[_identifier] =jidentifier
   return jidentifier
@@ -58,13 +61,31 @@ function J._index(_index,handledexpr)
 end
 
 --------------------------------------
+-- create literal java object
+function J._literal(_literal,handledexpr)
+  local jliteral = javainternalmodelfactory.newliteral(
+    _literal.sourcerange.min -1,
+    _literal.sourcerange.max,
+    _literal.literal
+  )
+  handledexpr[_literal] =jliteral
+  return jliteral
+end
+
+
+
+--------------------------------------
 -- create call java object
 function J._call(_call,handledexpr)
+
   local jcall = javainternalmodelfactory.newcall(
     _call.sourcerange.min - 1,
     _call.sourcerange.max,
     J._expression(_call.func,handledexpr)
   )
+  for i, _arg in ipairs(_call.args) do
+  	javainternalmodelfactory.calladdarg(jcall, J._expression(_arg, handledexpr))
+  end
   handledexpr[_call] =jcall
   return jcall
 end
@@ -78,6 +99,9 @@ function J._invoke(_invoke,handledexpr)
     _invoke.functionname,
     J._expression(_invoke.record,handledexpr)
   )
+  for i, _arg in ipairs(_invoke.args) do
+    javainternalmodelfactory.invokeaddarg(jinvoke, J._expression(_arg, handledexpr))
+  end
   handledexpr[_invoke] =jinvoke
   return jinvoke
 end

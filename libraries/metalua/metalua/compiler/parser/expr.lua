@@ -71,7 +71,7 @@ return function(M)
     --------------------------------------------------------------------------------
     M.func_params_content = gg.list{
         name="function parameters",
-        gg.multisequence{ { "...", builder = "Dots" }, annot.opt(M, _M.id, 'te') },
+        gg.multisequence{  annot.opt(M, _M.id_or_dots, 'te') },
         separators  = ",", terminators = {")", "|"} }
 
     -- TODO move to annot
@@ -97,7 +97,42 @@ return function(M)
     --------------------------------------------------------------------------------
     function M.id_or_literal (lx)
         local a = lx:next()
-        if a.tag~="Id" and a.tag~="String" and a.tag~="Number" then
+        if a.tag=="Keyword" and a[1]=="..." then
+          local mt = getmetatable(a)
+          a = {
+            tag = "Dots",
+            lineinfo = a.lineinfo,
+            a[1]
+          }
+          setmetatable(a,mt)
+        end
+        if a.tag~="Id" and a.tag~="String" and a.tag~="Number" and a.tag~="Dots" then
+            local msg
+            if a.tag=='Eof' then
+                msg = "End of file reached when an expression was expected"
+            elseif a.tag=='Keyword' then
+                msg = "An expression was expected, and `"..a[1]..
+                    "' can't start an expression"
+            else
+                msg = "Unexpected expr token " .. pp.tostring (a)
+            end
+            gg.parse_error (lx, msg)
+        end
+        return a
+    end
+    
+    function M.id_or_dots (lx)
+        local a = lx:next()
+        if a.tag=="Keyword" and a[1]=="..." then
+          local mt = getmetatable(a)
+          a = {
+            tag = "Dots",
+            lineinfo = a.lineinfo,
+            a[1]
+          }
+          setmetatable(a,mt)
+        end
+        if a.tag~="Id" and a.tag~="Dots" then
             local msg
             if a.tag=='Eof' then
                 msg = "End of file reached when an expression was expected"
@@ -157,7 +192,6 @@ return function(M)
             { "nil",                           builder = "Nil" },
             { "true",                          builder = "True" },
             { "false",                         builder = "False" },
-            { "...",                           builder = "Dots" },
             { "{", _table.content, "}",        builder = unpack },
             _M.id_or_literal },
 

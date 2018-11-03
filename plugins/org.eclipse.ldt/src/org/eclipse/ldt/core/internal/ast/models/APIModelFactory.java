@@ -19,6 +19,7 @@ import org.eclipse.ldt.core.internal.ast.models.api.FunctionTypeDef;
 import org.eclipse.ldt.core.internal.ast.models.api.InlineTypeRef;
 import org.eclipse.ldt.core.internal.ast.models.api.InternalTypeRef;
 import org.eclipse.ldt.core.internal.ast.models.api.Item;
+import org.eclipse.ldt.core.internal.ast.models.api.KeyExprTypeRef;
 import org.eclipse.ldt.core.internal.ast.models.api.LuaFileAPI;
 import org.eclipse.ldt.core.internal.ast.models.api.MetaTypeRef;
 import org.eclipse.ldt.core.internal.ast.models.api.ModuleTypeRef;
@@ -28,6 +29,7 @@ import org.eclipse.ldt.core.internal.ast.models.api.RecordTypeDef;
 import org.eclipse.ldt.core.internal.ast.models.api.Return;
 import org.eclipse.ldt.core.internal.ast.models.api.TypeDef;
 import org.eclipse.ldt.core.internal.ast.models.api.TypeRef;
+import org.eclipse.ldt.core.internal.ast.models.api.ValueExprTypeRef;
 import org.eclipse.ldt.core.internal.ast.models.file.Identifier;
 import org.eclipse.ldt.core.internal.ast.models.file.LuaExpression;
 
@@ -59,6 +61,8 @@ public final class APIModelFactory {
 		javaFunctions.add(newMetaTypeRef());
 		javaFunctions.add(newModuleTypeRef());
 		javaFunctions.add(newExprTypeRef());
+		javaFunctions.add(newKeyExprTypeRef());
+		javaFunctions.add(newValueExprTypeRef());
 		javaFunctions.add(newPrimitiveTypeRef());
 		javaFunctions.add(newInlineTypeRef());
 		javaFunctions.add(itemSetExpression());
@@ -223,6 +227,50 @@ public final class APIModelFactory {
 			@Override
 			public String getName() {
 				return "newexprtyperef"; //$NON-NLS-1$
+			}
+		};
+	}
+
+	private static NamedJavaFunction newValueExprTypeRef() {
+		return new NamedJavaFunction() {
+			@Override
+			public int invoke(LuaState l) {
+				LuaExpression expr = l.checkJavaObject(1, LuaExpression.class);
+
+				ValueExprTypeRef typeref = new ValueExprTypeRef();
+				if (expr != null)
+					typeref.setExpression(expr);
+
+				l.pushJavaObject(typeref);
+
+				return 1;
+			}
+
+			@Override
+			public String getName() {
+				return "newvalueexprtyperef"; //$NON-NLS-1$
+			}
+		};
+	}
+
+	private static NamedJavaFunction newKeyExprTypeRef() {
+		return new NamedJavaFunction() {
+			@Override
+			public int invoke(LuaState l) {
+				LuaExpression expr = l.checkJavaObject(1, LuaExpression.class);
+
+				KeyExprTypeRef typeref = new KeyExprTypeRef();
+				if (expr != null)
+					typeref.setExpression(expr);
+
+				l.pushJavaObject(typeref);
+
+				return 1;
+			}
+
+			@Override
+			public String getName() {
+				return "newkeyexprtyperef"; //$NON-NLS-1$
 			}
 		};
 	}

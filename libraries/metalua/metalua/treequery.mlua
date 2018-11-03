@@ -321,7 +321,7 @@ local BINDER_PARENT_TAG = {
 --  might need to inspect the parent node.
 function M.is_binder(node, parent)
    --printf('is_binder(%s, %s)', table.tostring(node), table.tostring(parent))
-   if node.tag ~= 'Id' or not parent then return false end
+   if (node.tag ~= "Id" and node.tag ~= "Dots") or not parent then return false end
    if parent.tag=='Fornum' then  return parent[1]==node end
    if not BINDER_PARENT_TAG[parent.tag] then return false end
    for _, binder in ipairs(parent[1]) do
@@ -372,7 +372,7 @@ function M.is_occurrence_of(binder)
 end
 
 function M.get_binder(occurrence, ...)
-    if occurrence.tag ~= 'Id' then return nil end
+    if occurrence.tag ~= 'Id' and occurrence.tag ~= 'Dots' then return nil end
     if M.is_binder(occurrence, ...) then return nil end
     local scope = ACTIVE_SCOPE[occurrence]
     local binder_hierarchy = scope :get(occurrence[1])

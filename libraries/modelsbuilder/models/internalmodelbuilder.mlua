@@ -26,24 +26,29 @@ local M = {}
 --   global variables having that name.
 function bindings(ast)
   local locals, globals = { }, { }
-  local function f(id, ...)
-    local name = id[1]
-    if Q.is_binder(id, ...) then
-      local binder = ... -- parent is the binder
-      locals[binder] = locals[binder] or { }
-      locals[binder][name]={ }
-    else
-      local _, binder = Q.get_binder(id, ...)
-      if binder then -- this is a local
-        table.insert(locals[binder][name], id)  
-     else
-        local g = globals[name]
-        if g then table.insert(g, id) else globals[name]={id} end
+   local function f (id, ...)
+      local name = id[1]
+      if Q.is_binder (id, ...) then
+         local binder = ...
+         locals[binder] = locals[binder] or { }
+         locals[binder][name] = { }
+      else
+         local _, binder = Q.get_binder (id, ...)
+         if binder then
+            table.insert (locals[binder][name], id)
+         else
+            local g = globals[name]
+            if g then
+               table.insert (g, id)
+            else
+               globals[name] = { id }
+            end
+         end
       end
-    end
-  end
-  Q(ast) :filter('Id') :foreach(f)
-  return locals, globals
+   end
+   Q (ast):filter "Id":foreach (f)
+   Q (ast):filter "Dots":foreach (f)
+   return locals, globals
 end
 
 -- --------------------------------------
@@ -149,7 +154,8 @@ local supported_e = {
   Index  = true,
   Id     = true,
   Call   = true,
-  Invoke = true
+  Invoke = true,
+  Dots   = true
 }
 local function supportedexpr(node)
   return supported_e[ node.tag ]
@@ -166,7 +172,7 @@ local function createexpr(expr,_block)
   local _expr = nil 
   
   match expr with
-    | `Id { name } ->
+    | `Id { name }| `Dots{name} ->
         -- we store the block which hold this node 
         -- to be able to define  
         idto_block[expr]= _block
@@ -176,7 +182,7 @@ local function createexpr(expr,_block)
         if not expr.lineinfo then  return nil end
         
         -- create identifier
-        local _identifier = internalmodel._identifier()
+        local _identifier = internalmodel._identifier(name)
         idto_identifier[expr]= _identifier
         _expr =  _identifier
     | `Index { innerexpr, rightpart } ->
@@ -194,12 +200,28 @@ local function createexpr(expr,_block)
         if not expr.lineinfo then  return nil end
         -- create call 
         local _expression = createexpr(innerexpr,_block)
-        if _expression then _expr =  internalmodel._call(_expression) end
+        if _expression then
+          local _args = {}
+          for argIndex=2, #expr do
+            local _arg = createexpr(expr[argIndex], _block)
+            table.insert(_args, _arg)
+          end
+          _expr = internalmodel._call (_expression, _args)
+        end
     | `Invoke{innerexpr,`String{functionname},...} ->
         if not expr.lineinfo then  return nil end
         -- create invoke
         local _expression = createexpr(innerexpr,_block)
-        if _expression then _expr = internalmodel._invoke(functionname,_expression) end
+        if _expression then
+          local _args = {}
+          for argIndex=2, #expr do
+            local _arg = createexpr(expr[argIndex], _block)
+            table.insert(_args, _arg)
+          end
+          _expr = internalmodel._invoke (functionname, _expression, _args)
+        end
+    | `String{ literal } ->
+    	_expr = internalmodel._literal(literal)
     | _ ->
   end
   
@@ -534,7 +556,7 @@ getitem = function (binder, itemname, comment2apiobj, file)
   | `Function {params, body} ->
       for i,id in ipairs(params) do
         -- get the name of the current id
-        local idname = id[1]
+        local idname = id[1] or id.tag=="Dots" and '...'
         -- if this is the good id
         if itemname == idname then
           -- extract param's type  from luadocumentation
@@ -580,8 +602,24 @@ getitem = function (binder, itemname, comment2apiobj, file)
         local idname = id[1]
         -- if this is the good id
         if itemname == idname then
-          -- return data : we can not guess the type for now
-          return createitem(itemname,id)
+          local itemtype = nil
+          if expr[1].tag == "Call" and expr[1][1].tag=="Id" then
+            local tabletype = createtype(expr[1][2], 1, comment2apiobj,file)
+            if expr[1][1][1]=="pairs" then
+              if i == 1 then
+                itemtype = apimodel._keyexprtyperef(tabletype.expression)
+              elseif i == 2 then
+                itemtype = apimodel._valueexprtyperef(tabletype.expression)
+              end
+            elseif expr[1][1][1] == "ipairs" then
+              if i == 1 then
+                itemtype = apimodel._primitivetyperef("number")
+              elseif i == 2 then
+                itemtype = apimodel._valueexprtyperef(tabletype.expression)
+              end
+            end
+          end
+          return createitem (itemname, id, itemtype)
         end
       end  
   | `Fornum {id, ...} ->
@@ -708,7 +746,7 @@ local function createvardefinitions(_internalcontent,ast,file,comment2apiobj)
           }
         })
         -- fix current function param by left definition
-        local ignoreParentTags = {Call=true,Invoke=true,Table=true,Return=true}
+        local ignoreParentTags = {Call=true,Invoke=true,Table=true,Return=true,Paren=true}
         if binder.tag == "Function" and _item and not _item.type and not ignoreParentTags[binder.parent.tag] then
           local leftIndex = binder.parent and (#binder.parent-1) or 1
           local left = binder.parent and binder.parent[leftIndex] and binder.parent[leftIndex][1]

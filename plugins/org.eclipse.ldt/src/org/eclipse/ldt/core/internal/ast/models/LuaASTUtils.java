@@ -40,6 +40,7 @@ import org.eclipse.ldt.core.internal.ast.models.api.FunctionTypeDef;
 import org.eclipse.ldt.core.internal.ast.models.api.InlineTypeRef;
 import org.eclipse.ldt.core.internal.ast.models.api.InternalTypeRef;
 import org.eclipse.ldt.core.internal.ast.models.api.Item;
+import org.eclipse.ldt.core.internal.ast.models.api.KeyExprTypeRef;
 import org.eclipse.ldt.core.internal.ast.models.api.LuaFileAPI;
 import org.eclipse.ldt.core.internal.ast.models.api.MetaTypeRef;
 import org.eclipse.ldt.core.internal.ast.models.api.ModuleTypeRef;
@@ -49,6 +50,7 @@ import org.eclipse.ldt.core.internal.ast.models.api.Return;
 import org.eclipse.ldt.core.internal.ast.models.api.TypeDef;
 import org.eclipse.ldt.core.internal.ast.models.api.TypeRef;
 import org.eclipse.ldt.core.internal.ast.models.api.UnknownItem;
+import org.eclipse.ldt.core.internal.ast.models.api.ValueExprTypeRef;
 import org.eclipse.ldt.core.internal.ast.models.common.LuaASTNode;
 import org.eclipse.ldt.core.internal.ast.models.common.LuaSourceRoot;
 import org.eclipse.ldt.core.internal.ast.models.file.Block;
@@ -151,6 +153,14 @@ public final class LuaASTUtils {
 			return resolveType(sourceModule, (InlineTypeRef) typeRef);
 		}
 
+		if (typeRef instanceof KeyExprTypeRef) {
+			return resolveType(sourceModule, (KeyExprTypeRef) typeRef);
+		}
+
+		if (typeRef instanceof ValueExprTypeRef) {
+			return resolveType(sourceModule, (ValueExprTypeRef) typeRef);
+		}
+
 		return null;
 	}
 
@@ -212,6 +222,36 @@ public final class LuaASTUtils {
 		return resolveType(sourceModule, expression, exprTypeRef.getReturnPosition());
 	}
 
+	public static TypeResolution resolveType(ISourceModule sourceModule, KeyExprTypeRef exprTypeRef) {
+		LuaExpression expression = exprTypeRef.getExpression();
+		if (expression == null)
+			return null;
+
+		TypeResolution typeRef = resolveType(sourceModule, expression);
+		if (typeRef != null && typeRef.getTypeDef() instanceof RecordTypeDef) {
+			RecordTypeDef typeDef = (RecordTypeDef) typeRef.getTypeDef();
+			if (typeDef.getDefaultkeytyperef() != null) {
+				return resolveType(sourceModule, typeDef.getDefaultkeytyperef());
+			}
+		}
+		return null;
+	}
+
+	public static TypeResolution resolveType(ISourceModule sourceModule, ValueExprTypeRef exprTypeRef) {
+		LuaExpression expression = exprTypeRef.getExpression();
+		if (expression == null)
+			return null;
+
+		TypeResolution typeRef = resolveType(sourceModule, expression);
+		if (typeRef != null && typeRef.getTypeDef() instanceof RecordTypeDef) {
+			RecordTypeDef typeDef = (RecordTypeDef) typeRef.getTypeDef();
+			if (typeDef.getDefaultvaluetyperef() != null) {
+				return resolveType(sourceModule, typeDef.getDefaultvaluetyperef());
+			}
+		}
+		return null;
+	}
+
 	public static TypeResolution resolveType(ISourceModule sourceModule, LuaExpression expr) {
 		return resolveType(sourceModule, expr, 1);
 	}
@@ -265,9 +305,21 @@ public final class LuaASTUtils {
 			return getDefaultIndexType(resolveType);
 		} else if (expr instanceof Call) {
 			Call call = ((Call) expr);
+			LuaExpression functionExpr = call.getFunction();
 			// resolve the function which is called
-			TypeResolution resolvedType = resolveType(sourceModule, call.getFunction());
+			TypeResolution resolvedType = resolveType(sourceModule, functionExpr);
 			if (resolvedType != null) {
+				if (resolvedType.getModule().getElementName().startsWith("global.") && (functionExpr instanceof Identifier)) { //$NON-NLS-1$
+					Identifier funcId = (Identifier) functionExpr;
+					if ("select".equals(funcId.getDefinition().getName()) && call.getArgList().size() >= 2) { //$NON-NLS-1$
+						try {
+							LuaExpression paramExpression = call.getArgList().get(1);
+							return resolveType(sourceModule, paramExpression);
+						} catch (Exception e) {
+							return null;
+						}
+					}
+				}
 				// we must found a function type.
 				FunctionTypeDef functiontype = null;
 				if (resolvedType.getTypeDef() instanceof FunctionTypeDef) {

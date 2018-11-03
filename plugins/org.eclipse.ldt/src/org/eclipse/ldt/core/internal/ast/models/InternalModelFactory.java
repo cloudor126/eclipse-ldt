@@ -20,6 +20,7 @@ import org.eclipse.ldt.core.internal.ast.models.file.Call;
 import org.eclipse.ldt.core.internal.ast.models.file.Identifier;
 import org.eclipse.ldt.core.internal.ast.models.file.Index;
 import org.eclipse.ldt.core.internal.ast.models.file.Invoke;
+import org.eclipse.ldt.core.internal.ast.models.file.Literal;
 import org.eclipse.ldt.core.internal.ast.models.file.LocalVar;
 import org.eclipse.ldt.core.internal.ast.models.file.LuaExpression;
 import org.eclipse.ldt.core.internal.ast.models.file.LuaInternalContent;
@@ -49,11 +50,14 @@ public final class InternalModelFactory {
 		javaFunctions.add(newIndex());
 		javaFunctions.add(newCall());
 		javaFunctions.add(newInvoke());
+		javaFunctions.add(newLiteral());
 		javaFunctions.add(newBlock());
 		javaFunctions.add(newLocalVar());
 		javaFunctions.add(blockAddContent());
 		javaFunctions.add(blockAddLocalVar());
 		javaFunctions.add(intenalContentAddUnknownGlobalVar());
+		javaFunctions.add(callAddArg());
+		javaFunctions.add(invokeAddArg());
 
 		return javaFunctions.toArray(new NamedJavaFunction[javaFunctions.size()]);
 	}
@@ -84,8 +88,9 @@ public final class InternalModelFactory {
 			public int invoke(LuaState l) {
 				int sourceRangeMin = l.checkInteger(1);
 				int sourceRangeMax = l.checkInteger(2);
+				String name = l.checkString(3, null);
 
-				Identifier identifier = new Identifier();
+				Identifier identifier = new Identifier(name);
 				identifier.setStart(sourceRangeMin);
 				identifier.setEnd(sourceRangeMax);
 
@@ -123,6 +128,31 @@ public final class InternalModelFactory {
 			@Override
 			public String getName() {
 				return "newindex"; //$NON-NLS-1$
+			}
+		};
+	}
+
+	private static NamedJavaFunction newLiteral() {
+		return new NamedJavaFunction() {
+			@Override
+			public int invoke(LuaState l) {
+				int sourceRangeMin = l.checkInteger(1);
+				int sourceRangeMax = l.checkInteger(2);
+				String lit = l.checkString(3, null);
+
+				Literal literal = new Literal();
+				literal.setStart(sourceRangeMin);
+				literal.setEnd(sourceRangeMax);
+				literal.setLiteral(lit);
+
+				l.pushJavaObject(literal);
+
+				return 1;
+			}
+
+			@Override
+			public String getName() {
+				return "newliteral"; //$NON-NLS-1$
 			}
 		};
 	}
@@ -175,6 +205,44 @@ public final class InternalModelFactory {
 			@Override
 			public String getName() {
 				return "newinvoke"; //$NON-NLS-1$
+			}
+		};
+	}
+
+	private static NamedJavaFunction invokeAddArg() {
+		return new NamedJavaFunction() {
+			@Override
+			public int invoke(LuaState l) {
+				Invoke invoke = l.checkJavaObject(1, Invoke.class);
+				LuaExpression arg = l.checkJavaObject(2, LuaExpression.class);
+				invoke.addArg(arg);
+
+				l.pushJavaObject(invoke);
+				return 1;
+			}
+
+			@Override
+			public String getName() {
+				return "invokeaddarg"; //$NON-NLS-1$
+			}
+		};
+	}
+
+	private static NamedJavaFunction callAddArg() {
+		return new NamedJavaFunction() {
+			@Override
+			public int invoke(LuaState l) {
+				Call call = l.checkJavaObject(1, Call.class);
+				LuaExpression arg = l.checkJavaObject(2, LuaExpression.class);
+				call.addArg(arg);
+
+				l.pushJavaObject(call);
+				return 1;
+			}
+
+			@Override
+			public String getName() {
+				return "calladdarg"; //$NON-NLS-1$
 			}
 		};
 	}

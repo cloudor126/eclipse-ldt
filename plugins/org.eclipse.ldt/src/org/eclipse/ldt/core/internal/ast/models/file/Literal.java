@@ -11,29 +11,23 @@
 package org.eclipse.ldt.core.internal.ast.models.file;
 
 import org.eclipse.dltk.ast.ASTVisitor;
-import org.eclipse.ldt.core.internal.ast.models.api.Item;
 
-public class Identifier extends LuaExpression {
+public class Literal extends LuaExpression {
+	private String literal;
 
-	private Item definition;
-
-	private String name;
-
-	public Identifier(String name) {
-		super();
-		this.name = name;
+	/**
+	 * @return the literal
+	 */
+	public String getLiteral() {
+		return literal;
 	}
 
-	public String getName() {
-		return name;
-	}
-
-	public Item getDefinition() {
-		return definition;
-	}
-
-	public void setDefinition(Item definition) {
-		this.definition = definition;
+	/**
+	 * @param literal
+	 *            the literal to set
+	 */
+	public void setLiteral(final String literal) {
+		this.literal = literal;
 	}
 
 	@Override

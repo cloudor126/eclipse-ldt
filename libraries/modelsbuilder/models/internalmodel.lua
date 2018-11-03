@@ -28,9 +28,10 @@ function M._block()
   }
 end
 
-function M._identifier()
+function M._identifier(name)
   return {
     definition = nil,                -- item
+    name = name,
     sourcerange = {min=0,max=0},
     tag = "MIdentifier"
   }
@@ -45,20 +46,30 @@ function M._index(key, value)
   }
 end
 
-function M._call(funct)
+function M._call(funct, args)
   return {
     func = funct,                   -- expr (identifier, index, call, invoke, block)
+    args = args,
     sourcerange = {min=0,max=0},
     tag = "MCall"
   }
 end
 
-function M._invoke(name, expr)
+function M._invoke(name, expr, args)
   return {
     functionname = name,            -- string
     record = expr,                  -- expr (identifier, index, call, invoke, block)
+    args = args,
     sourcerange = {min=0,max=0},
     tag = "MInvoke"
+  }
+end
+
+function M._literal(literal)
+  return {
+    literal = literal,
+    sourcerange = {min=0,max=0},
+    tag = "MLiteral"
   }
 end
 

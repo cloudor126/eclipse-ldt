@@ -20,7 +20,7 @@ local templateengine = require 'templateengine'
 
 --
 -- Update documentation templateengine environment
--- 
+--
 local templateengineenv = require 'template.utils'
 
 -- Remove default implementation not supported from IDE
@@ -78,6 +78,10 @@ function M._typeref (_type,handledexpr)
     return javaapimodelfactory.newmoduletyperef(_type.modulename,_type.returnposition)
   elseif _type.tag == "exprtyperef" then
     return javaapimodelfactory.newexprtyperef(_type.returnposition,javaexpressionbuilder._expression(_type.expression,handledexpr))
+  elseif _type.tag == "keyexprtyperef" then
+    return javaapimodelfactory.newkeyexprtyperef(javaexpressionbuilder._expression(_type.expression,handledexpr))
+  elseif _type.tag == "valueexprtyperef" then
+    return javaapimodelfactory.newvalueexprtyperef(javaexpressionbuilder._expression(_type.expression,handledexpr))
   elseif _type.tag == "primitivetyperef" then
     return javaapimodelfactory.newprimitivetyperef(_type.typename)
   elseif _type.tag == "inlinetyperef" then
