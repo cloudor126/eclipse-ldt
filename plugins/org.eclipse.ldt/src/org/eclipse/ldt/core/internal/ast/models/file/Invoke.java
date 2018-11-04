@@ -46,8 +46,15 @@ public class Invoke extends LuaExpression {
 
 	@Override
 	public void traverse(ASTVisitor visitor) throws Exception {
+
 		if (visitor.visit(this)) {
+			// traverse arg
+			for (LuaExpression arg : argList) {
+				arg.traverse(visitor);
+			}
+			// traverse record
 			record.traverse(visitor);
+
 			visitor.endvisit(this);
 		}
 	}

@@ -38,7 +38,12 @@ public class Call extends LuaExpression {
 	@Override
 	public void traverse(ASTVisitor visitor) throws Exception {
 		if (visitor.visit(this)) {
+			// traverse function
 			function.traverse(visitor);
+			// traverse arg
+			for (LuaExpression arg : argList) {
+				arg.traverse(visitor);
+			}
 			visitor.endvisit(this);
 		}
 	}
