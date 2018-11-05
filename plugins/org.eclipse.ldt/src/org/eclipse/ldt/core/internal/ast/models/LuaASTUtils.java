@@ -231,7 +231,7 @@ public final class LuaASTUtils {
 		if (typeRef != null && typeRef.getTypeDef() instanceof RecordTypeDef) {
 			RecordTypeDef typeDef = (RecordTypeDef) typeRef.getTypeDef();
 			if (typeDef.getDefaultkeytyperef() != null) {
-				return resolveType(sourceModule, typeDef.getDefaultkeytyperef());
+				return resolveType(typeRef.getModule(), typeDef.getDefaultkeytyperef());
 			}
 		}
 		return null;
@@ -246,7 +246,7 @@ public final class LuaASTUtils {
 		if (typeRef != null && typeRef.getTypeDef() instanceof RecordTypeDef) {
 			RecordTypeDef typeDef = (RecordTypeDef) typeRef.getTypeDef();
 			if (typeDef.getDefaultvaluetyperef() != null) {
-				return resolveType(sourceModule, typeDef.getDefaultvaluetyperef());
+				return resolveType(typeRef.getModule(), typeDef.getDefaultvaluetyperef());
 			}
 		}
 		return null;
