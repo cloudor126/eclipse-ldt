@@ -434,6 +434,9 @@ public class LuaCompletionEngine extends ScriptCompletionEngine {
 			proposal.setName(member.getElementName());
 			proposal.setCompletion(member.getElementName());
 			proposal.setReplaceRange(startIndex, endIndex);
+			if (Flags.isPrivate(member.getFlags())) {
+				relevance += 30;
+			}
 			proposal.setRelevance(relevance);
 			this.requestor.accept(proposal);
 
