@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.dltk.codeassist.ScriptCompletionEngine;
 import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.core.CompletionProposal;
+import org.eclipse.dltk.core.Flags;
 import org.eclipse.dltk.core.IMember;
 import org.eclipse.dltk.core.IMethod;
 import org.eclipse.dltk.core.IModelElement;
@@ -42,6 +43,7 @@ import org.eclipse.ldt.core.internal.ast.models.api.Parameter;
 import org.eclipse.ldt.core.internal.ast.models.api.RecordTypeDef;
 import org.eclipse.ldt.core.internal.ast.models.api.TypeRef;
 import org.eclipse.ldt.core.internal.ast.models.common.LuaSourceRoot;
+import org.eclipse.ldt.core.internal.ast.models.file.Call;
 import org.eclipse.ldt.core.internal.ast.models.file.Identifier;
 import org.eclipse.ldt.core.internal.ast.models.file.Index;
 import org.eclipse.ldt.core.internal.ast.models.file.Invoke;
@@ -152,9 +154,57 @@ public class LuaCompletionEngine extends ScriptCompletionEngine {
 			// we do not manage complete invoke
 			if (luaExpression.isIncomplete())
 				addInvocableFields(resolveType, right, position, new HashSet<TypeResolution>());
+		} else if (luaExpression instanceof Call) {
+			// manage completed Call
+			// ----------------------------
+
+			Call call = (Call) luaExpression;
+			if (!call.isIncomplete()) {
+				// resolve type of function and then the result function of that function
+				LuaExpression function = ((Call) luaExpression).getFunction();
+				TypeResolution resolveType = LuaASTUtils.resolveType(sourceModule, function);
+				if (resolveType.getTypeDef() instanceof FunctionTypeDef) {
+					FunctionTypeDef fDef = (FunctionTypeDef) resolveType.getTypeDef();
+					if (fDef.getReturns().size() > 0 && fDef.getReturns().get(0).getTypes().size() > 0) {
+						TypeRef retRef = fDef.getReturns().get(0).getTypes().get(0);
+						TypeResolution retRes = LuaASTUtils.resolveType(sourceModule, retRef);
+						if (retRes.getTypeDef() instanceof FunctionTypeDef) {
+							addCall(retRes, position);
+						}
+					}
+				}
+			}
 		}
 		// we do not complete call for now
 		requestor.endReporting();
+	}
+
+	/**
+	 * @param retRes
+	 * @param position
+	 * @param hashSet
+	 */
+	private void addCall(TypeResolution resolution, int position) {
+		if (resolution == null)
+			return;
+
+		if (resolution.getTypeDef() instanceof FunctionTypeDef) {
+			FunctionTypeDef funcDef = (FunctionTypeDef) resolution.getTypeDef();
+			CompletionProposal proposal = CompletionProposal.create(CompletionProposal.METHOD_REF, 0);
+			List<String> nameList = new ArrayList<String>();
+			for (Parameter param : funcDef.getParameters()) {
+				nameList.add(param.getName());
+			}
+			proposal.setParameterNames(nameList.toArray(new String[nameList.size()]));
+			proposal.setName(""); //$NON-NLS-1$
+			proposal.setFlags(Flags.AccReference);
+			proposal.setRelevance(1000);
+			proposal.setReplaceRange(position, position);
+			proposal.setCompletion(" "); //$NON-NLS-1$
+
+			// proposal.setModelElement(member);
+			this.requestor.accept(proposal);
+		}
 	}
 
 	private void addGlobalDeclarations(ISourceModule sourceModule, String start, int cursorPosition) {
