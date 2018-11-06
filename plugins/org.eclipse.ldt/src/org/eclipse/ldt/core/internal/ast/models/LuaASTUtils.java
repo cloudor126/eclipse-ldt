@@ -58,6 +58,7 @@ import org.eclipse.ldt.core.internal.ast.models.file.Call;
 import org.eclipse.ldt.core.internal.ast.models.file.Identifier;
 import org.eclipse.ldt.core.internal.ast.models.file.Index;
 import org.eclipse.ldt.core.internal.ast.models.file.Invoke;
+import org.eclipse.ldt.core.internal.ast.models.file.Literal;
 import org.eclipse.ldt.core.internal.ast.models.file.LocalVar;
 import org.eclipse.ldt.core.internal.ast.models.file.LuaExpression;
 import org.eclipse.ldt.core.internal.ast.models.file.LuaInternalContent;
@@ -340,9 +341,11 @@ public final class LuaASTUtils {
 						if (type instanceof MetaTypeRef) {
 							MetaTypeRef metaTypeRef = (MetaTypeRef) type;
 							try {
-								String callStr = sourceModule.getSource().substring(expr.start(), expr.end());
-								String[] params = callStr.substring(1, callStr.length() - 1).split(","); //$NON-NLS-1$
-								return resolveType(sourceModule, metaTypeRef, params);
+								LuaExpression arg = call.getArgList().get(metaTypeRef.getIndex() - 1);
+								if (arg instanceof Literal) {
+									String typeSpec = ((Literal) arg).getLiteral();
+									return resolveType(resolvedType.getModule(), typeSpec);
+								}
 							} catch (Exception e) {
 								return null;
 							}
@@ -367,10 +370,11 @@ public final class LuaASTUtils {
 						if (type instanceof MetaTypeRef) {
 							MetaTypeRef metaTypeRef = (MetaTypeRef) type;
 							try {
-								String callStr = sourceModule.getSource().substring(expr.start(), expr.end());
-								callStr = callStr.substring(callStr.indexOf('('));
-								String[] params = ("self," + callStr.substring(1, callStr.length() - 1)).split(","); //$NON-NLS-1$ //$NON-NLS-2$
-								return resolveType(sourceModule, metaTypeRef, params);
+								LuaExpression arg = ((Invoke) expr).getArgList().get(metaTypeRef.getIndex() - 2);
+								if (arg instanceof Literal) {
+									String typeSpec = ((Literal) arg).getLiteral();
+									return resolveType(resolvedFunctionType.getModule(), typeSpec);
+								}
 							} catch (Exception e) {
 								return null;
 							}
@@ -384,28 +388,20 @@ public final class LuaASTUtils {
 	}
 
 	/**
-	 * @param sourceModule
-	 * @param metaTypeRef
-	 * @param call
+	 * @param module
+	 * @param typeSpec
+	 * @return
 	 */
-	public static TypeResolution resolveType(ISourceModule sourceModule, MetaTypeRef metaTypeRef, String[] params) {
-		int index = metaTypeRef.getIndex();
-		if (index > 0 && index <= params.length) {
-			String param = params[index - 1].trim();
-			if (param.matches("\".+\"") || param.matches("'.+'")) { //$NON-NLS-1$ //$NON-NLS-2$
-				String typeSpec = param.substring(1, param.length() - 1);
-				int sharpIndex = typeSpec.indexOf('#');
-				if (sharpIndex == 0) {
-					TypeResolution result = resolveType(sourceModule, new InternalTypeRef(typeSpec.substring(1)));
-					if (result == null || result.getTypeDef() == null) {
-						result = resolveType(sourceModule, new PrimitiveTypeRef(typeSpec.substring(1)));
-					}
-					return result;
-				} else if (sharpIndex > 0) {
-					return resolveType(sourceModule, new ExternalTypeRef(typeSpec.substring(0, sharpIndex), typeSpec.substring(sharpIndex + 1)));
-				}
-				return null;
+	private static TypeResolution resolveType(ISourceModule sourceModule, String typeSpec) {
+		int sharpIndex = typeSpec.indexOf('#');
+		if (sharpIndex == 0) {
+			TypeResolution result = resolveType(sourceModule, new InternalTypeRef(typeSpec.substring(1)));
+			if (result == null || result.getTypeDef() == null) {
+				result = resolveType(sourceModule, new PrimitiveTypeRef(typeSpec.substring(1)));
 			}
+			return result;
+		} else if (sharpIndex > 0) {
+			return resolveType(sourceModule, new ExternalTypeRef(typeSpec.substring(0, sharpIndex), typeSpec.substring(sharpIndex + 1)));
 		}
 		return null;
 	}
