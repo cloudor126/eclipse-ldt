@@ -214,7 +214,7 @@ local function createexpr(expr,_block)
         local _expression = createexpr(innerexpr,_block)
         if _expression then
           local _args = {}
-          for argIndex=2, #expr do
+          for argIndex=3, #expr do
             local _arg = createexpr(expr[argIndex], _block)
             table.insert(_args, _arg)
           end
