@@ -9,11 +9,7 @@
             name="%product.name">
          <property
                name="appName"
-               value="Lua Development Tools Product">
-         </property>
-         <property
-               name="preferenceCustomization"
-               value="plugin_customization.ini">
+               value="%product.name">
          </property>
             <property
                name="windowImages"
